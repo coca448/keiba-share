@@ -20,7 +20,9 @@
   .note{font-size:11px;color:var(--t);margin-top:10px;line-height:1.6;}
   .wk{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:3px;border:.5px solid var(--b);}
   .ansc{display:none;} body.showans .ansc{display:table-cell;}
-  #tabs{display:flex;gap:4px;overflow-x:auto;padding:4px 0 8px;margin-bottom:4px;-webkit-overflow-scrolling:touch;}
+  #tabs{display:block;padding:4px 0 8px;margin-bottom:4px;}
+  .tabrow{display:flex;gap:4px;align-items:center;margin-bottom:5px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .tabvenue{flex:0 0 auto;font-size:12px;font-weight:600;color:var(--p);min-width:38px;}
   .tab{flex:0 0 auto;font-size:12px;padding:4px 9px;border-radius:7px;border:.5px solid var(--b);background:#fff;color:var(--s);cursor:pointer;white-space:nowrap;}
   .tab.on{background:var(--p);color:#fff;border-color:var(--p);font-weight:500;}
   .tbtn{font-size:12px;padding:5px 11px;border-radius:7px;border:.5px solid var(--b);background:#fff;color:var(--p);cursor:pointer;}
@@ -78,7 +80,7 @@
   <span id="k3head" style="margin-left:auto;font-size:11px;color:var(--s);"></span>
 </div>
 <div class="twrap" style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
-<table style="min-width:1420px;">
+<table style="min-width:1580px;">
   <thead><tr>
     <th style="width:34px;" title="タップで◎○▲△✕を循環">印</th>
     <th style="width:34px;" title="RaceReader予測順位(1-3位は◎○▲)">R順</th>
@@ -88,8 +90,8 @@
     <th style="width:26px;" title="RaceReader tier">信</th>
     <th style="width:46px;" title="RaceReader脚質プロファイル(⚡=ムラ)">脚質</th>
     <th style="width:28px;" title="ペース適性(RaceReader second opinion)">ペ適</th>
-    <th style="width:150px;" title="スターパターン(表示フラグ・全件)">⭐好走パターン</th>
-    <th style="min-width:230px;" title="根拠(＋強み上位2/−弱み1)">根拠（＋強み／−弱み）</th>
+    <th style="width:220px;" title="スターパターン(表示フラグ・全件)">⭐好走パターン</th>
+    <th style="width:360px;" title="根拠(＋強み上位2/−弱み1)">根拠（＋強み／−弱み）</th>
     <th style="width:150px;" title="主要順位(指数/Elo/上り/坂路/血統/騎手/前走)">主要順位</th>
     <th style="width:38px;text-align:right;" title="実着順(検証用・確定後に表示)">実着</th>
     <th style="width:40px;" title="③決着エンジン順位(接=接戦)">③位</th>
@@ -648,9 +650,13 @@ function loadRace(id,cb){
   document.head.appendChild(s);
 }
 function renderTabs(activeId){
-  document.getElementById('tabs').innerHTML=DAY.races.map(function(r){
-    return '<button class="tab'+(r.id===activeId?' on':'')+'" onclick="openRace(\''+r.id+'\')">'
-      +r.venue+r.r+'R</button>';
+  var groups={}, order=[];                       // 場所別に段組み
+  DAY.races.forEach(function(r){ if(!groups[r.venue]){groups[r.venue]=[];order.push(r.venue);} groups[r.venue].push(r); });
+  document.getElementById('tabs').innerHTML=order.map(function(v){
+    return '<div class="tabrow"><span class="tabvenue">'+v+'</span>'
+      +groups[v].map(function(r){
+        return '<button class="tab'+(r.id===activeId?' on':'')+'" onclick="openRace(\''+r.id+'\')">'+r.r+'R</button>';
+      }).join('')+'</div>';
   }).join('');
 }
 function openRace(id){ renderTabs(id); loadRace(id,boot);
