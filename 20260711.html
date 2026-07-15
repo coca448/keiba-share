@@ -530,6 +530,8 @@ function ovTabsRender(){
   }).join('');
   html+='<span style="font-size:10px;color:#8a8878;margin-left:6px;">予測信頼度ρ'+CORNER_RHO[cornerTab]
     +(cornerTab!==4?'・閲覧専用(手直し/TB/ゴール計算は4角タブのみ・②③は4角基準)':'')+'</span>';
+  // 整合性検証(2026-08-01)実測: 予測の動く率=実測の約0.47倍・個別の動きの予測力ρ+0.09=較正せず性格を明記(coca判断)
+  html+='<div style="font-size:10px;color:#a8a598;margin-top:1px;">※コマ間の動きは型の平均像です(実際のレースはこの約2倍動きます・個別の動きは⤴/動マークを参考に)</div>';
   el.innerHTML=html;
 }
 function ovDraw(){
