@@ -175,7 +175,7 @@ function resolveCourse(data){
     rCircleM:(dims.shu1-2*dims.choku)/(2*Math.PI),
     corners:(kyori&&kyori<=1600)?2:4, geoFallback:!!dims.fb};
 }
-// --- 初期(s,d): s=テン順(day=pos4秒/board=frontPct)。d=【枠なり】 ---
+// --- 初期(s,d): s=前後frontPct=taikei_v1学習版(2026-07採用, v0テン順フォールバック薄色明示/旧dayはpos4秒)。d=【枠なり】 ---
 //     d決定則(2026-07 教師実測: 併走内外順の正答 枠なり76% > 帯モデル59% → 帯モデル初期値を廃止):
 //     同じ前後圈(座席行=前から3頭ずつ)内で枠番小の順に内から d=1.0,2.0,3.0…
 function mapHorses(data){
@@ -191,6 +191,8 @@ function mapHorses(data){
       gpAgari:(h.gpAgari!=null?h.gpAgari:null),
       ag:(h.gpAgari!=null?h.gpAgari:(h.agBest!=null?h.agBest:null)),   // 既定=G'予測上がり(件4)
       agFallback:(h.gpAgari==null&&h.agBest!=null),                    // G'無→過去実績フォールバック(薄色明示)
+      posSrc:(h.posSrc!=null?h.posSrc:null),                           // 初期配置の出所(v1/v0/fill, 2026-07採用)
+      posFallback:(h.posSrc!=null&&h.posSrc!=='v1'),                   // v1入力欠損→テン順(v0)/補完で代用(薄色明示)
       waku:(h.waku||wakuOf((h.no!=null?h.no:h.umaban),field)),
       chaku:(h.chakuActual!=null?h.chakuActual:null), k4:(h.k4!=null?h.k4:null),
       pop:(h.pop!=null?h.pop:null), v3rank:(h.v3rank!=null?h.v3rank:null),
@@ -379,7 +381,8 @@ function compute(){
     }else if(h.rClaim!=null){
       claimTxt='<span style="color:'+(h.rClaim.charAt(0)==='＋'?'#357335':'#a32128')+';">'+h.rClaim+'</span>';
     }
-    var posTxt=(h.s<12?'前':h.s>24?'後':'中')+'・'+LANES[h.lane].slice(-1);
+    var posTxt=(h.s<12?'前':h.s>24?'後':'中')+'・'+LANES[h.lane].slice(-1)
+      +(h.posFallback?'<span title="v1予測なし(位置履歴不足)&#10;テン順(v0)/補完で代用" style="font-size:9px;color:#b4b2a9;margin-left:2px;">'+(h.posSrc==='v0'?'テン順':'補完')+'</span>':'');
     var k3=(h.k3rank!=null)?(h.k3rank+((h.k3margin!=null&&h.k3margin<=0.05)?'<span style="color:#b07a12;font-size:9px;">接</span>':'')):'—';
     var chakuTxt=(h.chaku!=null)?'<span class="'+(h.chaku<=3?'hit':'miss')+'">'+h.chaku+'</span>':'—';
     return '<tr>'
