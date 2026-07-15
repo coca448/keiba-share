@@ -621,8 +621,12 @@ function ovBindDrag(){
     el.addEventListener('pointerenter',function(){ if(!ovdrag) ovShowTip(horses.find(function(x){return x.no===no;})); });
   });
 }
-function ovSvgPt(e){var rc=ovsvg.getBoundingClientRect(),vb=ovsvg.viewBox.baseVal;
-  return {x:vb.x+(e.clientX-rc.left)/rc.width*vb.width, y:vb.y+(e.clientY-rc.top)/rc.height*vb.height};}
+function ovSvgPt(e){ // getScreenCTM=preserveAspectRatioの余白込み正規変換(旧: 単純線形→max-height到達時に横ズレ)
+  var m=ovsvg.getScreenCTM();
+  if(!m){var rc=ovsvg.getBoundingClientRect(),vb=ovsvg.viewBox.baseVal;
+    return {x:vb.x+(e.clientX-rc.left)/rc.width*vb.width, y:vb.y+(e.clientY-rc.top)/rc.height*vb.height};}
+  var pt=ovsvg.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY;
+  var q=pt.matrixTransform(m.inverse()); return {x:q.x,y:q.y};}
 ovsvg.addEventListener('pointermove',function(e){
   if(!ovdrag)return; var p=ovSvgPt(e), h=horses.find(function(x){return x.no===ovdrag.no;});
   var sd=ovSD(p.x,p.y); h.s=sd.s; h.d=sd.d;
