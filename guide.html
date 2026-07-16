@@ -1,0 +1,97 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競馬予想ページの読み方と使い方</title>
+<style>
+ body{font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN",sans-serif;
+   max-width:720px;margin:0 auto;padding:24px 16px 48px;color:#1a1a18;background:#fff;line-height:1.85;}
+ h1{font-size:21px;margin:0 0 6px;} h2{font-size:17px;margin:34px 0 10px;border-bottom:2px solid #22306e;padding-bottom:4px;}
+ h3{font-size:15px;margin:22px 0 6px;}
+ a{color:#22306e;} .back{font-size:13px;}
+ .lead{background:#f5f7ff;border:1px solid #d8ddf0;border-radius:10px;padding:12px 16px;margin:14px 0;font-size:14px;}
+ ul{padding-left:20px;} li{margin:4px 0;}
+ table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0;}
+ th,td{border:1px solid rgba(0,0,0,.15);padding:6px 8px;text-align:left;vertical-align:top;}
+ th{background:#f1efe8;white-space:nowrap;}
+ .twrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+ b.r{color:#22306e;} b.p{color:#8a5a00;}
+ .note{background:#fff8e1;border:1px solid #e8d9a0;border-radius:10px;padding:12px 16px;font-size:13px;margin:16px 0;}
+ .step{background:#f1efe8;border-radius:8px;padding:10px 14px;margin:8px 0;font-size:14px;}
+ code{background:#f1efe8;padding:1px 5px;border-radius:4px;font-size:12px;}
+ hr{border:none;border-top:1px solid rgba(0,0,0,.12);margin:28px 0;}
+</style></head><body>
+<p class="back"><a href="./index.html">← 日付一覧へ戻る</a></p>
+<h1>🏇 競馬予想ページの読み方と使い方</h1>
+<p>URL: <b><a href="./index.html">https://coca448.github.io/keiba-share/</a></b> — 日付を選ぶとその開催の全レースが見られます(スマホ対応)。</p>
+
+<div class="lead">
+このページには<b>2つのAI</b>と<b>手動ツール</b>が同居しています。まずそこだけ押さえてください:
+<ul>
+<li><b class="r">R系(RaceReader)</b> … 過去10年・約50万走のデータから「どの馬が強いか」を学習したAI</li>
+<li><b class="p">P系(PaceMaker)</b> … 出走メンバーから「レースがどう流れるか(隊列・ペース・上がり)」をシミュレートするAI</li>
+<li><b>手動</b> … 展開図の駒を自分で動かしたり、馬場の偏りを自分で設定する部分</li>
+</ul>
+RとPは見ているものが違うので、意見が割れます(74%のレースで本命が違う)。<b>割れた時に統計的に当たりやすいのはR側</b>です。Pは「展開がハマればこの馬」という第二意見として読んでください。
+</div>
+
+<h2>画面の構成(上から)</h2>
+
+<h3>1. ヘッダ</h3>
+<ul>
+<li><b>ペース想定(スロー/ミドル/ハイ)</b> … 「行きたい馬」が何頭いるかから機械的に判定。逃げたい馬がいなければスロー、2頭以上ならハイになりやすい</li>
+<li><b>展開図の信頼度(高/中/割引)</b> … 逃げ馬不在のレースは隊列が読みやすく(信頼度高)、逃げたい馬が複数いると隊列が流動的(割引)。実測に基づく自己申告です</li>
+</ul>
+
+<h3>2. 展開想定図(俯瞰の盤面)</h3>
+<p>コースを上から見た図に、<b>4コーナー時点の予想配置</b>で駒(実寸比の楕円)を置いています。</p>
+<ul>
+<li><b>駒の位置</b> … 縦(前後)=テンの速さと過去の位置取り履歴から予測。横(内外)=基本は枠なり(内枠が内)。あくまで<b>平均的な想定=叩き台</b>です</li>
+<li><b>角タブ(1角/2角/3角/4角)</b> … コーナーごとの想定を切替表示。注意書きの通り、コマ間の「動き」は型の平均像で、実際のレースはこの絵の約2倍動きます</li>
+<li><b>⤴マーク</b> … 捲り型(道中で大きく位置を上げる型)。この印の馬が次走で実際に捲る率は約8.7%(無印馬の2.5倍)</li>
+<li><b>動マーク</b> … 機動力型(位置を動かせる型)。次走で位置が動く率55%(無印は24%)。<b>⤴や動の駒は「絵の位置から動く可能性が高い」</b>と読んでください</li>
+<li><b>駒のタップ/ホバー</b> … 距離ロス(外を回ると何m損か)・壁リスク・想定上がりを表示。距離ロスと壁は「参考」——オッズに織り込み済みの情報で、これ単体で儲かるものではありません</li>
+<li><b>駒のドラッグ</b> … 自分の読みで配置を修正できます(前に出す・外に出す)。動かすとゴールタイム計算が連動して変わります</li>
+<li><b>帯のタップ</b> … 馬場の偏り(TB)の手動設定。「内が伸びる/死んでいる」を自分の目で入れる欄です(機械は当日の馬場を知りません)</li>
+</ul>
+
+<h3>3. 馬表(全頭・横スクロール、印と馬名は固定)</h3>
+<div class="twrap">
+<table>
+<tr><th>列</th><th>意味</th><th>数字の出所</th></tr>
+<tr><td><b>印(一番左)</b></td><td>自分で打つ印。タップで◎○▲△✕を切替</td><td>あなた</td></tr>
+<tr><td><b class="r">R順/R印</b></td><td>強さの序列(AIの本命)</td><td>RaceReaderの評価</td></tr>
+<tr><td><b class="r">勝率</b></td><td>「32%」なら、過去に同じ評価を受けた馬が実際に約32%勝っている、という意味の校正済みの数字</td><td>同上(実測で校正)</td></tr>
+<tr><td><b class="r">信(A/B/C)</b></td><td>AIの自信度。実測でA約66%・B約61%・C約50%(本命の複勝率)と確認済み。Cは「読めていない」の正直な申告</td><td>同上</td></tr>
+<tr><td><b class="r">着順レンジ</b></td><td>予測の幅。広い馬は成績にムラがある</td><td>同上</td></tr>
+<tr><td><b class="r">ペ適(◎○▲×)</b></td><td>今日の想定ペース×その馬の脚質の相性。6年23万頭の実測マップ(「前有利は常に、逃げ馬不在なら特に」)</td><td>実測統計</td></tr>
+<tr><td><b class="r">好走パターン/根拠</b></td><td>AIがその評価をした理由の文章</td><td>RaceReaderの理由生成</td></tr>
+<tr><td><b class="p">P順</b></td><td>展開シミュレーションの着順序列。「4角の位置の貯金+直線で使える脚」を秒に換算して合計した順番。<b>印ではありません</b>(Rと割れたらRの方が当たる)</td><td>PaceMaker</td></tr>
+<tr><td><b class="p">想定上がり</b></td><td>「今日のペース・位置なら、この馬は直線で何秒の脚を使えるか」の予測。過去の上がりの平均ではなく、<b>ペースを考慮した予測</b>なのがミソ</td><td>同上</td></tr>
+<tr><td><b class="p">4角位置</b></td><td>4コーナーの予想位置(盤面の駒と同じ)</td><td>同上</td></tr>
+<tr><td><b>4角/上がり/実効/ゴール</b></td><td>決着タイムのシミュレーション。ゴール=4角通過タイム+上がり+補正(競られ・馬場)。上がりの初期値は「想定上がり」で、スライダーで手動調整も可能</td><td>シミュ(手動調整可)</td></tr>
+<tr><td><b>実着</b></td><td>レース後に表示される実際の着順</td><td>結果</td></tr>
+</table>
+</div>
+
+<h3>4. 答え合わせ(レース後)</h3>
+<p>「答え合わせ」トグルをONにすると、<b>実際の4コーナー配置(ゴースト)</b>が予想の盤面に重なり、<b>自分の印/R本命/P順1位</b>それぞれの結果が並びます。予想のどこが合ってどこがズレたかを、3つの視点で振り返れます。</p>
+
+<h2>使い方(1レースの流れ)</h2>
+<div class="step">1. レースを選ぶ → <b>ヘッダで地形を掴む</b>(ペース想定と信頼度)</div>
+<div class="step">2. <b>展開図を見る</b> → 変だと思う駒をドラッグで直す(⤴・動の駒は特に「動くかも」と疑う)</div>
+<div class="step">3. 当日の馬場を見て<b>帯タップでTBを設定</b>(内有利/外有利)</div>
+<div class="step">4. <b>馬表でRとPを見比べる</b> → 「Rの評価は高いが展開不利」「評価は2番手だが展開最高」のズレを探す</div>
+<div class="step">5. <b>一番左の列で自分の印を打つ</b> → 「この予想を保存」</div>
+<div class="step">6. レース後、<b>答え合わせ</b>で振り返る</div>
+
+<h2>注意書き</h2>
+<div class="note">
+<ul>
+<li>数字には信頼度の階層があります: <b>R系の勝率・信頼度(実測で校正済み) &gt; P順・想定上がり(検証済みの予測) &gt; 距離ロス・壁(参考値) &gt; TB(手動入力)</b>。画面の注記(「参考」「手動」)はこの区別です</li>
+<li>展開図の初期配置は平均像です。当日のゲート・出遅れ・騎手の判断は入っていません——そこを直すのが使い手の仕事です</li>
+<li>保存した印は<b>お使いの端末・ブラウザの中だけ</b>に保存されます(他の人には見えません)</li>
+<li>予想は参考情報です。馬券の購入は自己責任で</li>
+</ul>
+</div>
+
+<p class="back"><a href="./index.html">← 日付一覧へ戻る</a></p>
+</body></html>
