@@ -49,6 +49,7 @@
 </head>
 <body>
 
+<a id="backidx" href="./" style="display:none;font-size:13px;color:#22306e;text-decoration:none;margin:0 0 6px;">← 日付一覧へ戻る</a>
 <div id="tabs"></div>
 
 <div class="head">
@@ -798,6 +799,10 @@ function initDemos(){
 (function(){
   var p=new URLSearchParams(location.search), day=p.get('day'), race=p.get('race');
   if(p.get('compact')!=null) document.body.classList.add('compact');   // 埋め込み: 展開図+シミュレーター詳細のみ
+  // 公開バンドル(http配信)では日付一覧への戻りリンクを表示(compact埋め込み/ローカルfileでは非表示)
+  if(window.EMBED && /^https?:$/.test(location.protocol) && p.get('compact')==null){
+    var bk=document.getElementById('backidx'); if(bk) bk.style.display='block';
+  }
   if(window.EMBED){ DAY=EMBED.dayIndex; openRace(race||(DAY.races[0]&&DAY.races[0].id)); return; }  // 共有バンドル
   if(day){
     var s=document.createElement('script'); s.src='../data/sim/day_'+day+'.js?v='+Date.now();
