@@ -806,16 +806,4 @@ function initDemos(){
   if(window.EMBED){ DAY=EMBED.dayIndex; openRace(race||(DAY.races[0]&&DAY.races[0].id)); return; }  // 共有バンドル
   if(day){
     var s=document.createElement('script'); s.src='../data/sim/day_'+day+'.js?v='+Date.now();
-    s.onload=function(){ DAY=window.DAY_INDEX;
-      var first=race||(DAY.races[0]&&DAY.races[0].id);
-      openRace(first); };
-    s.onerror=function(){ noData('day_'+day+'.js を読めません'); };
-    document.head.appendChild(s); return;
-  }
-  if(window.RACE_DATA){ boot(window.RACE_DATA); return; }
-  if(race){ loadRace(race,boot); return; }
-  initDemos();                                   // ダミー全廃: デモ(実データ)か案内のみ
-})();
-</script>
-</body>
-</html>
+    s.onload=function(){ DAY=window.D
