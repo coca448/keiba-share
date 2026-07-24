@@ -341,7 +341,26 @@ function _ksfmt(v){
   if(a>=10)   return v.toFixed(1);
   return String(Math.round(v*1000)/1000);
 }
+// 【案① 2026-07-25】主要順位の「退化」検出(表示のみの対処・エンジン側の定数充填は触らない)
+// レース内で全馬が同値の項目は、順位が全員1位に潰れており情報が無い。
+// 例: 父タイプ名が全馬欠損→血統特徴がフォールバック定数で充填→全馬同値→全馬1位。
+// 坂路(値なし=項目が消える)と同じ扱いに揃え「血−」で出す。
+var DEGEN={};
+function calcDegen(){
+  DEGEN={};
+  var withK=horses.filter(function(h){return h.rKeys;});
+  if(withK.length<2) return;
+  var keys={};
+  withK.forEach(function(h){ Object.keys(h.rKeys).forEach(function(k){ keys[k]=1; }); });
+  Object.keys(keys).forEach(function(k){
+    if(k==='前走') return;                       // 前走=着順そのもの。同値でも退化ではない
+    var vals=withK.map(function(h){ return (h.rKeyScores||{})[k]; })
+                  .filter(function(v){ return v!=null; });
+    if(vals.length>=2 && vals.every(function(v){ return v===vals[0]; })) DEGEN[k]=vals[0];
+  });
+}
 function compute(){
+  calcDegen();
   var hasAg=horses.length>0 && horses.every(function(h){return h.ag!=null;});
   horses.forEach(function(h){
     h.lane=laneIdx(h.d); h.pos4=pos4of(h);
@@ -400,18 +419,17 @@ function compute(){
       var ks=h.rKeyScores||{};
       var ksT=Object.keys(ks).filter(function(k){return ks[k]!=null;})
         .map(function(k){return k+' '+ks[k];}).join(' / ');
-      var body;
-      if(KEYMODE===1){
-        // 元スコア表示: 順位のある項目のみ(順位と同じ並び)。値が無い項目は−
-        body=Object.keys(h.rKeys).filter(function(k){return h.rKeys[k]!=null;})
-          .map(function(k){var v=h.rKeys[k];
-            var sv=(k==='前走')?v:(ks[k]!=null?_ksfmt(ks[k]):'−');
-            return '<span style="color:'+(v<=3?'#357335':'#8a8878')+';">'+k.slice(0,1)+sv+'</span>';}).join(' ');
-      }else{
-        body=Object.keys(h.rKeys).filter(function(k){return h.rKeys[k]!=null;})
-          .map(function(k){var v=h.rKeys[k];
-            return '<span style="color:'+(v<=3?'#357335':'#8a8878')+';">'+k.slice(0,1)+v+'</span>';}).join(' ');
-      }
+      // 【案①】退化項目(レース内で全馬同値)は順位が情報を持たないので「血−」で出す(坂路=値なしと同じ扱い)
+      var body=Object.keys(h.rKeys).filter(function(k){return h.rKeys[k]!=null;})
+        .map(function(k){
+          var v=h.rKeys[k];
+          if(DEGEN.hasOwnProperty(k)){
+            return '<span style="color:#c3c1b8;" title="'+k+': このレースは全馬同値('+_ksfmt(DEGEN[k])+')のため順位に情報がありません">'
+                   +k.slice(0,1)+'−</span>';
+          }
+          var sv=(KEYMODE===1)?((k==='前走')?v:(ks[k]!=null?_ksfmt(ks[k]):'−')):v;
+          return '<span style="color:'+(v<=3?'#357335':'#8a8878')+';">'+k.slice(0,1)+sv+'</span>';
+        }).join(' ');
       keysTxt='<span title="元スコア: '+(ksT||'−')+'">'+body+'</span>'; }
     // 着順レンジ棒グラフ(ムラ馬は分布を均し方向に30%ブレンド=読みにくさを表現)
     var barTxt='<span style="color:var(--t)">—</span>';
