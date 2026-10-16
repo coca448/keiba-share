@@ -983,40 +983,4 @@ function bootBoard(d){
     })};
   boot(data);
 }
-function initDemos(){
-  fetch('../data/sim/demo_index.json').then(function(r){return r.json();}).then(function(list){
-    var sel=document.getElementById('ovsel');
-    sel.style.display='';
-    sel.innerHTML=list.map(function(x){return '<option value="'+x.raceId+'">'+x.bucket+'｜'+x.courseKey.replace(/_/g,' ')+' '+x.field+'頭</option>';}).join('');
-    function loadBoard(rid){
-      fetch('../data/sim/board_'+rid+'.json').then(function(r){return r.json();}).then(bootBoard)
-        .catch(function(){ noData('board_'+rid+'.json を読めません'); });
-    }
-    sel.onchange=function(){ loadBoard(sel.value); };
-    if(list.length) loadBoard(list[0].raceId);
-    else noData('デモが空です');
-  }).catch(function(){ noData('レース未指定・デモ索引も無し。python -m http.server 8777 で起動し ?day=YYYYMMDD を付けるか、scripts/pacemaker_board.py --demo でデモ生成。'); });
-}
-(function(){
-  var p=new URLSearchParams(location.search), day=p.get('day'), race=p.get('race');
-  if(p.get('compact')!=null) document.body.classList.add('compact');   // 埋め込み: 展開図+シミュレーター詳細のみ
-  // 公開バンドル(http配信)では日付一覧への戻りリンクを表示(compact埋め込み/ローカルfileでは非表示)
-  if(window.EMBED && /^https?:$/.test(location.protocol) && p.get('compact')==null){
-    var bk=document.getElementById('backidx'); if(bk) bk.style.display='block';
-  }
-  if(window.EMBED){ DAY=EMBED.dayIndex; openRace(race||(DAY.races[0]&&DAY.races[0].id)); return; }  // 共有バンドル
-  if(day){
-    var s=document.createElement('script'); s.src='../data/sim/day_'+day+'.js?v='+Date.now();
-    s.onload=function(){ DAY=window.DAY_INDEX;
-      var first=race||(DAY.races[0]&&DAY.races[0].id);
-      openRace(first); };
-    s.onerror=function(){ noData('day_'+day+'.js を読めません'); };
-    document.head.appendChild(s); return;
-  }
-  if(window.RACE_DATA){ boot(window.RACE_DATA); return; }
-  if(race){ loadRace(race,boot); return; }
-  initDemos();                                   // ダミー全廃: デモ(実データ)か案内のみ
-})();
-</script>
-</body>
-</html>
+function initDem
