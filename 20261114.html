@@ -213,8 +213,7 @@ function mapHorses(data){
   if(data.v4Use){
     var _gs=data.horses.map(function(h){return h.gapSec;}).filter(function(v){return v!=null;});
     if(_gs.length>=4){
-      // 下限=1.35m×頭数: これ未満に圧縮すると枠順レーンの縦間隔が衝突閾値を割り4列化する(2026-11-13実測)
-      spanM=Math.max(1.35*field, 10, Math.min(44, (Math.max.apply(null,_gs)-Math.min.apply(null,_gs))*data.v4Use));
+      spanM=Math.max(10, Math.min(44, (Math.max.apply(null,_gs)-Math.min.apply(null,_gs))*data.v4Use));
     }
   }
   var hs=data.horses.map(function(h){
@@ -269,8 +268,8 @@ function mapHorses(data){
   hs.slice().sort(function(a,b){return a.s-b.s;}).reduce(function(placed,h){
     var g=0;
     while(placed.some(function(p){return Math.abs(p.s-h.s)<LB && Math.abs(p.d-h.d)<1.0;}) && g++<40){
-      if(stOut2){ h.d-=BAND_W; if(h.d<trackW()-6.0){ h.d=trackW()-1.5; h.s+=1.2; } }  // 直線: 内へ積み/3レーン超は外ラチへ戻す
-      else { h.d+=BAND_W; if(h.d>6.0){ h.d=1.0; h.s+=1.2; } }   // 3レーン上限: 超えたら半馬身後ろへ(4列の壁を作らない)
+      if(stOut2){ h.d-=BAND_W; if(h.d<trackW()-9.0){ h.d=trackW()-1.5; h.s+=1.2; } }  // 直線: 内へ積み/溢れは外ラチへ戻す
+      else { h.d+=BAND_W; if(h.d>9.0){ h.d=1.0; h.s+=1.2; } }   // 大外超えは半馬身後ろへ置き直し
     }
     placed.push(h); return placed;
   },[]);
