@@ -614,9 +614,15 @@ var cornerTab=4, CORNER_RHO={1:'+0.51',2:'+0.51',3:'+0.50',4:'+0.49'};
 function cornersAvail(){ if(course&&course.straight) return [4]; var n=(course&&course.corners)||4; return n>=4?[1,2,3,4]:[3,4]; }
 function ovDisplayArr(){
   if(cornerTab===4) return horses;
+  // 全長=4角と同じ物理スケール(案B・2026-11-13): タブ切替で隊列全長が変わらないよう統一
+  var spanC=null;
+  if(currentData&&currentData.v4Use){
+    var _g=currentData.horses.map(function(h){return h.gapSec;}).filter(function(v){return v!=null;});
+    if(_g.length>=4){ spanC=Math.max(10, Math.min(44, (Math.max.apply(null,_g)-Math.min.apply(null,_g))*currentData.v4Use)); }
+  }
   var arr=horses.map(function(h){ var fp=h['fp'+cornerTab];
     var c={}; for(var k in h) c[k]=h[k];
-    c.s=(fp!=null?fp*PACK_LEN:h.sBase); c.d=null; return c; });
+    c.s=(fp!=null?fp*(spanC||PACK_LEN):h.sBase); c.d=null; return c; });
   var order=arr.slice().sort(function(a,b){return a.s-b.s;});     // 枠なりd(初期化と同一規則)
   order.forEach(function(h,i){h._row=Math.floor(i/3);});
   var rows={};
