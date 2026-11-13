@@ -206,11 +206,20 @@ function resolveCourse(data){
 //     同じ前後圈(座席行=前から3頭ずつ)内で枠番小の順に内から d=1.0,2.0,3.0…
 function mapHorses(data){
   var field=data.field||data.horses.length;
+  // Phase2改(2026-11-13・案B採用): 位置どり=旧来の等間隔ラダー(自然な雁行)のまま、
+  //   隊列の全長だけ予測地点差の物理量でスケール(団子=短く・縦長=長く)。
+  //   切れ目(秒差)の情報は駒位置には入れない(碁盤目化の反省)— P順のk3margin側で保持。
+  var spanM=null;
+  if(data.v4Use){
+    var _gs=data.horses.map(function(h){return h.gapSec;}).filter(function(v){return v!=null;});
+    if(_gs.length>=4){
+      spanM=Math.max(10, Math.min(44, (Math.max.apply(null,_gs)-Math.min.apply(null,_gs))*data.v4Use));
+    }
+  }
   var hs=data.horses.map(function(h){
     var s;
     if(h.s!=null){ s=h.s; }
-    else if(h.gapSec!=null&&data.v4Use){ s=h.gapSec*data.v4Use; }  // Phase2(2026-11-13): 物理間隔=予測地点差(秒)×v4。単独逃げは離れ・団子は詰まる
-    else if(h.frontPct!=null){ s=h.frontPct*PACK_LEN; }            // 旧day互換: 等間隔ラダー
+    else if(h.frontPct!=null){ s=h.frontPct*(spanM||PACK_LEN); }   // 案B: 旧ラダー×物理全長(gapSec無し旧dayは36m)
     else { s=(h.pos4||0)/POS_SEC_PER_M; }
     return {no:(h.no!=null?h.no:h.umaban), name:h.name||"", leg:h.leg||"",
       s:s, d:(h.d!=null?h.d:null), sBase:s,
@@ -239,27 +248,11 @@ function mapHorses(data){
       rScore:(h.rScore!=null?h.rScore:null), rKeyScores:(h.rKeyScores||null),
       rType:(h.rType||null)};
   });
-  // 隊列の行化=3列上限(2026-11-13採用): 近い縦位置(行先頭から1.2m未満)は同じ行(最大3頭)、
-  //   4頭目からは次の行へ。行ピッチは最低1馬身(2.4m)=重なり回避の衝突判定(<LB)と整合し
-  //   横への積み直しを起こさない。物理的に離れた差はそのまま=物理間隔(Phase2)は保持。
-  (function(){
-    var sorted=hs.slice().sort(function(a,b){return (a.s-b.s)||(a.waku-b.waku)||(a.no-b.no);});
-    var anchor=null, eff=-1e9, cnt=0, rowId=-1;
-    sorted.forEach(function(h){
-      if(anchor!==null && h.s-anchor<1.2 && cnt<3){
-        h.s=eff; cnt++;
-      } else {
-        anchor=h.s; eff=Math.max(h.s, eff+LB);
-        h.s=eff; cnt=1; rowId++;
-      }
-      h._rowId=rowId;
-    });
-  })();
   // d未指定の馬に枠なり配置: s順に3頭ずつ行化 → 行内で(枠番,馬番)昇順に内から1.0mずつ
   var need=hs.filter(function(h){return h.d==null;});
   if(need.length){
     var order=hs.slice().sort(function(a,b){return a.s-b.s;});
-    order.forEach(function(h,i){ h._row=(h._rowId!=null?h._rowId:Math.floor(i/3)); });
+    order.forEach(function(h,i){ h._row=Math.floor(i/3); });
     var rows={};
     order.forEach(function(h){ (rows[h._row]=rows[h._row]||[]).push(h); });
     var stOut=!!(course&&course.straight);           // 直線競馬(新潟1000直)=外ラチ基準の別計算(2026-10-23)
