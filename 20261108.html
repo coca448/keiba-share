@@ -632,6 +632,15 @@ function ovDisplayArr(){
   if(cornerTab===3){ // 工程0実測: 2→3角で前方0.1以上動く駒は外を回す(66.8%>52.9% CI分離○)→1レーン外
     arr.forEach(function(h){ if(h.fp2!=null&&h.fp3!=null&&(h.fp2-h.fp3)>=0.1) h.d+=2.0; });
   }
+  // 重なり回避(2026-11-14): 4角レイアウト(mapHorses)と同一規則。物理全長スケール化で
+  // 角タブも密集するようになったため必須(旧36m等間隔時代は実質不要だった)
+  arr.slice().sort(function(a,b){return a.s-b.s;}).reduce(function(placed,h){
+    var g=0;
+    while(placed.some(function(p){return Math.abs(p.s-h.s)<LB && Math.abs(p.d-h.d)<1.0;}) && g++<40){
+      h.d+=BAND_W; if(h.d>9.0){ h.d=1.0; h.s+=1.2; }
+    }
+    placed.push(h); return placed;
+  },[]);
   return arr;
 }
 function ovTabsRender(){
