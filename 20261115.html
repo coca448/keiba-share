@@ -213,7 +213,8 @@ function mapHorses(data){
   if(data.v4Use){
     var _gs=data.horses.map(function(h){return h.gapSec;}).filter(function(v){return v!=null;});
     if(_gs.length>=4){
-      spanM=Math.max(10, Math.min(44, (Math.max.apply(null,_gs)-Math.min.apply(null,_gs))*data.v4Use));
+      // ÷0.55=広がり補正(2026-11-15): gap予測は平均回帰で実測スパンの55%(頭数帯別0.51-0.57で一貫)。相対位置は不変・物差しのみ実寸化
+      spanM=Math.max(10, Math.min(44, (Math.max.apply(null,_gs)-Math.min.apply(null,_gs))*data.v4Use/0.55));
     }
   }
   var hs=data.horses.map(function(h){
@@ -619,7 +620,7 @@ function ovDisplayArr(){
   var spanC=null;
   if(currentData&&currentData.v4Use){
     var _g=currentData.horses.map(function(h){return h.gapSec;}).filter(function(v){return v!=null;});
-    if(_g.length>=4){ spanC=Math.max(10, Math.min(44, (Math.max.apply(null,_g)-Math.min.apply(null,_g))*currentData.v4Use)); }
+    if(_g.length>=4){ spanC=Math.max(10, Math.min(44, (Math.max.apply(null,_g)-Math.min.apply(null,_g))*currentData.v4Use/0.55)); }  // ÷0.55=広がり補正(4角と同一)
   }
   var arr=horses.map(function(h){ var fp=h['fp'+cornerTab];
     var c={}; for(var k in h) c[k]=h[k];
