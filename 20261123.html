@@ -651,24 +651,78 @@ function ovDisplayArr(){
 function ovTabsRender(){
   var el=document.getElementById('ovtabs'); if(!el) return;
   var av=cornersAvail();
-  if(cornerTab!==4&&av.indexOf(cornerTab)<0) cornerTab=4;
+  if(cornerTab!==4&&cornerTab!==5&&av.indexOf(cornerTab)<0) cornerTab=4;
   var html=av.map(function(c){
     var on=(c===cornerTab);
     return '<button onclick="cornerTab='+c+';ovDraw();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(on?'#1a1a18':'#cfccc2')+';background:'+(on?'#1a1a18':'#fff')+';color:'+(on?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;">'+c+'角</button>';
   }).join('');
+  // ゴールタブ(2026-11-24): 予測着差(ゴール計算0.2s/馬身)の直線盤面。ドラッグ自由・3列ルールなし・計算には逆流しない
+  var gOn=(cornerTab===5);
+  html+='<button onclick="cornerTab=5;ovDraw();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(gOn?'#1a1a18':'#cfccc2')+';background:'+(gOn?'#1a1a18':'#fff')+';color:'+(gOn?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;">ゴール</button>';
   // 前日TBは芝限定・赤(消し)セルのみ表示(2026-11-24 バックテスト採用: 芝=赤×R7+0.84が唯一堅い/ダ=持ち越し逆行のため非表示)
   if(cornerTab===4&&currentData&&currentData.tbPrev&&currentData.shida==='芝'){
     var tp=currentData.tbPrev;
     html+='<button onclick="tbPrevToggle();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(tbPrevOn?'#1a1a18':'#cfccc2')+';background:'+(tbPrevOn?'#1a1a18':'#fff')+';color:'+(tbPrevOn?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;">前日TB</button>';
     if(tbPrevOn){
-      html+='<span style="font-size:10px;color:#5f5e5a;margin-right:6px;">前日TB('+tp.src.slice(4,6)+'/'+tp.src.slice(6,8)+(tp.course?'・'+tp.course+'コース':'')+'・'+tp.nR+'R): <span style="color:#b03535">赤=前日複勝O/E≤0.5</span> ※用途=10人気以下の紐切り専用(赤穴0.75/非赤穴1.24・4ヶ月実測)。9人気以内には無情報</span>';
+      html+='<span style="font-size:10px;color:#5f5e5a;margin-right:6px;">前日TB('+tp.src.slice(4,6)+'/'+tp.src.slice(6,8)+(tp.course?'・'+tp.course+'コース':'')+'・'+tp.nR+'R): <span style="color:#b03535">赤=前日複勝O/E≤0.5</span> ※用途=10人気以下の紐切り専用(赤穴0.75/非赤穴1.24・4ヶ月実測)。9人気以内には無情報。濃い赤=内レーン(脱出不能・内→外は6%)で最も強い消し</span>';
     }
   }
-  html+='<span style="font-size:10px;color:#8a8878;margin-left:6px;">予測信頼度ρ'+CORNER_RHO[cornerTab]
+  html+=(cornerTab===5)
+    ?'<span style="font-size:10px;color:#8a8878;margin-left:6px;">縦=予測着差(ゴール計算・0.2s/馬身を実寸化)・横=4角位置の引き継ぎ(直線の横は予測根拠なし・手で描くシナリオ用)・ドラッグ自由/ゴール計算には影響しない</span>'
+    :'<span style="font-size:10px;color:#8a8878;margin-left:6px;">予測信頼度ρ'+CORNER_RHO[cornerTab]
     +(cornerTab!==4?'・閲覧専用(手直し/TB/ゴール計算は4角タブのみ・②③は4角基準)':'')+'</span>';
   // 整合性検証(2026-08-01)実測: 予測の動く率=実測の約0.47倍・個別の動きの予測力ρ+0.09=較正せず性格を明記(coca判断)
   html+='<div style="font-size:10px;color:#a8a598;margin-top:1px;">※コマ間の動きは型の平均像です(実際のレースはこの約2倍動きます・個別の動きは⤴/動マークを参考に)・<span style="color:#b8860b">☆n=タイム指数n位(1-3位のみ・前日TB赤ゾーン内は消灯)</span>。人気薄の☆は紐妙味(芝実測O/E2.15)、人気はオッズ板で各自確認</div>';
   el.innerHTML=html;
+}
+// ---- ゴールタブ(2026-11-24): 予測着差の直線盤面 ----
+function ensureGoalPos(){
+  var mn=null;
+  horses.forEach(function(h){ if(h.goal!=null&&(mn==null||h.goal<mn)) mn=h.goal; });
+  horses.forEach(function(h){
+    if(h.gMoved) return;
+    h.gs=(h.goal!=null&&mn!=null)?(h.goal-mn)/0.2*LB : h.s;   // 着差秒→馬身→m(0.2s/馬身換算)
+    h.gd=(h.d!=null?h.d:2.0);
+  });
+  var placed=[];
+  horses.slice().sort(function(a,b){return a.gs-b.gs;}).forEach(function(h){
+    if(h.gMoved){placed.push(h);return;}
+    var g=0;
+    while(placed.some(function(p){return Math.abs(p.gs-h.gs)<LB && Math.abs(p.gd-h.gd)<1.0;})&&g++<40){
+      h.gd+=1.0; if(h.gd>trackW()-1.0) h.gd=0.8;   // 3列ルールなし: 外ラチまで自由に積む
+    }
+    placed.push(h);
+  });
+}
+function ovDrawGoal(){
+  ensureGoalPos();
+  var W=trackW();
+  var mxS=Math.max.apply(null,horses.map(function(h){return h.gs;}));
+  var mxD=Math.max.apply(null,horses.map(function(h){return h.gd;}));
+  var dView=Math.min(W,Math.max(9.5,mxD+2.5));
+  var parts=[];
+  parts.push('<line x1="'+(-mxS-6)+'" y1="0" x2="4" y2="0" stroke="#8a8778" stroke-width="0.35"/>');
+  parts.push('<line x1="'+(-mxS-6)+'" y1="'+dView+'" x2="4" y2="'+dView+'" stroke="#d5d2c6" stroke-width="0.12"/>');
+  parts.push('<line x1="0" y1="-1.2" x2="0" y2="'+(dView+1.2)+'" stroke="#d8333a" stroke-width="0.3"/>');
+  parts.push('<text x="0" y="'+(dView+2.6)+'" text-anchor="middle" font-size="1.4" fill="#d8333a">ゴール</text>');
+  for(var k=1;k*LB<=mxS+4;k++){
+    var gx=-k*LB;
+    parts.push('<line x1="'+gx+'" y1="0" x2="'+gx+'" y2="'+dView+'" stroke="#c9c6bd" stroke-width="0.06" stroke-dasharray="0.5 0.5"/>');
+    if(k%2===0) parts.push('<text x="'+gx+'" y="'+(dView+1.8)+'" text-anchor="middle" font-size="1.0" fill="#a8a598">'+k+'馬身</text>');
+  }
+  horses.forEach(function(h){
+    var x=-h.gs, y=h.gd, cap=CAP[h.waku]||{f:"#eee",t:"#333",s:"#999"};
+    parts.push('<g class="ovh" data-no="'+h.no+'" style="cursor:grab">'
+      +'<ellipse cx="'+x+'" cy="'+y+'" rx="'+(LB/2)+'" ry="'+(HW/2)+'" fill="'+cap.f+'" stroke="'+cap.s+'" stroke-width="0.12"/>'
+      +'<circle cx="'+x+'" cy="'+y+'" r="'+(LB/2+0.45)+'" fill="transparent" stroke="none"/>'
+      +'<text x="'+x+'" y="'+(y-0.75)+'" text-anchor="middle" font-size="1.25" font-weight="600" fill="'+cap.s+'" stroke="#fff" stroke-width="0.06" paint-order="stroke" pointer-events="none">'+h.no+'</text>'
+      +'</g>');
+  });
+  ovsvg.innerHTML=parts.join('');
+  var x0=-mxS-7, x1=5;
+  ovsvg.setAttribute('viewBox',x0+' '+(-2.5)+' '+(x1-x0)+' '+(dView+6.5));
+  ovfull.innerHTML='';
+  ovBindDrag();
 }
 function ovDraw(){
   if(!course){ ovsvg.innerHTML=''; ovfull.innerHTML='';
@@ -676,6 +730,7 @@ function ovDraw(){
       ?'<span style="color:#b07a12">このレースデータには芝ダ情報が無く実寸を特定できません(旧データ)。predict_day.py を再実行すると shida 付きで出力されます。</span>':'';
     return; }
   ovTabsRender();
+  if(cornerTab===5){ ovDrawGoal(); return; }
   var arr=ovDisplayArr(), c=course, t=ovTrk();
   if(!arr.length){ ovsvg.innerHTML=''; ovfull.innerHTML=''; return; }
   var sMin=Math.min.apply(null,arr.map(function(h){return h.s;}))-6;
@@ -712,7 +767,9 @@ function ovDraw(){
       if(!v||v[0]==null) return;
       var oe=v[0];
       if(oe>0.5) return;   // 赤(消し)のみ: 緑はバックテストで幻(R4-6の微プラスどまり)のため非表示
-      parts.push('<polygon points="'+ovPoly(TZ[zi],TZ[zi+1],db[0],db[1])+'" fill="rgba(214,69,69,0.30)" stroke="rgba(214,69,69,.55)" stroke-width="0.12" pointer-events="none"/>');
+      // 内レーンの赤=脱出不能ゾーン(内→外の持ち出しは実測6%)なので濃く塗る(2026-11-24)
+      var dark=(db[2]==='内');
+      parts.push('<polygon points="'+ovPoly(TZ[zi],TZ[zi+1],db[0],db[1])+'" fill="rgba(214,69,69,'+(dark?'0.42':'0.30')+')" stroke="rgba(214,69,69,'+(dark?'.75':'.55')+')" stroke-width="'+(dark?'0.18':'0.12')+'" pointer-events="none"/>');
       var cc=ovXY((TZ[zi]+TZ[zi+1])/2,(db[0]+db[1])/2);
       parts.push('<text x="'+cc.x+'" y="'+(cc.y+0.4)+'" text-anchor="middle" font-size="1.0" font-weight="700" fill="rgba(180,45,45,.9)" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">'+oe.toFixed(2)+'('+v[1]+')</text>');
     });});
@@ -1043,7 +1100,7 @@ var ovdrag=null;
 function ovBindDrag(){
   ovsvg.querySelectorAll('g.ovh').forEach(function(el){
     var no=+el.getAttribute('data-no');
-    el.addEventListener('pointerdown',function(e){if(cornerTab!==4)return; ovdrag={no:no};el.setPointerCapture(e.pointerId);e.preventDefault();
+    el.addEventListener('pointerdown',function(e){if(cornerTab!==4&&cornerTab!==5)return; ovdrag={no:no};el.setPointerCapture(e.pointerId);e.preventDefault();
       ovShowTip(horses.find(function(x){return x.no===no;}));});
     el.addEventListener('pointerenter',function(){ if(!ovdrag) ovShowTip(horses.find(function(x){return x.no===no;})); });
   });
@@ -1056,6 +1113,10 @@ function ovSvgPt(e){ // getScreenCTM=preserveAspectRatioの余白込み正規変
   var q=pt.matrixTransform(m.inverse()); return {x:q.x,y:q.y};}
 ovsvg.addEventListener('pointermove',function(e){
   if(!ovdrag)return; var p=ovSvgPt(e), h=horses.find(function(x){return x.no===ovdrag.no;});
+  if(cornerTab===5){   // ゴールタブ: gs/gdのみ更新(ゴール計算には逆流しない)
+    h.gs=Math.max(-2,Math.min(120,-p.x)); h.gd=Math.max(0,Math.min(trackW()-0.5,p.y)); h.gMoved=true;
+    ovDrawGoal(); return;
+  }
   var sd=ovSD(p.x,p.y); h.s=sd.s; h.d=sd.d;
   ovCollide(h);
   compute(); ovShowTip(h);
