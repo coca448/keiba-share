@@ -676,8 +676,9 @@ function ovTabsRender(){
   el.innerHTML=html;
 }
 // ---- ゴールタブ(2026-11-24): 予測着差の直線盤面 ----
-function ovGoalLaneLab(k,colg){
-  return '<text x="5.2" y="__Y__" text-anchor="start" font-size="0.85" fill="'+colg.s+'" pointer-events="none">'+LANES[k]+(colg.t!=='-'?colg.t:'')+'</text>';
+function ovGoalLaneLab(k,colg,sg){
+  var lx=(sg===1)?-5.2:5.2, anc=(sg===1)?'end':'start';
+  return '<text x="'+lx+'" y="__Y__" text-anchor="'+anc+'" font-size="0.85" fill="'+colg.s+'" pointer-events="none">'+LANES[k]+(colg.t!=='-'?colg.t:'')+'</text>';
 }
 function ensureGoalPos(){
   // 物理版(2026-11-24): 残距離L=直線長+4角遅れs、速度v=600m/想定上がり(agEff=ag+競られ+TB)。
@@ -728,14 +729,16 @@ function ovDrawGoal(){
   var mxD=Math.max.apply(null,horses.map(function(h){return h.gd;}));
   var dView=Math.min(W,Math.max(9.5,mxD+2.5));
   var parts=[];
-  var x0b=-mxS-6, x1b=4;
+  // 右回り=進行が右→左でなく左→右(4角タブと同じ向き): ゴール左・馬群右に鏡像化
+  var sg=(course&&course.mawari==="右")?1:-1;    // x = sg*gs
+  var x0b=Math.min(0,sg*mxS)-6, x1b=Math.max(0,sg*mxS)+6;
   // 走行帯(4角タブと同一: 最内/内/中/外/大外・タップで伸/普/止TB→ゴール計算に反映)
   var BBg=[0,2,4,6,8,W];
   for(var k=0;k<5;k++){
     if(BBg[k]>=dView) break;
     var colg=bc(bandTB[k]), y1g=Math.min(BBg[k+1],dView);
     parts.push('<rect x="'+x0b+'" y="'+BBg[k]+'" width="'+(x1b-x0b)+'" height="'+(y1g-BBg[k])+'" fill="'+colg.f+'" stroke="'+colg.s+'" stroke-width="0.06" opacity="0.85" style="cursor:pointer" onclick="_tb('+k+')"/>');
-    var lg=ovGoalLaneLab(k,colg);
+    var lg=ovGoalLaneLab(k,colg,sg);
     if(lg) parts.push(lg.replace('__Y__',String((BBg[k]+y1g)/2+0.35)));
   }
   // 前日TB赤セル(4角タブと同一ロジック: 横=レーン帯/縦=隊列3分位をゴール隊形に投影)
@@ -750,21 +753,22 @@ function ovDrawGoal(){
       var v=currentData.tbPrev.cells[db[2]+'|'+fb];
       if(!v||v[0]==null||v[0]>0.5) return;
       var dark=(db[2]==='内');
-      parts.push('<rect x="'+(-GZ[zi+1])+'" y="'+db[0]+'" width="'+(GZ[zi+1]-GZ[zi])+'" height="'+(db[1]-db[0])+'" fill="rgba(214,69,69,'+(dark?'0.42':'0.30')+')" stroke="rgba(214,69,69,'+(dark?'.75':'.55')+')" stroke-width="'+(dark?'0.18':'0.12')+'" pointer-events="none"/>');
-      parts.push('<text x="'+(-(GZ[zi]+GZ[zi+1])/2)+'" y="'+((db[0]+db[1])/2+0.4)+'" text-anchor="middle" font-size="1.0" font-weight="700" fill="rgba(180,45,45,.9)" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">'+v[0].toFixed(2)+'('+v[1]+')</text>');
+      var rx0=Math.min(sg*GZ[zi],sg*GZ[zi+1]);
+      parts.push('<rect x="'+rx0+'" y="'+db[0]+'" width="'+(GZ[zi+1]-GZ[zi])+'" height="'+(db[1]-db[0])+'" fill="rgba(214,69,69,'+(dark?'0.42':'0.30')+')" stroke="rgba(214,69,69,'+(dark?'.75':'.55')+')" stroke-width="'+(dark?'0.18':'0.12')+'" pointer-events="none"/>');
+      parts.push('<text x="'+(sg*(GZ[zi]+GZ[zi+1])/2)+'" y="'+((db[0]+db[1])/2+0.4)+'" text-anchor="middle" font-size="1.0" font-weight="700" fill="rgba(180,45,45,.9)" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">'+v[0].toFixed(2)+'('+v[1]+')</text>');
     });});
   }
-  parts.push('<line x1="'+(-mxS-6)+'" y1="0" x2="4" y2="0" stroke="#8a8778" stroke-width="0.35"/>');
-  parts.push('<line x1="'+(-mxS-6)+'" y1="'+dView+'" x2="4" y2="'+dView+'" stroke="#d5d2c6" stroke-width="0.12"/>');
+  parts.push('<line x1="'+x0b+'" y1="0" x2="'+x1b+'" y2="0" stroke="#8a8778" stroke-width="0.35"/>');
+  parts.push('<line x1="'+x0b+'" y1="'+dView+'" x2="'+x1b+'" y2="'+dView+'" stroke="#d5d2c6" stroke-width="0.12"/>');
   parts.push('<line x1="0" y1="-1.2" x2="0" y2="'+(dView+1.2)+'" stroke="#d8333a" stroke-width="0.3"/>');
   parts.push('<text x="0" y="'+(dView+2.6)+'" text-anchor="middle" font-size="1.4" fill="#d8333a">ゴール</text>');
   for(var k=1;k*LB<=mxS+4;k++){
-    var gx=-k*LB;
+    var gx=sg*k*LB;
     parts.push('<line x1="'+gx+'" y1="0" x2="'+gx+'" y2="'+dView+'" stroke="#c9c6bd" stroke-width="0.06" stroke-dasharray="0.5 0.5"/>');
     if(k%2===0) parts.push('<text x="'+gx+'" y="'+(dView+1.8)+'" text-anchor="middle" font-size="1.0" fill="#a8a598">'+k+'馬身</text>');
   }
   horses.forEach(function(h){
-    var x=-h.gs, y=h.gd, cap=CAP[h.waku]||{f:"#eee",t:"#333",s:"#999"};
+    var x=sg*h.gs, y=h.gd, cap=CAP[h.waku]||{f:"#eee",t:"#333",s:"#999"};
     parts.push('<g class="ovh" data-no="'+h.no+'" style="cursor:grab">'
       +'<ellipse cx="'+x+'" cy="'+y+'" rx="'+(LB/2)+'" ry="'+(HW/2)+'" fill="'+cap.f+'" stroke="'+cap.s+'" stroke-width="0.12"/>'
       +'<circle cx="'+x+'" cy="'+y+'" r="'+(LB/2+0.45)+'" fill="transparent" stroke="none"/>'
@@ -773,7 +777,7 @@ function ovDrawGoal(){
       +'</g>');
   });
   ovsvg.innerHTML=parts.join('');
-  var x0=-mxS-7, x1=11;
+  var x0=(sg===1)?-11:(-mxS-7), x1=(sg===1)?(mxS+7):11;
   ovsvg.setAttribute('viewBox',x0+' '+(-2.5)+' '+(x1-x0)+' '+(dView+6.5));
   ovfull.innerHTML='';
   ovBindDrag();
@@ -1168,7 +1172,8 @@ function ovSvgPt(e){ // getScreenCTM=preserveAspectRatioの余白込み正規変
 ovsvg.addEventListener('pointermove',function(e){
   if(!ovdrag)return; var p=ovSvgPt(e), h=horses.find(function(x){return x.no===ovdrag.no;});
   if(cornerTab===5){   // ゴールタブ: gs/gdのみ更新(ゴール計算には逆流しない)
-    h.gs=Math.max(-2,Math.min(120,-p.x)); h.gd=Math.max(0,Math.min(trackW()-0.5,p.y)); h.gMoved=true;
+    var sgd=(course&&course.mawari==="右")?1:-1;
+    h.gs=Math.max(-2,Math.min(120,sgd*p.x)); h.gd=Math.max(0,Math.min(trackW()-0.5,p.y)); h.gMoved=true;
     ovDrawGoal(); return;
   }
   var sd=ovSD(p.x,p.y); h.s=sd.s; h.d=sd.d;
