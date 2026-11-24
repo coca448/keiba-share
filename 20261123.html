@@ -670,7 +670,7 @@ function ovTabsRender(){
     }
   }
   html+=(cornerTab===5)
-    ?'<span style="font-size:10px;color:#8a8878;margin-left:6px;">縦=残距離(直線'+((course&&course.chokuM)||'?')+'m+4角遅れ)÷想定上がり速度の到達差(実寸)・横=4角レーン+壁ルール(道中で前に追いつき横が重なると1列外へ・⇗=外に逃げた回数)・ドラッグ自由/ゴール計算には影響しない ※序列精度ρ0.18=R順(0.49)が上・着差±4.6馬身(41日実測)。序列はR順で読み、ここは決着の形のスケッチ用</span>'
+    ?'<span style="font-size:10px;color:#8a8878;margin-left:6px;">縦=残距離(直線'+((course&&course.chokuM)||'?')+'m+4角遅れ)÷想定上がり速度の到達差(実寸)・横=4角レーン+壁ルール(道中で前に追いつき横が重なると1列外へ・⇗=持ち出し回数、1回+0.1s≒0.5馬身の仮定ペナルティ=根拠なし仮置き)・ドラッグ自由/ゴール計算には影響しない ※序列精度ρ0.18=R順(0.49)が上・着差±4.6馬身(41日実測)。序列はR順で読み、ここは決着の形のスケッチ用</span>'
     :'<span style="font-size:10px;color:#8a8878;margin-left:6px;">予測信頼度ρ'+CORNER_RHO[cornerTab]
     +(cornerTab!==4?'・閲覧専用(手直し/TB/ゴール計算は4角タブのみ・②③は4角基準)':'')+'</span>';
   // 整合性検証(2026-08-01)実測: 予測の動く率=実測の約0.47倍・個別の動きの予測力ρ+0.09=較正せず性格を明記(coca判断)
@@ -689,8 +689,6 @@ function ensureGoalPos(){
   var sim=horses.filter(function(h){return !h.gMoved&&h.agEff!=null&&h.agEff>20;});
   sim.forEach(function(h){ h._v=600/h.agEff; h._t=(choku+h.s)/h._v; h.gd=(h.d!=null?h.d:2.0); h.gShift=0; });
   if(sim.length){
-    var tmin=Math.min.apply(null,sim.map(function(h){return h._t;}));
-    sim.forEach(function(h){ h.gs=h._v*(h._t-tmin); });
     // 追い抜きイベント(τ順): j(後ろ・速い)がkに追いつく時、横が重なっていればjが外へ
     var ev=[];
     for(var a=0;a<sim.length;a++)for(var b=0;b<sim.length;b++){
@@ -705,6 +703,11 @@ function ensureGoalPos(){
       if(Math.abs(j.gd-k.gd)<1.8){ j.gd=Math.max(j.gd,k.gd)+2.0; j.gShift++;
         if(j.gd>trackW()-0.8) j.gd=trackW()-0.8; }
     });
+    // 壁ペナルティ(2026-11-24・仮定値): 持ち出し1回=+0.1s(≒0.5馬身)。幾何ロスは2cm程度で無視、
+    // 実体は「詰まって待つ+勢い殺し」の代理。実測根拠なしの仮置き(凡例明記)
+    sim.forEach(function(h){ h._t+=0.1*h.gShift; });
+    var tmin=Math.min.apply(null,sim.map(function(h){return h._t;}));
+    sim.forEach(function(h){ h.gs=h._v*(h._t-tmin); });
   }
   // フォールバック(上がり未設定馬・従来式)
   var mn=null;
