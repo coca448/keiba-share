@@ -668,7 +668,7 @@ function ovTabsRender(){
     }
   }
   html+=(cornerTab===5)
-    ?'<span style="font-size:10px;color:#8a8878;margin-left:6px;">縦=予測着差(ゴール計算・0.2s/馬身を実寸化)・横=4角位置の引き継ぎ(直線の横は予測根拠なし・手で描くシナリオ用)・ドラッグ自由/ゴール計算には影響しない</span>'
+    ?'<span style="font-size:10px;color:#8a8878;margin-left:6px;">縦=残距離(直線'+((course&&course.chokuM)||'?')+'m+4角遅れ)÷想定上がり速度の到達差(実寸)・横=4角レーン+壁ルール(道中で前に追いつき横が重なると1列外へ・⇗=外に逃げた回数)・ドラッグ自由/ゴール計算には影響しない</span>'
     :'<span style="font-size:10px;color:#8a8878;margin-left:6px;">予測信頼度ρ'+CORNER_RHO[cornerTab]
     +(cornerTab!==4?'・閲覧専用(手直し/TB/ゴール計算は4角タブのみ・②③は4角基準)':'')+'</span>';
   // 整合性検証(2026-08-01)実測: 予測の動く率=実測の約0.47倍・個別の動きの予測力ρ+0.09=較正せず性格を明記(coca判断)
@@ -677,12 +677,36 @@ function ovTabsRender(){
 }
 // ---- ゴールタブ(2026-11-24): 予測着差の直線盤面 ----
 function ensureGoalPos(){
+  // 物理版(2026-11-24): 残距離L=直線長+4角遅れs、速度v=600m/想定上がり(agEff=ag+競られ+TB)。
+  // 到達t=L/v、gs=勝ち馬ゴール時の残距離(実寸着差)。壁ルール: 道中で前の馬に追いつき横が重なる場合は1列(2m)外へ逃げる。
+  var choku=(course&&course.chokuM)||400;
+  var sim=horses.filter(function(h){return !h.gMoved&&h.agEff!=null&&h.agEff>20;});
+  sim.forEach(function(h){ h._v=600/h.agEff; h._t=(choku+h.s)/h._v; h.gd=(h.d!=null?h.d:2.0); h.gShift=0; });
+  if(sim.length){
+    var tmin=Math.min.apply(null,sim.map(function(h){return h._t;}));
+    sim.forEach(function(h){ h.gs=h._v*(h._t-tmin); });
+    // 追い抜きイベント(τ順): j(後ろ・速い)がkに追いつく時、横が重なっていればjが外へ
+    var ev=[];
+    for(var a=0;a<sim.length;a++)for(var b=0;b<sim.length;b++){
+      var j=sim[a],k=sim[b];
+      if(j===k||j.s<=k.s||j._v<=k._v) continue;        // jは4角で後ろ&速い
+      var tau=(j.s-k.s)/(j._v-k._v);
+      if(tau<j._t) ev.push([tau,j,k]);
+    }
+    ev.sort(function(x,y){return x[0]-y[0];});
+    ev.forEach(function(e){
+      var j=e[1],k=e[2];
+      if(Math.abs(j.gd-k.gd)<1.8){ j.gd=Math.max(j.gd,k.gd)+2.0; j.gShift++;
+        if(j.gd>trackW()-0.8) j.gd=trackW()-0.8; }
+    });
+  }
+  // フォールバック(上がり未設定馬・従来式)
   var mn=null;
   horses.forEach(function(h){ if(h.goal!=null&&(mn==null||h.goal<mn)) mn=h.goal; });
   horses.forEach(function(h){
-    if(h.gMoved) return;
-    h.gs=(h.goal!=null&&mn!=null)?(h.goal-mn)/0.2*LB : h.s;   // 着差秒→馬身→m(0.2s/馬身換算)
-    h.gd=(h.d!=null?h.d:2.0);
+    if(h.gMoved||sim.indexOf(h)>=0) return;
+    h.gs=(h.goal!=null&&mn!=null)?(h.goal-mn)/0.2*LB : h.s;
+    h.gd=(h.d!=null?h.d:2.0); h.gShift=0;
   });
   var placed=[];
   horses.slice().sort(function(a,b){return a.gs-b.gs;}).forEach(function(h){
@@ -716,6 +740,7 @@ function ovDrawGoal(){
       +'<ellipse cx="'+x+'" cy="'+y+'" rx="'+(LB/2)+'" ry="'+(HW/2)+'" fill="'+cap.f+'" stroke="'+cap.s+'" stroke-width="0.12"/>'
       +'<circle cx="'+x+'" cy="'+y+'" r="'+(LB/2+0.45)+'" fill="transparent" stroke="none"/>'
       +'<text x="'+x+'" y="'+(y-0.75)+'" text-anchor="middle" font-size="1.25" font-weight="600" fill="'+cap.s+'" stroke="#fff" stroke-width="0.06" paint-order="stroke" pointer-events="none">'+h.no+'</text>'
+      +(h.gShift?'<text x="'+(x+1.1)+'" y="'+(y+1.3)+'" text-anchor="middle" font-size="0.85" font-weight="700" fill="#b07a12" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">⇗'+(h.gShift>1?h.gShift:'')+'</text>':'')
       +'</g>');
   });
   ovsvg.innerHTML=parts.join('');
