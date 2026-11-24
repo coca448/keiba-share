@@ -659,8 +659,8 @@ function ovTabsRender(){
   // ゴールタブ(2026-11-24): 予測着差(ゴール計算0.2s/馬身)の直線盤面。ドラッグ自由・3列ルールなし・計算には逆流しない
   var gOn=(cornerTab===5);
   html+='<button onclick="cornerTab=5;ovDraw();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(gOn?'#1a1a18':'#cfccc2')+';background:'+(gOn?'#1a1a18':'#fff')+';color:'+(gOn?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;">ゴール</button>';
-  // 前日TBは芝限定・赤(消し)セルのみ表示(2026-11-24 バックテスト採用: 芝=赤×R7+0.84が唯一堅い/ダ=持ち越し逆行のため非表示)
-  if(cornerTab===4&&currentData&&currentData.tbPrev&&currentData.shida==='芝'){
+  // 前日TBは芝限定・赤(消し)セルのみ表示(2026-11-24 バックテスト採用: 芝=赤×R7+0.84が唯一堅い/ダ=持ち越し逆行のため非表示)。4角とゴールタブで有効
+  if((cornerTab===4||cornerTab===5)&&currentData&&currentData.tbPrev&&currentData.shida==='芝'){
     var tp=currentData.tbPrev;
     html+='<button onclick="tbPrevToggle();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(tbPrevOn?'#1a1a18':'#cfccc2')+';background:'+(tbPrevOn?'#1a1a18':'#fff')+';color:'+(tbPrevOn?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;">前日TB</button>';
     if(tbPrevOn){
@@ -676,6 +676,9 @@ function ovTabsRender(){
   el.innerHTML=html;
 }
 // ---- ゴールタブ(2026-11-24): 予測着差の直線盤面 ----
+function ovGoalLaneLab(k,colg){
+  return '<text x="5.2" y="__Y__" text-anchor="start" font-size="0.85" fill="'+colg.s+'" pointer-events="none">'+LANES[k]+(colg.t!=='-'?colg.t:'')+'</text>';
+}
 function ensureGoalPos(){
   // 物理版(2026-11-24): 残距離L=直線長+4角遅れs、速度v=600m/想定上がり(agEff=ag+競られ+TB)。
   // 到達t=L/v、gs=勝ち馬ゴール時の残距離(実寸着差)。壁ルール: 道中で前の馬に追いつき横が重なる場合は1列(2m)外へ逃げる。
@@ -725,6 +728,32 @@ function ovDrawGoal(){
   var mxD=Math.max.apply(null,horses.map(function(h){return h.gd;}));
   var dView=Math.min(W,Math.max(9.5,mxD+2.5));
   var parts=[];
+  var x0b=-mxS-6, x1b=4;
+  // 走行帯(4角タブと同一: 最内/内/中/外/大外・タップで伸/普/止TB→ゴール計算に反映)
+  var BBg=[0,2,4,6,8,W];
+  for(var k=0;k<5;k++){
+    if(BBg[k]>=dView) break;
+    var colg=bc(bandTB[k]), y1g=Math.min(BBg[k+1],dView);
+    parts.push('<rect x="'+x0b+'" y="'+BBg[k]+'" width="'+(x1b-x0b)+'" height="'+(y1g-BBg[k])+'" fill="'+colg.f+'" stroke="'+colg.s+'" stroke-width="0.06" opacity="0.85" style="cursor:pointer" onclick="_tb('+k+')"/>');
+    var lg=ovGoalLaneLab(k,colg);
+    if(lg) parts.push(lg.replace('__Y__',String((BBg[k]+y1g)/2+0.35)));
+  }
+  // 前日TB赤セル(4角タブと同一ロジック: 横=レーン帯/縦=隊列3分位をゴール隊形に投影)
+  if(tbPrevOn&&currentData&&currentData.tbPrev&&currentData.shida==='芝'&&currentData.tbPrev.cells){
+    var gsrt=horses.map(function(h){return h.gs;}).sort(function(a,b){return a-b;});
+    var gn=gsrt.length, gi1=Math.ceil(gn/3), gi2=Math.ceil(2*gn/3);
+    var gb1=(gi1<gn)?(gsrt[gi1-1]+gsrt[gi1])/2:gsrt[gn-1]+LB/2;
+    var gb2=(gi2<gn)?(gsrt[gi2-1]+gsrt[gi2])/2:gsrt[gn-1]+LB/2;
+    var GZ=[gsrt[0]-LB,gb1,gb2,gsrt[gn-1]+LB], GFB=['前','中団','後'];
+    var GDB=[[0,2,'内'],[2,4,'中'],[4,dView,'外']];
+    GDB.forEach(function(db){ GFB.forEach(function(fb,zi){
+      var v=currentData.tbPrev.cells[db[2]+'|'+fb];
+      if(!v||v[0]==null||v[0]>0.5) return;
+      var dark=(db[2]==='内');
+      parts.push('<rect x="'+(-GZ[zi+1])+'" y="'+db[0]+'" width="'+(GZ[zi+1]-GZ[zi])+'" height="'+(db[1]-db[0])+'" fill="rgba(214,69,69,'+(dark?'0.42':'0.30')+')" stroke="rgba(214,69,69,'+(dark?'.75':'.55')+')" stroke-width="'+(dark?'0.18':'0.12')+'" pointer-events="none"/>');
+      parts.push('<text x="'+(-(GZ[zi]+GZ[zi+1])/2)+'" y="'+((db[0]+db[1])/2+0.4)+'" text-anchor="middle" font-size="1.0" font-weight="700" fill="rgba(180,45,45,.9)" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">'+v[0].toFixed(2)+'('+v[1]+')</text>');
+    });});
+  }
   parts.push('<line x1="'+(-mxS-6)+'" y1="0" x2="4" y2="0" stroke="#8a8778" stroke-width="0.35"/>');
   parts.push('<line x1="'+(-mxS-6)+'" y1="'+dView+'" x2="4" y2="'+dView+'" stroke="#d5d2c6" stroke-width="0.12"/>');
   parts.push('<line x1="0" y1="-1.2" x2="0" y2="'+(dView+1.2)+'" stroke="#d8333a" stroke-width="0.3"/>');
@@ -744,7 +773,7 @@ function ovDrawGoal(){
       +'</g>');
   });
   ovsvg.innerHTML=parts.join('');
-  var x0=-mxS-7, x1=5;
+  var x0=-mxS-7, x1=11;
   ovsvg.setAttribute('viewBox',x0+' '+(-2.5)+' '+(x1-x0)+' '+(dView+6.5));
   ovfull.innerHTML='';
   ovBindDrag();
