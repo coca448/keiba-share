@@ -148,9 +148,13 @@ var LANES=["最内","内","中","外","大外"], bandTB=[0,0,0,0,0], TBVAL={"-1"
 var BASE=80.0, paceAdj=0, V4USE=16.5;              // 位置換算=物理式 s[m]÷v_4角[m/s](③と同一実装, 2026-07-15統一(b))
 var POS_SEC_PER_M=0.2/2.4;                         // 【引退済み】旧0.2s/馬身。旧day/旧保存データのpos4秒→s[m]逆変換のみに残置
 var LB=2.4, PACK_LEN=15*LB, HW=0.6, D0={"内":1.0,"中":2.0,"外":3.0};
-// 前日TB(2026-11-23): 前日実測の盤面レーン×前後9セルO/E(極端セルのみ塗り)。参考表示・予測不使用
-var tbPrevOn=false; try{tbPrevOn=localStorage.getItem('kessei:tbPrevOn')==='1';}catch(e){}
-function tbPrevToggle(){ tbPrevOn=!tbPrevOn; try{localStorage.setItem('kessei:tbPrevOn',tbPrevOn?'1':'0');}catch(e){} ovDraw(); }
+// 前日TB(2026-11-23): 0=off 1=赤表示
+var tbPrevMode=0; try{tbPrevMode=parseInt(localStorage.getItem('kessei:tbPrevMode')||((localStorage.getItem('kessei:tbPrevOn')==='1')?'1':'0'),10)?1:0;}catch(e){}
+function tbPrevToggle(){ tbPrevMode=(tbPrevMode+1)%2; try{localStorage.setItem('kessei:tbPrevMode',String(tbPrevMode));}catch(e){} ovDraw(); }
+// 止回避(2026-11-24): ゴールタブ専用トグル。4角で手動TB「止」帯にいる馬は直線で最寄りの非・止帯へ外出し
+// (横断1列=⇗+0.1s、代わりに止の+0.3sは免除=死に地帯滞在→脱出コストへの置換)
+var goalAvoid=false; try{goalAvoid=localStorage.getItem('kessei:goalAvoid')==='1';}catch(e){}
+function goalAvoidToggle(){ goalAvoid=!goalAvoid; try{localStorage.setItem('kessei:goalAvoid',goalAvoid?'1':'0');}catch(e){} ovDraw(); }
 var CONTEST_K=0.5;
 // コース実寸(JRA公式 jra.go.jp/facilities/race/*/course/ 採録=data/course/track_master.csv, 検算5/5)
 // fb:1 = 芝内外の別が不明な場合の主コースfallback(1周最小)
@@ -664,10 +668,14 @@ function ovTabsRender(){
   // 前日TBは芝限定・赤(消し)セルのみ表示(2026-11-24 バックテスト採用: 芝=赤×R7+0.84が唯一堅い/ダ=持ち越し逆行のため非表示)。4角とゴールタブで有効
   if((cornerTab===4||cornerTab===5)&&currentData&&currentData.tbPrev&&currentData.shida==='芝'){
     var tp=currentData.tbPrev;
-    html+='<button onclick="tbPrevToggle();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(tbPrevOn?'#1a1a18':'#cfccc2')+';background:'+(tbPrevOn?'#1a1a18':'#fff')+';color:'+(tbPrevOn?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;">前日TB</button>';
-    if(tbPrevOn){
+    var tbOn=tbPrevMode>=1;
+    html+='<button onclick="tbPrevToggle();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(tbOn?'#1a1a18':'#cfccc2')+';background:'+(tbOn?'#1a1a18':'#fff')+';color:'+(tbOn?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;">前日TB</button>';
+    if(tbOn){
       html+='<span style="font-size:10px;color:#5f5e5a;margin-right:6px;">前日TB('+tp.src.slice(4,6)+'/'+tp.src.slice(6,8)+(tp.course?'・'+tp.course+'コース':'')+'・'+tp.nR+'R): <span style="color:#b03535">赤=前日複勝O/E≤0.5</span> ※用途=10人気以下の紐切り専用(赤穴0.75/非赤穴1.24・4ヶ月実測)。9人気以内には無情報。濃い赤=内レーン(脱出不能・内→外は6%)で最も強い消し</span>';
     }
+  }
+  if(cornerTab===5){
+    html+='<button onclick="goalAvoidToggle();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(goalAvoid?'#1a1a18':'#cfccc2')+';background:'+(goalAvoid?'#1a1a18':'#fff')+';color:'+(goalAvoid?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;" title="4角タブで帯を止にした場合、その帯の馬は直線で最寄りの非・止帯へ外出し(1列⇗+0.1s、止+0.3sは免除)">止回避'+(goalAvoid?'✓':'')+'</button>';
   }
   html+=(cornerTab===5)
     ?'<span style="font-size:10px;color:#8a8878;margin-left:6px;">縦=残距離(直線'+((course&&course.chokuM)||'?')+'m+4角遅れ)÷想定上がり速度の到達差(実寸)・横=4角レーン+壁ルール(道中で前に追いつき横が重なると1列外へ・⇗=持ち出し回数、1回+0.1s≒0.5馬身の仮定ペナルティ=根拠なし仮置き)・ドラッグ自由/ゴール計算には影響しない ※序列精度ρ0.18=R順(0.49)が上・着差±4.6馬身(41日実測)。序列はR順で読み、ここは決着の形のスケッチ用</span>'
@@ -687,7 +695,19 @@ function ensureGoalPos(){
   // 到達t=L/v、gs=勝ち馬ゴール時の残距離(実寸着差)。壁ルール: 道中で前の馬に追いつき横が重なる場合は1列(2m)外へ逃げる。
   var choku=(course&&course.chokuM)||400;
   var sim=horses.filter(function(h){return !h.gMoved&&h.agEff!=null&&h.agEff>20;});
-  sim.forEach(function(h){ h._v=600/h.agEff; h._t=(choku+h.s)/h._v; h.gd=(h.d!=null?h.d:2.0); h.gShift=0; });
+  sim.forEach(function(h){
+    h.gd=(h.d!=null?h.d:2.0); h.gShift=0;
+    var agUse=h.agEff;
+    if(goalAvoid){                        // 止回避: 4角で止帯→最寄りの非・止帯へ外出し
+      var li=laneIdx(h.d);
+      if(bandTB[li]===-1){
+        var tgt=null;
+        for(var k2=li+1;k2<=4;k2++){ if(bandTB[k2]!==-1){tgt=k2;break;} }
+        if(tgt!=null){ h.gd=tgt*BAND_W+1.0; h.gShift+=(tgt-li); agUse=h.agEff-(h.tb||0); }  // 止+0.3免除→⇗コストへ置換
+      }
+    }
+    h._v=600/agUse; h._t=(choku+h.s)/h._v;
+  });
   if(sim.length){
     // 追い抜きイベント(τ順): j(後ろ・速い)がkに追いつく時、横が重なっていればjが外へ
     var ev=[];
@@ -747,7 +767,7 @@ function ovDrawGoal(){
     if(lg) parts.push(lg.replace('__Y__',String((BBg[k]+y1g)/2+0.35)));
   }
   // 前日TB赤セル(4角タブと同一ロジック: 横=レーン帯/縦=隊列3分位をゴール隊形に投影)
-  if(tbPrevOn&&currentData&&currentData.tbPrev&&currentData.shida==='芝'&&currentData.tbPrev.cells){
+  if(tbPrevMode>=1&&currentData&&currentData.tbPrev&&currentData.shida==='芝'&&currentData.tbPrev.cells){
     var gsrt=horses.map(function(h){return h.gs;}).sort(function(a,b){return a-b;});
     var gn=gsrt.length, gi1=Math.ceil(gn/3), gi2=Math.ceil(2*gn/3);
     var gb1=(gi1<gn)?(gsrt[gi1-1]+gsrt[gi1])/2:gsrt[gn-1]+LB/2;
@@ -817,7 +837,7 @@ function ovDraw(){
   parts.push('<polyline points="'+ovPolyLine(sMin,sMax,0)+'" fill="none" stroke="#8a8778" stroke-width="0.35" pointer-events="none"/>');
   parts.push('<polyline points="'+ovPolyLine(sMin,sMax,W)+'" fill="none" stroke="#d5d2c6" stroke-width="0.12" pointer-events="none"/>');
   // 前日TB 9セル(2026-11-23/24改): 芝限定・赤(前日O/E≤0.5)のみ塗り。4角タブ・トグルon時のみ、生存ゾーンと排他
-  var tbp=(cornerTab===4&&tbPrevOn&&currentData&&currentData.shida==='芝')?currentData.tbPrev:null;
+  var tbp=(cornerTab===4&&tbPrevMode>=1&&currentData&&currentData.shida==='芝')?currentData.tbPrev:null;
   if(tbp&&tbp.cells){
     var ts=arr.map(function(h){return h.s;}).sort(function(a,b){return a-b;});
     var tn=ts.length, ti1=Math.ceil(tn/3), ti2=Math.ceil(2*tn/3);
