@@ -152,7 +152,7 @@ var LB=2.4, PACK_LEN=15*LB, HW=0.6, D0={"内":1.0,"中":2.0,"外":3.0};
 var tbPrevMode=0; try{tbPrevMode=parseInt(localStorage.getItem('kessei:tbPrevMode')||((localStorage.getItem('kessei:tbPrevOn')==='1')?'1':'0'),10)?1:0;}catch(e){}
 function tbPrevToggle(){ tbPrevMode=(tbPrevMode+1)%2; try{localStorage.setItem('kessei:tbPrevMode',String(tbPrevMode));}catch(e){} ovDraw(); }
 // 止回避(2026-11-24): ゴールタブ専用トグル。4角で手動TB「止」帯にいる馬は直線で最寄りの非・止帯へ外出し
-// (横断1列=⇗+0.1s、代わりに止の+0.3sは免除=死に地帯滞在→脱出コストへの置換)
+// (⇗の時間ペナなし=2026-11-25実測で根拠なし、止の+0.3sは免除)
 var goalAvoid=false; try{goalAvoid=localStorage.getItem('kessei:goalAvoid')==='1';}catch(e){}
 function goalAvoidToggle(){ goalAvoid=!goalAvoid; try{localStorage.setItem('kessei:goalAvoid',goalAvoid?'1':'0');}catch(e){} ovDraw(); }
 var CONTEST_K=0.5;
@@ -690,10 +690,10 @@ function ovTabsRender(){
     }
   }
   if(cornerTab===5){
-    html+='<button onclick="goalAvoidToggle();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(goalAvoid?'#1a1a18':'#cfccc2')+';background:'+(goalAvoid?'#1a1a18':'#fff')+';color:'+(goalAvoid?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;" title="4角タブで帯を止にした場合、その帯の馬は直線で最寄りの非・止帯へ外出し(1列⇗+0.1s、止+0.3sは免除)">止回避'+(goalAvoid?'✓':'')+'</button>';
+    html+='<button onclick="goalAvoidToggle();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(goalAvoid?'#1a1a18':'#cfccc2')+';background:'+(goalAvoid?'#1a1a18':'#fff')+';color:'+(goalAvoid?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;" title="4角タブで帯を止にした場合、その帯の馬は直線で最寄りの非・止帯へ外出し(止+0.3sは免除・⇗の時間ペナなし)">止回避'+(goalAvoid?'✓':'')+'</button>';
   }
   html+=(cornerTab===5)
-    ?'<span style="font-size:10px;color:#8a8878;margin-left:6px;">縦=残距離(直線'+((course&&course.chokuM)||'?')+'m+4角遅れ)÷想定上がり速度の到達差(実寸)・横=4角レーン+壁ルール(道中で前に追いつき横が重なると1列外へ・⇗=持ち出し回数、1回+0.1s≒0.5馬身の仮定ペナルティ=根拠なし仮置き)・ドラッグ自由/ゴール計算には影響しない ※較正済(γ3.4=上がり分散実測比・β4×垂れ差し形質r0.69): 序列ρ芝0.22/ダ0.25・前バイアス+0.28→+0.08/+0.05(41日実測)。序列はR順(0.49)が上・ここは決着の形のスケッチ用</span>'
+    ?'<span style="font-size:10px;color:#8a8878;margin-left:6px;">縦=残距離(直線'+((course&&course.chokuM)||'?')+'m+4角遅れ)÷想定上がり速度の到達差(実寸)・横=4角レーン+壁ルール(道中で前に追いつき横が重なると1列外へ・⇗=持ち出し回数・時間ペナなし=2026-11-25実測で⇗馬はO/E1.00-1.02と人気比で沈まず市場織り込み済)・ドラッグ自由/ゴール計算には影響しない ※較正済(γ3.4=上がり分散実測比・β4×垂れ差し形質r0.69): 序列ρ芝0.22/ダ0.25・前バイアス+0.28→+0.08/+0.05(41日実測)。序列はR順(0.49)が上・ここは決着の形のスケッチ用</span>'
     :'<span style="font-size:10px;color:#8a8878;margin-left:6px;">予測信頼度ρ'+CORNER_RHO[cornerTab]
     +(cornerTab!==4?'・閲覧専用(手直し/TB/ゴール計算は4角タブのみ・②③は4角基準)':'')+'</span>';
   // 整合性検証(2026-08-01)実測: 予測の動く率=実測の約0.47倍・個別の動きの予測力ρ+0.09=較正せず性格を明記(coca判断)
@@ -709,7 +709,7 @@ function ensureGoalPos(){
   // 物理版(2026-11-24): 残距離L=直線長+4角遅れs、速度v=600m/想定上がり(agEff=ag+競られ+TB)。
   // 到達t=L/v、gs=勝ち馬ゴール時の残距離(実寸着差)。壁ルール: 道中で前の馬に追いつき横が重なる場合は1列(2m)外へ逃げる。
   // 2026-11-25統一: 縦の土台=表のゴール計算(h.goal, γ3.4+β4keep較正済み)と同一ソース。
-  // ゴールタブ側はその上に 止回避(止+0.3免除→脱出コスト) と 壁ペナルティ(⇗+0.1s) のシナリオ効果だけを足す。
+  // ゴールタブ側はその上に 止回避(止+0.3免除) と 壁回避の横移動(⇗表示のみ・時間ペナなし) を足す。
   var sim=horses.filter(function(h){return !h.gMoved&&h.goal!=null&&h.gv!=null;});
   sim.forEach(function(h){
     h.gd=(h.d!=null?h.d:2.0); h.gShift=0;
@@ -738,9 +738,8 @@ function ensureGoalPos(){
       if(Math.abs(j.gd-k.gd)<1.8){ j.gd=Math.max(j.gd,k.gd)+2.0; j.gShift++;
         if(j.gd>trackW()-0.8) j.gd=trackW()-0.8; }
     });
-    // 壁ペナルティ(2026-11-24・仮定値): 持ち出し1回=+0.1s(≒0.5馬身)。幾何ロスは2cm程度で無視、
-    // 実体は「詰まって待つ+勢い殺し」の代理。実測根拠なしの仮置き(凡例明記)
-    sim.forEach(function(h){ h._t+=0.1*h.gShift; });
+    // 壁の時間ペナは撤去(2026-11-25実測: ⇗該当=追いつき候補のほぼ全馬で、O/E1.00-1.02=人気比で沈まず。
+    // 市場織り込み済→追加課税の根拠なし)。横へ逃げる動きと⇗表示のみ残す。
     var tmin=Math.min.apply(null,sim.map(function(h){return h._t;}));
     sim.forEach(function(h){ h.gs=h._v*(h._t-tmin); });
   }
