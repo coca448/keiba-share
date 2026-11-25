@@ -682,7 +682,7 @@ function ovTabsRender(){
     :'<span style="font-size:10px;color:#8a8878;margin-left:6px;">予測信頼度ρ'+CORNER_RHO[cornerTab]
     +(cornerTab!==4?'・閲覧専用(手直し/TB/ゴール計算は4角タブのみ・②③は4角基準)':'')+'</span>';
   // 整合性検証(2026-08-01)実測: 予測の動く率=実測の約0.47倍・個別の動きの予測力ρ+0.09=較正せず性格を明記(coca判断)
-  html+='<div style="font-size:10px;color:#a8a598;margin-top:1px;">※コマ間の動きは型の平均像です(実際のレースはこの約2倍動きます・個別の動きは⤴/動マークを参考に)・<span style="color:#b8860b">☆n=タイム指数n位(1-3位のみ・前日TB赤ゾーン内は消灯)</span>。人気薄の☆は紐妙味(芝実測O/E2.15)、人気はオッズ板で各自確認</div>';
+  html+='<div style="font-size:10px;color:#a8a598;margin-top:1px;">※コマ間の動きは型の平均像です(実際のレースはこの約2倍動きます・個別の動きは⤴/動マークを参考に)</div>';
   el.innerHTML=html;
 }
 // ---- ゴールタブ(2026-11-24): 予測着差の直線盤面 ----
@@ -887,18 +887,7 @@ function ovDraw(){
     var pk=ovXY(sMax+4.5,(k2<4?BB[k2]+1.0:Math.min(BB[4]+1.5,(BB[4]+dView)/2))), ck=bc(bandTB[k2]);
     parts.push('<text x="'+pk.x+'" y="'+(pk.y+0.35)+'" text-anchor="middle" font-size="0.85" fill="'+ck.s+'" pointer-events="none">'+LANES[k2]+(ck.t!=='-'?ck.t:'')+'</text>');
   }
-  // ☆マーク(2026-11-24採用): タイム指数(指)レース内1-3位に☆n。前日TB赤セル内にいる間は消灯(非赤条件)。
-  // 根拠: 芝4ヶ月実測で「指1-3×非赤×10人気以下」複勝O/E2.15(人気は変動するためマークは指×位置のみ、人気判断はcoca)
-  var _tbCells=(currentData&&currentData.tbPrev&&currentData.shida==='芝')?currentData.tbPrev.cells:null;
-  var _starRed=function(h){
-    if(!_tbCells||cornerTab!==4) return false;
-    var ss2=arr.map(function(x){return x.s;}).sort(function(a,b){return a-b;});
-    var n2=ss2.length, b1=ss2[Math.min(n2-1,Math.ceil(n2/3)-1)], b2=ss2[Math.min(n2-1,Math.ceil(2*n2/3)-1)];
-    var fb=h.s<=b1?'前':(h.s<=b2?'中団':'後');
-    var lane=h.d<2?'内':(h.d<4?'中':'外');
-    var v=_tbCells[lane+'|'+fb];
-    return !!(v&&v[0]!=null&&v[0]<=0.5&&v[1]>=6);
-  };
+  // (☆マークは2026-11-25削除: レビューでO=7的中/CI[0.86,4.42]の探索結果と判明しcoca判断で撤去)
   ghosts.forEach(function(gh){
     var p=ovXY(gh.s,gh.d);
     parts.push('<g pointer-events="none" opacity="0.55">'
@@ -914,9 +903,6 @@ function ovDraw(){
       +'<text x="'+p.x+'" y="'+(p.y-0.75)+'" text-anchor="middle" font-size="1.25" font-weight="600" fill="'+cap.s+'" stroke="#fff" stroke-width="0.06" paint-order="stroke" pointer-events="none">'+h.no+'</text>'
       +(h.mkClass?'<text x="'+(p.x+1.05)+'" y="'+(p.y-1.05)+'" text-anchor="middle" font-size="0.95" font-weight="700" fill="'+(h.mkClass==='常習'?'#b45309':'#d9a75f')+'" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">⤴</text>':'')
       +(h.kdClass==='高'?'<text x="'+(p.x-1.05)+'" y="'+(p.y-1.05)+'" text-anchor="middle" font-size="0.8" font-weight="700" fill="#1f5288" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">動</text>':'')
-      +(function(){var si=(h.rKeys||{})['指数'];
-        if(!si||si>3||_starRed(h)) return '';
-        return '<text x="'+(p.x+1.15)+'" y="'+(p.y+1.45)+'" text-anchor="middle" font-size="1.0" font-weight="700" fill="#b8860b" stroke="#fff" stroke-width="0.06" paint-order="stroke" pointer-events="none">☆'+si+'</text>';})()
       +'</g>');
   });
   var pb1=ovXY(sMin+1,dView+3.4), pb2=ovXY(sMin+6,dView+3.4);
