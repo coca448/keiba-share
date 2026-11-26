@@ -690,7 +690,7 @@ function ovTabsRender(){
     if(tbOn&&tp){
       html+='<span style="font-size:10px;color:#5f5e5a;margin-right:6px;">前日TB('+tp.src.slice(4,6)+'/'+tp.src.slice(6,8)+(tp.course?'・'+tp.course+'コース':'')+'・'+tp.nR+'R): <span style="color:#b03535">赤=前日O/E≤0.5∧コース平時比−0.15の二重確認(2026-11-26改定)</span>・<span style="color:#2e7d32">緑=平時比+0.10=今日だけ効いてる場所</span> ※用途=10人気以下専用(赤穴0.52=消し/緑穴1.95=紐に残す・41日実測)。9人気以内には無情報。濃い赤=内レーン(脱出不能)。前向き検証中=snapshotでV0/二重/緑を並記ログ</span>';
     }else if(tbOn){
-      html+='<span style="font-size:10px;color:#5f5e5a;margin-right:6px;">前日TB(馬マーク): <span style="color:#b03535">▼=赤セル該当=10人気以下なら消し候補(O/E0.52)</span>・<span style="color:#2e7d32">▲=緑セル該当=紐に残す候補(穴O/E1.95)</span> ※該当判定は従来盤面の席基準(検証と同一)・この絵の駒位置はAI並びなので帯は非表示</span>';
+      html+='<span style="font-size:10px;color:#5f5e5a;margin-right:6px;">前日TB(馬マーク・41日実測): <span style="color:#2e7d32"><b>▲×10人気以下=複勝候補(ROI115〜123%・1発依存なし)</b>・単=緑×1〜3人気(単勝110%の観察札)</span>・<span style="color:#b03535">▼×10人気以下=紐から消す(O/E0.52/ROI32%)</span> ※4〜9人気は無情報(薄表示)・該当判定は従来盤面の席基準・金額ルール化は前向き検証後</span>';
     }
   }
   if(cornerTab===5){
@@ -921,7 +921,17 @@ function ovDraw(){
       +'<text x="'+p.x+'" y="'+(p.y-0.75)+'" text-anchor="middle" font-size="1.25" font-weight="600" fill="'+cap.s+'" stroke="#fff" stroke-width="0.06" paint-order="stroke" pointer-events="none">'+h.no+'</text>'
       +(h.mkClass?'<text x="'+(p.x+1.05)+'" y="'+(p.y-1.05)+'" text-anchor="middle" font-size="0.95" font-weight="700" fill="'+(h.mkClass==='常習'?'#b45309':'#d9a75f')+'" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">⤴</text>':'')
       +(h.kdClass==='高'?'<text x="'+(p.x-1.05)+'" y="'+(p.y-1.05)+'" text-anchor="middle" font-size="0.8" font-weight="700" fill="#1f5288" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">動</text>':'')
-      +((cornerTab===4&&tbPrevMode>=1&&h.tbMark)?'<text x="'+p.x+'" y="'+(p.y+1.8)+'" text-anchor="middle" font-size="0.95" font-weight="700" fill="'+(h.tbMark==='r'?'#b03535':'#2e7d32')+'" stroke="#fff" stroke-width="0.06" paint-order="stroke" pointer-events="none">'+(h.tbMark==='r'?'▼':'▲')+'</text>':'')
+      +((cornerTab===4&&tbPrevMode>=1&&h.tbMark)?(function(){
+          // 人気帯で使い分け(2026-11-26実測): 実効域=10人気以下(緑複勝115-123%/赤0.52)、
+          // 緑×1-3人気=単勝観察札(110%)、4-9人気=無情報→薄表示
+          var hot=(h.pop!=null&&h.pop>=10);
+          var tan=(h.tbMark==='g'&&h.pop!=null&&h.pop<=3);
+          var col=(h.tbMark==='r'?'#b03535':'#2e7d32');
+          var op=hot?'1':(tan?'0.95':'0.35');
+          var fs=hot?'1.15':'0.85';
+          var glyph=(h.tbMark==='r'?'▼':(tan?'単':'▲'));
+          return '<text x="'+p.x+'" y="'+(p.y+1.8)+'" text-anchor="middle" font-size="'+fs+'" font-weight="700" fill="'+col+'" opacity="'+op+'" stroke="#fff" stroke-width="0.06" paint-order="stroke" pointer-events="none">'+glyph+'</text>';
+        })():'')
       +'</g>');
   });
   var pb1=ovXY(sMin+1,dView+3.4), pb2=ovXY(sMin+6,dView+3.4);
