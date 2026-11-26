@@ -155,8 +155,6 @@ function tbPrevToggle(){ tbPrevMode=(tbPrevMode+1)%2; try{localStorage.setItem('
 // (⇗の時間ペナなし=2026-11-25実測で根拠なし、止の+0.3sは免除)
 var goalAvoid=false; try{goalAvoid=localStorage.getItem('kessei:goalAvoid')==='1';}catch(e){}
 function goalAvoidToggle(){ goalAvoid=!goalAvoid; try{localStorage.setItem('kessei:goalAvoid',goalAvoid?'1':'0');}catch(e){} ovDraw(); }
-var aiRankMode=true; try{aiRankMode=localStorage.getItem('kessei:aiRank')!=='0';}catch(e){}
-function aiRankToggle(){ aiRankMode=!aiRankMode; try{localStorage.setItem('kessei:aiRank',aiRankMode?'1':'0');}catch(e){} ovDraw(); }
 var CONTEST_K=0.5;
 // コース実寸(JRA公式 jra.go.jp/facilities/race/*/course/ 採録=data/course/track_master.csv, 検算5/5)
 // fb:1 = 芝内外の別が不明な場合の主コースfallback(1周最小)
@@ -695,9 +693,6 @@ function ovTabsRender(){
   if(cornerTab===5){
     html+='<button onclick="goalAvoidToggle();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(goalAvoid?'#1a1a18':'#cfccc2')+';background:'+(goalAvoid?'#1a1a18':'#fff')+';color:'+(goalAvoid?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;" title="4角タブで帯を止にした場合、その帯の馬は直線で最寄りの非・止帯へ外出し(止+0.3sは免除・⇗の時間ペナなし)">止回避'+(goalAvoid?'✓':'')+'</button>';
   }
-  if(cornerTab===4&&horses.some(function(h){return h.aiRank!=null&&h.aiSrc==='ai';})){
-    html+='<button onclick="aiRankToggle();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(aiRankMode?'#1f5288':'#cfccc2')+';background:'+(aiRankMode?'#1f5288':'#fff')+';color:'+(aiRankMode?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;" title="AI4角並び(pos_v1: 位置形質×騎手×速度×PCIのLGBM)。履歴2走以上の馬のみ数字表示。実測(配備等価・新馬除外41日): 並びρ 盤面芝0.43/ダ0.48→AI込み0.45/0.53。盤面の絵と赤帯はtaikeiのまま=この数字は参考序列">AI並び'+(aiRankMode?'✓':'')+'</button>';
-  }
   html+=(cornerTab===5)
     ?'<span style="font-size:10px;color:#8a8878;margin-left:6px;">縦=残距離(直線'+((course&&course.chokuM)||'?')+'m+4角遅れ)÷想定上がり速度の到達差(実寸)・横=4角レーン+壁ルール(道中で前に追いつき横が重なると1列外へ・⇗=持ち出し回数・時間ペナなし=2026-11-25実測で⇗馬はO/E1.00-1.02と人気比で沈まず市場織り込み済)・ドラッグ自由/ゴール計算には影響しない ※較正済(γ面別3.0/2.7=V2上がり分散比・β2×垂れ差し形質): 序列ρ芝0.282/ダ0.345(41日)。<b>注意: 前1/3は絵より甘い構造バイアス(芝約2.5番手/ダ約2番手分)=前の馬は割り引いて読む</b>。序列はR順(0.49)が上・ここは決着の形のスケッチ用</span>'
     :'<span style="font-size:10px;color:#8a8878;margin-left:6px;">予測信頼度ρ'+CORNER_RHO[cornerTab]
@@ -923,7 +918,6 @@ function ovDraw(){
       +'<text x="'+p.x+'" y="'+(p.y-0.75)+'" text-anchor="middle" font-size="1.25" font-weight="600" fill="'+cap.s+'" stroke="#fff" stroke-width="0.06" paint-order="stroke" pointer-events="none">'+h.no+'</text>'
       +(h.mkClass?'<text x="'+(p.x+1.05)+'" y="'+(p.y-1.05)+'" text-anchor="middle" font-size="0.95" font-weight="700" fill="'+(h.mkClass==='常習'?'#b45309':'#d9a75f')+'" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">⤴</text>':'')
       +(h.kdClass==='高'?'<text x="'+(p.x-1.05)+'" y="'+(p.y-1.05)+'" text-anchor="middle" font-size="0.8" font-weight="700" fill="#1f5288" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">動</text>':'')
-      +((cornerTab===4&&aiRankMode&&h.aiRank!=null&&h.aiSrc==='ai')?'<text x="'+p.x+'" y="'+(p.y+1.75)+'" text-anchor="middle" font-size="0.9" font-weight="700" fill="#1f5288" stroke="#fff" stroke-width="0.06" paint-order="stroke" pointer-events="none">'+h.aiRank+'</text>':'')
       +'</g>');
   });
   var pb1=ovXY(sMin+1,dView+3.4), pb2=ovXY(sMin+6,dView+3.4);
