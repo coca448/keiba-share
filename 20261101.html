@@ -689,7 +689,7 @@ function ovTabsRender(){
     var tbOn=tbPrevMode>=1;
     html+='<button onclick="tbPrevToggle();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(tbOn?'#1a1a18':'#cfccc2')+';background:'+(tbOn?'#1a1a18':'#fff')+';color:'+(tbOn?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;">前日TB</button>';
     if(tbOn){
-      html+='<span style="font-size:10px;color:#5f5e5a;margin-right:6px;">前日TB('+tp.src.slice(4,6)+'/'+tp.src.slice(6,8)+(tp.course?'・'+tp.course+'コース':'')+'・'+tp.nR+'R): <span style="color:#b03535">赤=前日複勝O/E≤0.5</span> ※用途=10人気以下の紐切り専用(赤穴0.75/非赤穴1.24・4ヶ月実測)。9人気以内には無情報。濃い赤=内レーン(脱出不能・内→外は6%)で最も強い消し</span>';
+      html+='<span style="font-size:10px;color:#5f5e5a;margin-right:6px;">前日TB('+tp.src.slice(4,6)+'/'+tp.src.slice(6,8)+(tp.course?'・'+tp.course+'コース':'')+'・'+tp.nR+'R): <span style="color:#b03535">赤=前日O/E≤0.5∧コース平時比−0.15の二重確認(2026-11-26改定)</span>・<span style="color:#2e7d32">緑=平時比+0.10=今日だけ効いてる場所</span> ※用途=10人気以下専用(赤穴0.52=消し/緑穴1.95=紐に残す・41日実測)。9人気以内には無情報。濃い赤=内レーン(脱出不能)。前向き検証中=snapshotでV0/二重/緑を並記ログ</span>';
     }
   }
   if(cornerTab===5){
@@ -863,12 +863,18 @@ function ovDraw(){
       var v=tbp.cells[db[2]+'|'+fb];
       if(!v||v[0]==null) return;
       var oe=v[0];
-      if(oe>0.5) return;   // 赤(消し)のみ: 緑はバックテストで幻(R4-6の微プラスどまり)のため非表示
-      // 内レーンの赤=脱出不能ゾーン(内→外の持ち出しは実測6%)なので濃く塗る(2026-11-24)
-      var dark=(db[2]==='内');
-      parts.push('<polygon points="'+ovPoly(TZ[zi],TZ[zi+1],db[0],db[1])+'" fill="rgba(214,69,69,'+(dark?'0.42':'0.30')+')" stroke="rgba(214,69,69,'+(dark?'.75':'.55')+')" stroke-width="'+(dark?'0.18':'0.12')+'" pointer-events="none"/>');
+      // 2026-11-26: 赤=V0∧V3二重確認・緑=平時比+0.10(flag=v[3])。旧データはV0単独にフォールバック
+      var fl=(v.length>3)?v[3]:((oe<=0.5&&v[1]>=6)?'r':null);
+      if(!fl) return;
       var cc=ovXY((TZ[zi]+TZ[zi+1])/2,(db[0]+db[1])/2);
-      parts.push('<text x="'+cc.x+'" y="'+(cc.y+0.4)+'" text-anchor="middle" font-size="1.0" font-weight="700" fill="rgba(180,45,45,.9)" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">'+oe.toFixed(2)+'('+v[1]+')</text>');
+      if(fl==='r'){
+        var dark=(db[2]==='内');   // 内レーンの赤=脱出不能(内→外6%)なので濃く
+        parts.push('<polygon points="'+ovPoly(TZ[zi],TZ[zi+1],db[0],db[1])+'" fill="rgba(214,69,69,'+(dark?'0.42':'0.30')+')" stroke="rgba(214,69,69,'+(dark?'.75':'.55')+')" stroke-width="'+(dark?'0.18':'0.12')+'" pointer-events="none"/>');
+        parts.push('<text x="'+cc.x+'" y="'+(cc.y+0.4)+'" text-anchor="middle" font-size="1.0" font-weight="700" fill="rgba(180,45,45,.9)" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">'+oe.toFixed(2)+'('+v[1]+')</text>');
+      }else{
+        parts.push('<polygon points="'+ovPoly(TZ[zi],TZ[zi+1],db[0],db[1])+'" fill="rgba(46,125,50,0.22)" stroke="rgba(46,125,50,.5)" stroke-width="0.12" pointer-events="none"/>');
+        parts.push('<text x="'+cc.x+'" y="'+(cc.y+0.4)+'" text-anchor="middle" font-size="1.0" font-weight="700" fill="rgba(36,98,40,.9)" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">'+oe.toFixed(2)+'('+v[1]+')</text>');
+      }
     });});
   }
   // 生存ゾーン(2026-10-14): 縦1/3帯の実測複勝率ヒート(場×面・2024〜)。4角タブのみ・操作不干渉
