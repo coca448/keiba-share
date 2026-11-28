@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【従来盤面・赤帯】予想 20261129 — 決着シミュレーター</title>
+<style>
+  :root{--p:#1a1a18;--s:#5f5e5a;--t:#888780;--bg2:#f1efe8;--b:rgba(0,0,0,.15);}
+  body{font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN",sans-serif;color:var(--p);max-width:1280px;margin:24px auto;padding:0 16px;background:#fff;}
+  .cards,#hitsum,.head+div,#ovmeta,#ovfull,#ov,#ovtip{max-width:1280px;}
+  .head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
+  .tag{font-size:12px;padding:3px 10px;border-radius:8px;}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0;}
+  .card{background:var(--bg2);border-radius:8px;padding:10px 12px;}
+  .card .lbl{font-size:12px;color:var(--s);} .card .val{font-size:22px;font-weight:500;}
+  table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;margin-top:10px;}
+  th{color:var(--s);font-size:11px;text-align:left;padding:6px 4px;font-weight:500;}
+  td{padding:6px 4px;border-top:.5px solid var(--b);font-variant-numeric:tabular-nums;}
+  input[type=range]{flex:1;}
+  .note{font-size:11px;color:var(--t);margin-top:10px;line-height:1.6;}
+  .wk{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:3px;border:.5px solid var(--b);}
+  .ansc{display:none;} body.showans .ansc{display:table-cell;}
+  .mkact{display:none;} body.showans .mkact{display:inline;}
+  #tabs{display:block;padding:4px 0 8px;margin-bottom:4px;}
+  .tabrow{display:flex;gap:4px;align-items:center;margin-bottom:5px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .tabvenue{flex:0 0 auto;font-size:12px;font-weight:600;color:var(--p);min-width:38px;}
+  .tab{flex:0 0 auto;font-size:12px;padding:4px 9px;border-radius:7px;border:.5px solid var(--b);background:#fff;color:var(--s);cursor:pointer;white-space:nowrap;}
+  .tab.on{background:var(--p);color:#fff;border-color:var(--p);font-weight:500;}
+  .tbtn{font-size:12px;padding:5px 11px;border-radius:7px;border:.5px solid var(--b);background:#fff;color:var(--p);cursor:pointer;}
+  .tbtn:hover{background:var(--bg2);} .tbtn:disabled{opacity:.4;cursor:default;}
+  .tbtn.pri{background:var(--p);color:#fff;border-color:var(--p);}
+  .hit{color:#357335;font-weight:600;} .miss{color:#b4b2a9;}
+  /* compact(埋め込み)モード: 展開図とシミュレーター詳細だけ表示。馬表/タブ/操作列は隠す */
+  body.compact{margin:0;padding:0 4px;}
+  body.compact #tabs,body.compact .head,body.compact #savebar,body.compact #hitsum,
+  body.compact #sortbar,body.compact .twrap{display:none!important;}
+  svg{display:block;touch-action:none;} text{font-family:inherit;}
+  /* 横スクロール時に【印】と【馬番・馬名】を左sticky固定(PC/スマホ共通・件3) */
+  .twrap .stkA{position:sticky;left:0;z-index:3;background:#fff;}
+  .twrap .stkB{position:sticky;left:34px;z-index:3;background:#fff;border-right:1px solid var(--b);}
+  .twrap thead .stkA,.twrap thead .stkB{z-index:4;}
+  @media(max-width:480px){
+    body{margin:8px auto;padding:0 8px;}
+    .cards .val{font-size:17px;}
+    .twrap .stkB{left:32px;}
+  }
+</style>
+<script>window.EMBED={"dayIndex": {"date": "20261129", "races": [{"id": "RX2026112905050812", "label": "東京 12R 芝2400m / 18頭", "venue": "東京", "r": 12}]}, "races": {"RX2026112905050812": {"race": "RX2026112905050812", "label": "東京 12R 芝2400m / 18頭", "ioHint": null, "venue": "東京", "r": 12, "field": 18, "shida": "芝", "kyori": 2400, "v4Use": 17.391, "baseSrc": "map+fix", "courseProf": {"zf": [0.255, 0.258, 0.11], "zfPace": {"スロー寄り": [0.382, 0.245, 0.074], "ハイ寄り": [0.255, 0.258, 0.11]}, "zfCls": {"1勝": [0.331, 0.257, 0.11], "2勝以上": [0.295, 0.263, 0.12], "新馬未勝利": [0.337, 0.231, 0.061]}, "fb": 0.08, "fbCls": "低", "chokuCls": "長め", "rCls": "コーナー普通", "v1Rho": 0.54, "k3Fuku": 0.62, "mkPrem": 0.065, "nR": 29, "ref": true, "lap": "平坦型", "nakadarumi": 0.27, "d4": -1.21, "d4mix": false, "d4io": null, "d4lab": "4角で加速＝スパート戦", "typeFit": {"top": {"t": "後傾×中", "v": 6.0, "n": 679, "fb": false}, "bot": {"t": "前傾×後", "v": -5.2, "n": 123, "fb": false}}, "zfCond": "ハイ寄り"}, "zfClsTag": "2勝以上", "paceFlag": {"cls": "ハイ寄り", "zfCond": true}, "nAbsNige": 1, "k3Label": "標準", "mkBase": 32, "courseUse": {"k": "C", "d": 4}, "base": 113.62, "horses": [{"no": 1, "name": "ヘデントール", "waku": 1, "leg": "追込", "lane": 4, "pos4": 1.17, "frontPct": 0.3889, "posSrc": "v1", "mkClass": "時々", "mkN5": 1, "kdClass": "高", "fp1": 0.4444, "fp2": 0.4444, "fp3": 0.3333, "agBest": 34.1, "agGrow": 33.5, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 35.065, "k3rank": 5, "k3margin": 0.03, "gapSec": 0.663, "bloodDist": {"sc": 191, "f": 201, "mf": 158, "first": false}, "rMark": null, "rWin": 0.035, "rChip": "A", "rRank": 4, "rWinN": 0.085, "rTier": "C", "rStyle": "差し", "rMura": false, "rPace": "×", "rBand": [0.098, 0.221, 0.299, 0.382], "rStars": [], "rStar": null, "rClaims": [{"t": "＋", "f": "調教・状態", "c": "坂路の詰めがメンバー1位"}, {"t": "＋", "f": "適性・文脈", "c": "当該距離の経験数がメンバー1位"}, {"t": "−", "f": "能力", "c": "位置取り(4角)がメンバー13位と見劣り"}], "rClaim": "＋坂路の詰めがメンバー1位", "rKeys": {"指数": 9, "Elo": 9, "上り": 7, "坂路": 2, "血統": 10, "騎手": 11, "前走": 5}, "rScore": 0.1044, "rKeyScores": {"指数": 116.0, "Elo": 1515.523, "上り": 34.3, "坂路": 12.4, "血統": 0.249, "騎手": 0.131}, "rType": {"type": "後傾×前", "desc": "前で運びつつ、流れに対しては脚を残せている", "dev_pt": 1.94, "persist_pct": 13.1, "chrono": "", "n_type": 8, "n_runs": 11, "wobble": 6, "as_of": "2026-05-03", "role": "descriptive", "note": "実測側集計・表示/解釈用途(予測入力不可)"}, "tbMark": "r", "agKire": 35.16, "keepWf": -0.314, "aiRank": 6, "aiSrc": "ai"}, {"no": 2, "name": "コスモキュランダ", "waku": 1, "leg": "先行", "lane": 1, "pos4": 0.33, "frontPct": 0.1111, "posSrc": "v1", "mkClass": null, "mkN5": 0, "kdClass": "中", "fp1": 0.1111, "fp2": 0.1111, "fp3": 0.1111, "agBest": 35.3, "agGrow": 34.7, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 36.353, "k3rank": 13, "k3margin": 0.05, "gapSec": 0.424, "bloodDist": {"sc": 109, "f": 80, "mf": 290, "first": false}, "rMark": null, "rWin": 0.035, "rChip": "A", "rRank": 16, "rWinN": 0.01, "rTier": "C", "rStyle": "先行", "rMura": false, "rPace": "○", "rBand": [0.006, 0.017, 0.055, 0.922], "rStars": [], "rStar": null, "rClaims": [{"t": "＋", "f": "相手・陣営", "c": "キャリア走数がメンバー3位"}, {"t": "＋", "f": "能力", "c": "末脚力がメンバー1位"}, {"t": "−", "f": "適性・文脈", "c": "ペース適合がメンバー14位と見劣り"}], "rClaim": "＋キャリア走数がメンバー3位", "rKeys": {"指数": 14, "Elo": 11, "上り": 14, "坂路": 3, "血統": 15, "騎手": 16, "前走": 9}, "rScore": 0.0127, "rKeyScores": {"指数": 100.667, "Elo": 1501.277, "上り": 37.467, "坂路": 12.7, "血統": 0.248, "騎手": 0.062}, "rType": {"type": "前傾×前", "desc": "前で運び、流れに対して早めに脚を使う", "dev_pt": -0.66, "persist_pct": 35.6, "chrono": "中庸×前(4-6) → 後傾×前(8-18) → 前傾×前(19-21)", "n_type": 18, "n_runs": 21, "wobble": 2, "as_of": "2026-06-14", "role": "descriptive", "note": "実測側集計・表示/解釈用途(予測入力不可)"}, "tbMark": "g", "agKire": 36.01, "keepWf": -0.051, "aiRank": 2, "aiSrc": "ai"}, {"no": 3, "name": "メイショウタバル", "waku": 2, "leg": "逃げ", "lane": 0, "pos4": 0.17, "frontPct": 0.0556, "posSrc": "v1", "mkClass": null, "mkN5": 0, "kdClass": "低", "fp1": 0.0556, "fp2": 0.0556, "fp3": 0.0556, "agBest": 34.9, "agGrow": 34.3, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 35.925, "k3rank": 10, "k3margin": 0.22, "gapSec": 0.251, "bloodDist": {"sc": 305, "f": 378, "mf": 64, "first": false}, "rMark": null, "rWin": 0.035, "rChip": "A", "rRank": 7, "rWinN": 0.05, "rTier": "C", "rStyle": "逃げ", "rMura": true, "rPace": "○", "rBand": [0.043, 0.128, 0.266, 0.563], "rStars": [], "rStar": null, "rClaims": [{"t": "＋", "f": "能力", "c": "位置取り(4角)がメンバー1位"}, {"t": "−", "f": "調教・状態", "c": "馬体重推移がメンバー12位と見劣り"}], "rClaim": "＋位置取り(4角)がメンバー1位", "rKeys": {"指数": 5, "Elo": 4, "上り": 13, "坂路": 10, "血統": 6, "騎手": 10, "前走": 1}, "rScore": 0.0616, "rKeyScores": {"指数": 120.0, "Elo": 1530.173, "上り": 35.867, "坂路": 15.6, "血統": 0.256, "騎手": 0.141}, "rType": {"type": "中庸×前", "desc": "前で運び、配分は流れなり", "dev_pt": 0.74, "persist_pct": 26.6, "chrono": "後傾×中(4-6) → 中庸×前(8-10) → 前傾×前(11-13)", "n_type": 13, "n_runs": 16, "wobble": 4, "as_of": "2026-06-14", "role": "descriptive", "note": "実測側集計・表示/解釈用途(予測入力不可)"}, "tbMark": "r", "agKire": 36.01, "keepWf": -0.07, "aiRank": 1, "aiSrc": "ai"}, {"no": 4, "name": "クロワデュノール", "waku": 2, "leg": "先行", "lane": 1, "pos4": 0.67, "frontPct": 0.2222, "posSrc": "v1", "mkClass": null, "mkN5": 0, "kdClass": "中", "fp1": 0.2222, "fp2": 0.1667, "fp3": 0.1667, "agBest": 34.4, "agGrow": 33.8, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 35.211, "k3rank": 4, "k3margin": 0.09, "gapSec": 0.484, "bloodDist": {"sc": 131, "f": 149, "mf": 63, "first": false}, "rMark": "○", "rWin": 0.15, "rChip": "A", "rRank": 2, "rWinN": 0.162, "rTier": "B", "rStyle": "先行", "rMura": false, "rPace": "○", "rBand": [0.199, 0.309, 0.259, 0.233], "rStars": [], "rStar": null, "rClaims": [{"t": "＋", "f": "相手・陣営", "c": "対戦力(Elo)がメンバー2位"}, {"t": "＋", "f": "調教・状態", "c": "坂路トレンドがメンバー3位"}, {"t": "−", "f": "適性・文脈", "c": "前走距離がメンバー8位と見劣り"}], "rClaim": "＋対戦力(Elo)がメンバー2位", "rKeys": {"指数": 2, "Elo": 2, "上り": 10, "坂路": 12, "血統": 6, "騎手": 3, "前走": 5}, "rScore": 0.1985, "rKeyScores": {"指数": 123.0, "Elo": 1557.538, "上り": 34.767, "坂路": 15.7, "血統": 0.256, "騎手": 0.198}, "rType": {"type": "後傾×前", "desc": "前で運びつつ、流れに対しては脚を残せている", "dev_pt": 1.94, "persist_pct": 13.1, "chrono": "中庸×前(4-6) → 後傾×前(7-9)", "n_type": 6, "n_runs": 9, "wobble": 0, "as_of": "2026-06-14", "role": "descriptive", "note": "実測側集計・表示/解釈用途(予測入力不可)"}, "tbMark": "g", "agKire": 35.54, "keepWf": -0.331, "aiRank": 4, "aiSrc": "ai"}, {"no": 5, "name": "シェイクユアハート", "waku": 3, "leg": "追込", "lane": 4, "pos4": 1.67, "frontPct": 0.5556, "posSrc": "v1", "mkClass": "時々", "mkN5": 1, "kdClass": "高", "fp1": 0.5556, "fp2": 0.5556, "fp3": 0.5, "agBest": 33.7, "agGrow": 33.1, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 34.899, "k3rank": 6, "k3margin": 0.01, "gapSec": 0.837, "bloodDist": {"sc": 221, "f": 229, "mf": 183, "first": false}, "rMark": null, "rWin": 0.035, "rChip": "A", "rRank": 12, "rWinN": 0.026, "rTier": "C", "rStyle": "差し", "rMura": true, "rPace": "×", "rBand": [0.017, 0.054, 0.128, 0.801], "rStars": ["中1ヶ月前後[3.2.1.1] 複86%"], "rStar": "中1ヶ月前後[3.2.1.1] 複86%", "rClaims": [{"t": "＋", "f": "調教・状態", "c": "ウッド本数がメンバー1位"}, {"t": "−", "f": "相手・陣営", "c": "騎手勝率がメンバー17位と見劣り"}], "rClaim": "＋ウッド本数がメンバー1位", "rKeys": {"指数": 12, "Elo": 5, "上り": 11, "坂路": 7, "血統": 15, "騎手": 17, "前走": 6}, "rScore": 0.0314, "rKeyScores": {"指数": 112.333, "Elo": 1528.916, "上り": 35.167, "坂路": 12.8, "血統": 0.248, "騎手": 0.048}, "rType": {"type": "後傾×前", "desc": "前で運びつつ、流れに対しては脚を残せている", "dev_pt": 1.94, "persist_pct": 13.1, "chrono": "後傾×前(8-12) → 中庸×前(13-16) → 後傾×前(17-30)", "n_type": 27, "n_runs": 30, "wobble": 4, "as_of": "2026-06-14", "role": "descriptive", "note": "実測側集計・表示/解釈用途(予測入力不可)"}, "tbMark": "r", "agKire": 35.51, "keepWf": -0.244, "aiRank": 15, "aiSrc": "ai"}, {"no": 6, "name": "マスカレードボール", "waku": 3, "leg": "追込", "lane": 4, "pos4": 1.33, "frontPct": 0.4444, "posSrc": "v1", "mkClass": null, "mkN5": 0, "kdClass": "高", "fp1": 0.2778, "fp2": 0.2778, "fp3": 0.3889, "agBest": 33.2, "agGrow": 32.6, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 34.795, "k3rank": 1, "k3margin": null, "gapSec": 0.733, "bloodDist": {"sc": 179, "f": 191, "mf": 139, "first": false}, "rMark": null, "rWin": 0.035, "rChip": "A", "rRank": 5, "rWinN": 0.073, "rTier": "C", "rStyle": "差し", "rMura": false, "rPace": "×", "rBand": [0.081, 0.203, 0.31, 0.406], "rStars": [], "rStar": null, "rClaims": [{"t": "＋", "f": "相手・陣営", "c": "騎手勝率がメンバー2位"}, {"t": "＋", "f": "適性・文脈", "c": "距離実績ベスト指数がメンバー1位"}, {"t": "−", "f": "能力", "c": "前走着順がメンバー14位と見劣り"}], "rClaim": "＋騎手勝率がメンバー2位", "rKeys": {"指数": 4, "Elo": 17, "上り": 2, "坂路": 3, "血統": 10, "騎手": 2, "前走": 11}, "rScore": 0.0888, "rKeyScores": {"指数": 121.0, "Elo": 1495.146, "上り": 33.3, "坂路": 12.7, "血統": 0.249, "騎手": 0.255}, "rType": {"type": "後傾×中", "desc": "中団で流れに乗り、脚を残している", "dev_pt": 1.18, "persist_pct": 21.6, "chrono": "後傾×中(4-8)", "n_type": 5, "n_runs": 8, "wobble": 0, "as_of": "2025-11-30", "role": "descriptive", "note": "実測側集計・表示/解釈用途(予測入力不可)"}, "tbMark": "g", "agKire": 35.5, "keepWf": -0.33, "aiRank": 7, "aiSrc": "ai"}, {"no": 7, "name": "ファイアンクランツ", "waku": 4, "leg": "差し", "lane": 3, "pos4": 1.0, "frontPct": 0.3333, "posSrc": "v1", "mkClass": null, "mkN5": 0, "kdClass": "高", "fp1": 0.3333, "fp2": 0.3333, "fp3": 0.2778, "agBest": 33.7, "agGrow": 33.1, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 34.899, "k3rank": 2, "k3margin": 0.04, "gapSec": 0.669, "bloodDist": {"sc": 169, "f": 191, "mf": 98, "first": false}, "rMark": null, "rWin": 0.035, "rChip": "A", "rRank": 9, "rWinN": 0.043, "rTier": "C", "rStyle": "先行", "rMura": true, "rPace": "○", "rBand": [0.024, 0.078, 0.205, 0.693], "rStars": [], "rStar": null, "rClaims": [{"t": "＋", "f": "相手・陣営", "c": "騎手勝率がメンバー1位"}, {"t": "−", "f": "能力", "c": "前走指数がメンバー14位と見劣り"}], "rClaim": "＋騎手勝率がメンバー1位", "rKeys": {"指数": 8, "Elo": 7, "上り": 5, "坂路": 3, "血統": 10, "騎手": 1, "前走": 8}, "rScore": 0.053, "rKeyScores": {"指数": 116.333, "Elo": 1519.17, "上り": 33.9, "坂路": 12.7, "血統": 0.249, "騎手": 0.298}, "rType": {"type": "後傾×中", "desc": "中団で流れに乗り、脚を残している", "dev_pt": 1.18, "persist_pct": 21.6, "chrono": "後傾×中(4-10)", "n_type": 7, "n_runs": 10, "wobble": 1, "as_of": "2026-05-31", "role": "descriptive", "note": "実測側集計・表示/解釈用途(予測入力不可)"}, "tbMark": "r", "agKire": 35.6, "keepWf": -0.203, "aiRank": 8, "aiSrc": "ai"}, {"no": 8, "name": "オンブズマン", "waku": 4, "leg": "差し", "lane": 3, "pos4": 1.83, "frontPct": 0.6111, "posSrc": "fill", "mkClass": null, "mkN5": null, "kdClass": null, "fp1": null, "fp2": null, "fp3": null, "agBest": 35.0, "agGrow": 34.4, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 36.386, "k3rank": 14, "k3margin": 0.87, "gapSec": 1.265, "bloodDist": {"sc": 29, "f": 0, "mf": 71, "first": null}, "rMark": null, "rWin": 0.035, "rChip": "A", "rRank": 13, "rWinN": 0.021, "rTier": "C", "rStyle": NaN, "rMura": false, "rPace": null, "rBand": [0.01, 0.028, 0.111, 0.851], "rStars": [], "rStar": null, "rClaims": [{"t": "＋", "f": "調教・状態", "c": "総合的な押し上げ"}, {"t": "−", "f": "能力", "c": "総合的な割引"}], "rClaim": "＋総合的な押し上げ", "rKeys": {"指数": null, "Elo": 13, "上り": null, "坂路": null, "血統": 1, "騎手": 6, "前走": null}, "rScore": 0.0257, "rKeyScores": {"指数": null, "Elo": 1500.0, "上り": null, "坂路": null, "血統": 0.283, "騎手": 0.185}, "rType": null, "tbMark": "g", "agKire": null, "keepWf": null, "aiRank": 9, "aiSrc": "fill"}, {"no": 9, "name": "カランダガン", "waku": 5, "leg": "差し", "lane": 3, "pos4": 3.0, "frontPct": 1.0, "posSrc": "p1", "mkClass": null, "mkN5": 0, "kdClass": null, "fp1": null, "fp2": null, "fp3": null, "agBest": 35.0, "agGrow": 34.4, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 36.386, "k3rank": 18, "k3margin": 0.46, "gapSec": 2.07, "bloodDist": {"sc": 95, "f": 65, "mf": 150, "first": false}, "rMark": "▲", "rWin": 0.15, "rChip": "A", "rRank": 3, "rWinN": 0.156, "rTier": "B", "rStyle": "差し", "rMura": false, "rPace": "×", "rBand": [0.127, 0.259, 0.324, 0.29], "rStars": [], "rStar": null, "rClaims": [{"t": "＋", "f": "能力", "c": "平均速度がメンバー1位"}, {"t": "＋", "f": "適性・文脈", "c": "bv_ニアーがメンバー1位"}, {"t": "−", "f": "相手・陣営", "c": "キャリア走数がメンバー12位と見劣り"}], "rClaim": "＋平均速度がメンバー1位", "rKeys": {"指数": 1, "Elo": 10, "上り": 1, "坂路": null, "血統": 17, "騎手": 13, "前走": 1}, "rScore": 0.1904, "rKeyScores": {"指数": 125.0, "Elo": 1511.317, "上り": 33.2, "坂路": null, "血統": 0.221, "騎手": 0.111}, "rType": null, "tbMark": "r", "agKire": null, "keepWf": null, "aiRank": 17, "aiSrc": "fill"}, {"no": 10, "name": "ミニーホーク", "waku": 5, "leg": "差し", "lane": 3, "pos4": 2.0, "frontPct": 0.6667, "posSrc": "fill", "mkClass": null, "mkN5": null, "kdClass": null, "fp1": null, "fp2": null, "fp3": null, "agBest": 35.0, "agGrow": 34.4, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 36.386, "k3rank": 15, "k3margin": 0.12, "gapSec": 1.38, "bloodDist": {"sc": 90, "f": 95, "mf": 71, "first": null}, "rMark": null, "rWin": 0.035, "rChip": "A", "rRank": 10, "rWinN": 0.027, "rTier": "C", "rStyle": NaN, "rMura": false, "rPace": null, "rBand": [0.02, 0.057, 0.184, 0.739], "rStars": [], "rStar": null, "rClaims": [{"t": "＋", "f": "相手・陣営", "c": "騎手勝率がメンバー5位"}, {"t": "−", "f": "能力", "c": "総合的な割引"}], "rClaim": "＋騎手勝率がメンバー5位", "rKeys": {"指数": null, "Elo": 13, "上り": null, "坂路": null, "血統": 1, "騎手": 5, "前走": null}, "rScore": 0.0328, "rKeyScores": {"指数": null, "Elo": 1500.0, "上り": null, "坂路": null, "血統": 0.283, "騎手": 0.19}, "rType": null, "tbMark": null, "agKire": null, "keepWf": null, "aiRank": 11, "aiSrc": "fill"}, {"no": 11, "name": "ヴェルテンベルク", "waku": 6, "leg": "追込", "lane": 4, "pos4": 2.67, "frontPct": 0.8889, "posSrc": "v1", "mkClass": "常習", "mkN5": 2, "kdClass": "高", "fp1": 0.6111, "fp2": 0.6111, "fp3": 0.6111, "agBest": 34.2, "agGrow": 33.6, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 35.035, "k3rank": 9, "k3margin": 0.05, "gapSec": 0.917, "bloodDist": {"sc": 129, "f": 149, "mf": 64, "first": false}, "rMark": null, "rWin": 0.035, "rChip": "A", "rRank": 6, "rWinN": 0.051, "rTier": "C", "rStyle": "差し", "rMura": false, "rPace": "×", "rBand": [0.053, 0.169, 0.296, 0.481], "rStars": [], "rStar": null, "rClaims": [{"t": "＋", "f": "調教・状態", "c": "ウッド直近4Fがメンバー1位"}, {"t": "＋", "f": "能力", "c": "補助指数順位がメンバー2位"}], "rClaim": "＋ウッド直近4Fがメンバー1位", "rKeys": {"指数": 6, "Elo": 8, "上り": 9, "坂路": 9, "血統": 6, "騎手": 14, "前走": 7}, "rScore": 0.0619, "rKeyScores": {"指数": 118.667, "Elo": 1518.949, "上り": 34.533, "坂路": 13.2, "血統": 0.256, "騎手": 0.109}, "rType": {"type": "後傾×中", "desc": "中団で流れに乗り、脚を残している", "dev_pt": 1.18, "persist_pct": 21.6, "chrono": "後傾×中(4-11) → 後傾×後(14-20) → 後傾×中(23-27)", "n_type": 24, "n_runs": 27, "wobble": 6, "as_of": "2026-05-03", "role": "descriptive", "note": "実測側集計・表示/解釈用途(予測入力不可)"}, "tbMark": "r", "agKire": 35.46, "keepWf": -0.222, "aiRank": 18, "aiSrc": "ai"}, {"no": 12, "name": "テアオ", "waku": 6, "leg": "差し", "lane": 3, "pos4": 2.17, "frontPct": 0.7222, "posSrc": "fill", "mkClass": null, "mkN5": null, "kdClass": null, "fp1": null, "fp2": null, "fp3": null, "agBest": 35.0, "agGrow": 34.4, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 36.386, "k3rank": 16, "k3margin": 0.11, "gapSec": 1.495, "bloodDist": null, "rMark": null, "rWin": 0.035, "rChip": "A", "rRank": 18, "rWinN": 0.004, "rTier": "C", "rStyle": NaN, "rMura": false, "rPace": null, "rBand": [0.006, 0.017, 0.055, 0.922], "rStars": [], "rStar": null, "rClaims": [{"t": "＋", "f": "適性・文脈", "c": "血統×距離適性がメンバー1位"}, {"t": "−", "f": "相手・陣営", "c": "騎手勝率がメンバー18位と見劣り"}], "rClaim": "＋血統×距離適性がメンバー1位", "rKeys": {"指数": null, "Elo": 13, "上り": null, "坂路": null, "血統": 1, "騎手": 18, "前走": null}, "rScore": 0.0054, "rKeyScores": {"指数": null, "Elo": 1500.0, "上り": null, "坂路": null, "血統": 0.283, "騎手": 0.0}, "rType": null, "tbMark": "r", "agKire": null, "keepWf": null, "aiRank": 12, "aiSrc": "fill"}, {"no": 13, "name": "アーバンシック", "waku": 7, "leg": "追込", "lane": 4, "pos4": 2.5, "frontPct": 0.8333, "posSrc": "v1", "mkClass": "時々", "mkN5": 1, "kdClass": "高", "fp1": 0.5, "fp2": 0.5, "fp3": 0.5556, "agBest": 33.6, "agGrow": 33.0, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 35.003, "k3rank": 7, "k3margin": 0.13, "gapSec": 0.863, "bloodDist": {"sc": 144, "f": 128, "mf": 197, "first": false}, "rMark": null, "rWin": 0.035, "rChip": "A", "rRank": 14, "rWinN": 0.021, "rTier": "C", "rStyle": "差し", "rMura": true, "rPace": "×", "rBand": [0.01, 0.029, 0.074, 0.886], "rStars": [], "rStar": null, "rClaims": [{"t": "＋", "f": "相手・陣営", "c": "総合的な押し上げ"}, {"t": "＋", "f": "調教・状態", "c": "坂路本数がメンバー1位"}, {"t": "−", "f": "適性・文脈", "c": "当該距離の平均着順がメンバー12位と見劣り"}], "rClaim": "＋総合的な押し上げ", "rKeys": {"指数": 10, "Elo": 18, "上り": 4, "坂路": 3, "血統": 6, "騎手": 9, "前走": 5}, "rScore": 0.0255, "rKeyScores": {"指数": 114.0, "Elo": 1486.154, "上り": 33.633, "坂路": 12.7, "血統": 0.256, "騎手": 0.141}, "rType": {"type": "後傾×中", "desc": "中団で流れに乗り、脚を残している", "dev_pt": 1.18, "persist_pct": 21.6, "chrono": "後傾×後(4-7) → 後傾×中(8-12)", "n_type": 9, "n_runs": 12, "wobble": 0, "as_of": "2026-03-15", "role": "descriptive", "note": "実測側集計・表示/解釈用途(予測入力不可)"}, "tbMark": "r", "agKire": 35.69, "keepWf": -0.208, "aiRank": 10, "aiSrc": "ai"}, {"no": 14, "name": "タガノデュード", "waku": 7, "leg": "追込", "lane": 4, "pos4": 2.83, "frontPct": 0.9444, "posSrc": "v1", "mkClass": "時々", "mkN5": 1, "kdClass": "高", "fp1": 0.6667, "fp2": 0.6667, "fp3": 0.6667, "agBest": 34.4, "agGrow": 33.8, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 35.09, "k3rank": 11, "k3margin": 0.06, "gapSec": 1.142, "bloodDist": {"sc": 122, "f": 133, "mf": 98, "first": false}, "rMark": null, "rWin": 0.035, "rChip": "A", "rRank": 8, "rWinN": 0.05, "rTier": "C", "rStyle": "差し", "rMura": false, "rPace": "×", "rBand": [0.034, 0.105, 0.248, 0.613], "rStars": ["11月前後[2.0.3.2] 複71%"], "rStar": "11月前後[2.0.3.2] 複71%", "rClaims": [{"t": "＋", "f": "調教・状態", "c": "ウッドの詰めがメンバー1位"}, {"t": "＋", "f": "相手・陣営", "c": "キャリア走数がメンバー2位"}, {"t": "−", "f": "能力", "c": "位置取り(4角)がメンバー14位と見劣り"}], "rClaim": "＋ウッドの詰めがメンバー1位", "rKeys": {"指数": 11, "Elo": 6, "上り": 8, "坂路": 1, "血統": 10, "騎手": 8, "前走": 4}, "rScore": 0.0606, "rKeyScores": {"指数": 112.667, "Elo": 1525.955, "上り": 34.4, "坂路": 12.0, "血統": 0.249, "騎手": 0.15}, "rType": {"type": "後傾×中", "desc": "中団で流れに乗り、脚を残している", "dev_pt": 1.18, "persist_pct": 21.6, "chrono": "中庸×中(4-7) → 後傾×中(8-14) → 中庸×中(15-23) → 後傾×中(24-30)", "n_type": 27, "n_runs": 30, "wobble": 1, "as_of": "2026-06-14", "role": "descriptive", "note": "実測側集計・表示/解釈用途(予測入力不可)"}, "tbMark": null, "agKire": 35.65, "keepWf": -0.216, "aiRank": 16, "aiSrc": "ai"}, {"no": 15, "name": "エキサイトバイオ", "waku": 7, "leg": "先行", "lane": 1, "pos4": 0.83, "frontPct": 0.2778, "posSrc": "v1", "mkClass": "時々", "mkN5": 1, "kdClass": "高", "fp1": 0.1667, "fp2": 0.2222, "fp3": 0.2222, "agBest": 34.8, "agGrow": 34.2, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 35.375, "k3rank": 8, "k3margin": 0.04, "gapSec": 0.528, "bloodDist": {"sc": 221, "f": 258, "mf": 99, "first": false}, "rMark": null, "rWin": 0.035, "rChip": "A", "rRank": 17, "rWinN": 0.008, "rTier": "C", "rStyle": "先行", "rMura": false, "rPace": "○", "rBand": [0.006, 0.017, 0.055, 0.922], "rStars": [], "rStar": null, "rClaims": [{"t": "＋", "f": "能力", "c": "指数の上昇度がメンバー2位"}, {"t": "＋", "f": "適性・文脈", "c": "前走距離がメンバー1位"}, {"t": "−", "f": "調教・状態", "c": "調教品質がメンバー12位と見劣り"}], "rClaim": "＋指数の上昇度がメンバー2位", "rKeys": {"指数": 13, "Elo": 1, "上り": 12, "坂路": 7, "血統": 10, "騎手": 15, "前走": 8}, "rScore": 0.0102, "rKeyScores": {"指数": 111.333, "Elo": 1590.274, "上り": 35.333, "坂路": 12.8, "血統": 0.249, "騎手": 0.069}, "rType": {"type": "中庸×前", "desc": "前で運び、配分は流れなり", "dev_pt": 0.74, "persist_pct": 26.6, "chrono": "中庸×前(4-9)", "n_type": 6, "n_runs": 9, "wobble": 0, "as_of": "2025-12-28", "role": "descriptive", "note": "実測側集計・表示/解釈用途(予測入力不可)"}, "tbMark": "g", "agKire": 35.79, "keepWf": -0.228, "aiRank": 5, "aiSrc": "ai"}, {"no": 16, "name": "ダノンデサイル", "waku": 8, "leg": "追込", "lane": 4, "pos4": 1.5, "frontPct": 0.5, "posSrc": "v1", "mkClass": "時々", "mkN5": 1, "kdClass": "高", "fp1": 0.3889, "fp2": 0.3889, "fp3": 0.4444, "agBest": 33.6, "agGrow": 33.0, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 34.866, "k3rank": 3, "k3margin": 0.04, "gapSec": 0.74, "bloodDist": {"sc": 160, "f": 154, "mf": 186, "first": false}, "rMark": "◎", "rWin": 0.15, "rChip": "A", "rRank": 1, "rWinN": 0.171, "rTier": "B", "rStyle": "差し", "rMura": false, "rPace": "×", "rBand": [0.272, 0.338, 0.206, 0.184], "rStars": ["芝2400m前後[2.0.4.0] 複100%"], "rStar": "芝2400m前後[2.0.4.0] 複100%", "rClaims": [{"t": "＋", "f": "能力", "c": "前走指数がメンバー1位"}, {"t": "＋", "f": "適性・文脈", "c": "当該距離の勝率がメンバー2位"}, {"t": "−", "f": "相手・陣営", "c": "総合的な割引"}], "rClaim": "＋前走指数がメンバー1位", "rKeys": {"指数": 3, "Elo": 3, "上り": 6, "坂路": 10, "血統": 5, "騎手": 7, "前走": 1}, "rScore": 0.2095, "rKeyScores": {"指数": 122.333, "Elo": 1540.082, "上り": 34.267, "坂路": 15.6, "血統": 0.267, "騎手": 0.156}, "rType": {"type": "後傾×中", "desc": "中団で流れに乗り、脚を残している", "dev_pt": 1.18, "persist_pct": 21.6, "chrono": "後傾×前(9-11)", "n_type": 10, "n_runs": 13, "wobble": 5, "as_of": "2026-06-14", "role": "descriptive", "note": "実測側集計・表示/解釈用途(予測入力不可)"}, "tbMark": null, "agKire": 35.28, "keepWf": -0.355, "aiRank": 13, "aiSrc": "ai"}, {"no": 17, "name": "ゴリアット", "waku": 8, "leg": "差し", "lane": 3, "pos4": 0.5, "frontPct": 0.1667, "posSrc": "p1", "mkClass": null, "mkN5": 0, "kdClass": null, "fp1": null, "fp2": null, "fp3": null, "agBest": 35.0, "agGrow": 34.4, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 36.386, "k3rank": 12, "k3margin": 0.5, "gapSec": 0.345, "bloodDist": {"sc": 31, "f": null, "mf": 31, "first": false}, "rMark": null, "rWin": 0.035, "rChip": "A", "rRank": 11, "rWinN": 0.027, "rTier": "C", "rStyle": "先行", "rMura": false, "rPace": "○", "rBand": [0.018, 0.056, 0.155, 0.77], "rStars": [], "rStar": null, "rClaims": [{"t": "＋", "f": "相手・陣営", "c": "騎手勝率がメンバー4位"}, {"t": "＋", "f": "能力", "c": "経験レースのペース傾向がメンバー1位"}, {"t": "−", "f": "調教・状態", "c": "調教本数がメンバー13位と見劣り"}], "rClaim": "＋騎手勝率がメンバー4位", "rKeys": {"指数": 7, "Elo": 12, "上り": 3, "坂路": null, "血統": 17, "騎手": 4, "前走": 6}, "rScore": 0.0327, "rKeyScores": {"指数": 118.0, "Elo": 1500.472, "上り": 33.5, "坂路": null, "血統": 0.221, "騎手": 0.19}, "rType": null, "tbMark": "g", "agKire": null, "keepWf": null, "aiRank": 3, "aiSrc": "fill"}, {"no": 18, "name": "エシカルダイヤモンド", "waku": 8, "leg": "差し", "lane": 3, "pos4": 2.33, "frontPct": 0.7778, "posSrc": "fill", "mkClass": null, "mkN5": null, "kdClass": null, "fp1": null, "fp2": null, "fp3": null, "agBest": 35.0, "agGrow": 34.4, "chakuActual": null, "pop": 0, "v3win": null, "v3place": null, "v3rank": null, "v3hit": null, "gpAgari": 36.386, "k3rank": 17, "k3margin": 0.12, "gapSec": 1.61, "bloodDist": {"sc": 0, "f": null, "mf": 0, "first": null}, "rMark": null, "rWin": 0.035, "rChip": "A", "rRank": 15, "rWinN": 0.014, "rTier": "C", "rStyle": NaN, "rMura": false, "rPace": null, "rBand": [0.011, 0.014, 0.067, 0.909], "rStars": [], "rStar": null, "rClaims": [{"t": "＋", "f": "調教・状態", "c": "総合的な押し上げ"}, {"t": "−", "f": "相手・陣営", "c": "キャリア走数がメンバー15位と見劣り"}], "rClaim": "＋総合的な押し上げ", "rKeys": {"指数": null, "Elo": 13, "上り": null, "坂路": null, "血統": 1, "騎手": 12, "前走": null}, "rScore": 0.0169, "rKeyScores": {"指数": null, "Elo": 1500.0, "上り": null, "坂路": null, "血統": 0.283, "騎手": 0.113}, "rType": null, "tbMark": null, "agKire": null, "keepWf": null, "aiRank": 14, "aiSrc": "fill"}], "rr": {"key": "2026-11-29_東京_12", "surf": "芝", "dist": 2400, "cls": 1, "field": 18, "weak": false, "grade": "A", "shape": "混戦", "shapeTxt": "抜けた馬不在の混戦。上位5頭級が団子で波乱含み", "paceClaim": "ミドルペース想定", "paceFav": [], "paceConf": "低"}, "rrAvailable": true, "tbPrev": {"src": "20261128", "course": "C", "nR": 5, "cells": {"内|後": [0.0, 9, 0, "r"], "内|中団": [0.0, 8, 0, "r"], "中|後": [0.0, 8, 0, "r"], "内|前": [1.91, 10, 2, "g"], "中|中団": [1.38, 9, 0, "g"], "中|前": [0.0, 9, 0, "r"], "外|前": [1.25, 8, 2, "g"], "外|中団": [0.86, 10, 1, null], "外|後": [1.4, 10, 0, null]}, "lanes": {"内": [1.18, 27], "中": [0.7, 26], "外": [1.1, 28]}}, "baseFix": 2.32}}};</script>
+</head>
+<body><div style="position:sticky;top:0;z-index:9999;background:#6b4a12;color:#fff;font-size:12px;padding:4px 10px;">従来盤面(taikei)+前日TB赤帯 — 紐切り確認用。主表示(AI並び)は <a href="./20261129.html" style="color:#ffd37a;">こちら</a>。</div>
+
+<a id="backidx" href="./" style="display:none;font-size:13px;color:#22306e;text-decoration:none;margin:0 0 6px;">← 日付一覧へ戻る</a>
+<div id="tabs"></div>
+
+<div class="head">
+  <span id="label" style="font-size:18px;font-weight:500;">—</span>
+  <select id="ovsel" class="tbtn" style="padding:4px 8px;display:none;"></select>
+  <label class="tag" style="margin-left:auto;color:var(--s);border:.5px solid var(--b);cursor:pointer;">
+    <input type="checkbox" id="ans" style="vertical-align:-1px;"> 答え合わせ(実着・実4角)</label>
+</div>
+
+<div id="savebar" style="display:flex;gap:6px;align-items:center;margin-bottom:10px;">
+  <button id="btnSave" class="tbtn pri">この予想を保存</button>
+  <button id="btnMine" class="tbtn">マイ予想</button>
+  <button id="btnDef" class="tbtn">デフォルトに戻す</button>
+  <button id="btnExport" class="tbtn" title="保存済み全レースの印をJSONで書き出し(集計用)">印をエクスポート</button>
+  <span id="savemsg" style="font-size:11px;color:#357335;align-self:center;"></span>
+</div>
+<div id="hitsum" class="note" style="display:none;background:var(--bg2);border-radius:8px;padding:8px 12px;margin:0 0 8px;"></div>
+
+<!-- ===== RaceReaderレース見出し(形状/展開/信頼度) ===== -->
+<div id="rrhead" style="display:none;margin:2px 0 8px;"></div>
+
+<!-- ===== PaceMaker展開図(上部・コンパクト): 4角の有利不利を見る ===== -->
+<div id="ovmeta" style="font-size:11px;color:var(--s);line-height:1.6;margin:4px 0 2px;"></div>
+<div id="ovtabs" style="margin:4px 0 2px;"></div>
+<svg id="ov" width="100%" style="max-height:260px;background:#fbfaf6;border-radius:8px;"></svg>
+<div id="ovtip" style="font-size:11px;color:var(--p);min-height:28px;background:var(--bg2);border-radius:8px;padding:5px 10px;margin-top:4px;">
+  駒にタッチ/ホバーで幾何量。ドラッグ＝前後(s)/内外(d)・帯タップ＝伸/普/止TB。動かすとゴール計算に反映。</div>
+
+<!-- ===== RaceReader予想(本体) ===== -->
+<div id="sortbar" style="display:flex;gap:6px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+  <span style="font-size:11px;color:var(--s);">並び順:</span>
+  <button id="sortR" class="tbtn" style="padding:3px 9px;">R勝率</button>
+  <button id="sortK3" class="tbtn" style="padding:3px 9px;">P順</button>
+  <button id="sortGoal" class="tbtn" style="padding:3px 9px;">ゴール</button>
+  <span id="k3head" style="margin-left:auto;font-size:11px;color:var(--s);"></span>
+</div>
+<div class="twrap" style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+<table style="min-width:1580px;">
+  <thead><tr>
+    <th class="stkA" style="width:34px;" title="タップで◎○▲△✕を循環">印</th>
+    <th style="width:34px;" title="RaceReader予測順位(1-3位は◎○▲)">R順</th>
+    <th class="stkB" style="width:110px;">馬番・馬名</th>
+    <th style="width:64px;text-align:right;" title="RaceReader勝率(正規化)/実際(校正済み)">勝率/実際</th>
+    <th style="width:100px;" title="着順レンジ(1着/2-3着/4-6着/7着〜)。※R順ごとの実測着順分布(検証期間)であり、馬固有の確信度ではありません">着順ﾚﾝｼﾞ<span style="font-weight:400;color:#a8a69c;font-size:9px;">※順位別</span></th>
+    <th style="width:26px;" title="RaceReader tier">信</th>
+    <th style="width:46px;" title="RaceReader脚質プロファイル(⚡=ムラ)">脚質</th>
+    <th style="width:28px;" title="ペース適性(RaceReader second opinion)">ペ適</th>
+    <th style="width:92px;" title="型=配分×位置(過去走から作った現在の型)。薄色=持続率(前半→後半で同じ型に留まる割合)。5走未満等は未確定=—。実測側集計・表示用途">型<span style="font-weight:400;color:#a8a69c;font-size:9px;">/持続</span></th>
+    <!-- ⭐好走パターン・根拠は 2026-07-25 に馬名タップのカルテへ移動(列幅確保) -->
+    <th id="kthead" onclick="_kt()" style="width:150px;cursor:pointer;" title="主要順位(指数/Elo/上り/坂路/血統/騎手/前走)。タップで順位⇄元スコアを切替(PCはホバーでも表示)">主要順位<span id="ktbadge" style="font-weight:400;color:#a8a69c;font-size:9px;">▸タップで元スコア</span></th>
+    <th style="width:38px;text-align:right;" title="実着順(検証用・確定後に表示)">実着</th>
+    <th style="width:40px;" title="展開シミュの序列(4角位置の貯金＋直線で使える脚)。印ではない">P順</th>
+    <th style="width:52px;text-align:right;" title="今日のペース・位置で直線に使える脚の予測(過去平均ではない)">想定上がり</th>
+    <th style="width:56px;" title="予測4角位置(前後・内外, 盤面連動)">4角位置</th>
+    <th style="width:52px;text-align:right;" title="4角通過タイム(BASE+位置)">4角</th>
+    <th style="width:150px;" title="G'予測上がりを中心に手動微調整(ゴール計算に反映)">上がり(可変)</th>
+    <th style="width:62px;text-align:right;" title="実効上がり(競られ補正+馬場TB)">実効</th>
+    <th style="width:58px;text-align:right;" title="予測ゴールタイム">ｺﾞｰﾙ</th>
+  </tr></thead>
+  <tbody id="rows"></tbody>
+</table>
+</div>
+
+<details style="margin-top:12px;">
+<summary style="font-size:12px;color:var(--s);cursor:pointer;">シミュレーター詳細（想定勝ち時計・ペース/馬場ダイヤル・コース全景）</summary>
+<div class="cards" id="cards">
+  <div class="card"><div class="lbl">想定勝ち時計</div><div class="val" id="wintime">—</div></div>
+  <div class="card"><div class="lbl">勝ち馬</div><div class="val" id="winhorse">—</div></div>
+  <div class="card"><div class="lbl">決着差</div><div class="val" id="margin">—</div></div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;background:var(--bg2);border-radius:8px;padding:8px 14px;margin:8px 0;">
+  <span style="font-size:12px;color:var(--s);font-weight:500;white-space:nowrap;">全体ペース/馬場</span>
+  <span style="font-size:11px;color:var(--t);">速い</span>
+  <input type="range" id="pace" min="-10" max="20" value="0" step="1" style="flex:1;">
+  <span style="font-size:11px;color:var(--t);">重い</span>
+  <span id="paceout" style="font-size:12px;font-weight:500;min-width:78px;text-align:right;color:var(--p);">標準 +0.0s</span>
+</div>
+<div style="font-size:11px;color:var(--t);margin:2px 0;">コース全景 — 枠=拡大範囲</div>
+<svg id="ovfull" width="100%" style="max-height:170px;"></svg>
+</details>
+
+<p class="note">
+ゴール = 4角通過ﾀｲﾑ + (G'予測上がり + 競られ補正 + 馬場TB)。脚はG'(余力込みの予測上がり)基準——素の上がり3Fは位置取り由来のノイズが大きく非採用。前(sを小さく)に出す→競られて鈍る(自動)。上がりはG'値を中心にスライダーで微調整(手動)。<br>
+s=4角基準の進行方向距離[m](1馬身=2.4m=0.2s換算)、d=内ラチからの実距離[m]。TB帯: 実スケールのレーン幅2m刻み=最内0-2m/内2-4/中4-6/外6-8/大外8m〜外ラチ(タップで伸−0.2/普0/止+0.3)。<br>
+トラック形状はJRA公式の実寸(1周・直線長・近似円半径)から描画。距離ロス・壁リスクは<b>市場織り込み済みの参考値</b>(検証Bで自動昇格なし)。手動TB検収の叩き台。<br>
+<b>換算の2系統:</b> P順/想定上がり/展開図＝<b>巡航速度換算</b>(4角の1馬身≒0.14s、速度依存) ／ ゴール計算＝<b>減速局面換算</b>(0.2秒/馬身固定)。同じ「秒」でも由来が違う。
+</p>
+
+<script>
+// ================================================================
+//  v6: データ一元化。状態は horses[{no,s,d,ag,...}] ただ1つ。
+//  俯瞰盤面(物理座標系)が唯一の操作面 → 決着タイム表に直結。
+//  旧線形ビュー(帯×前後の抽象マス目)と中山11Rダミーは全廃。
+// ================================================================
+var LANES=["最内","内","中","外","大外"], bandTB=[0,0,0,0,0], TBVAL={"-1":+0.3,"0":0,"1":-0.2};
+var BASE=80.0, paceAdj=0, V4USE=16.5;              // 位置換算=物理式 s[m]÷v_4角[m/s](③と同一実装, 2026-07-15統一(b))
+var POS_SEC_PER_M=0.2/2.4;                         // 【引退済み】旧0.2s/馬身。旧day/旧保存データのpos4秒→s[m]逆変換のみに残置
+var LB=2.4, PACK_LEN=15*LB, HW=0.6, D0={"内":1.0,"中":2.0,"外":3.0};
+// 前日TB(2026-11-23): 0=off 1=赤表示
+var tbPrevMode=0; try{tbPrevMode=parseInt(localStorage.getItem('kessei:tbPrevMode')||((localStorage.getItem('kessei:tbPrevOn')==='1')?'1':'0'),10)?1:0;}catch(e){}
+function tbPrevToggle(){ tbPrevMode=(tbPrevMode+1)%2; try{localStorage.setItem('kessei:tbPrevMode',String(tbPrevMode));}catch(e){} ovDraw(); }
+// 止回避(2026-11-24): ゴールタブ専用トグル。4角で手動TB「止」帯にいる馬は直線で最寄りの非・止帯へ外出し
+// (⇗の時間ペナなし=2026-11-25実測で根拠なし、止の+0.3sは免除)
+var goalAvoid=false; try{goalAvoid=localStorage.getItem('kessei:goalAvoid')==='1';}catch(e){}
+function goalAvoidToggle(){ goalAvoid=!goalAvoid; try{localStorage.setItem('kessei:goalAvoid',goalAvoid?'1':'0');}catch(e){} ovDraw(); }
+var CONTEST_K=0.5;
+// コース実寸(JRA公式 jra.go.jp/facilities/race/*/course/ 採録=data/course/track_master.csv, 検算5/5)
+// fb:1 = 芝内外の別が不明な場合の主コースfallback(1周最小)
+var TRACK_DIMS={"札幌_芝":{"shu1":1640.9,"choku":266.1,"w":25.0},"札幌_ダ":{"shu1":1487.0,"choku":264.3,"w":20.0},"函館_芝":{"shu1":1626.6,"choku":262.1,"w":29.0},"函館_ダ":{"shu1":1475.8,"choku":260.3,"w":20.0},"福島_芝":{"shu1":1600.0,"choku":292.0,"w":25.0},"福島_ダ":{"shu1":1444.6,"choku":295.7,"w":20.0},"新潟_芝_内":{"shu1":1623.0,"choku":358.7,"w":25.0},"新潟_芝_外":{"shu1":2223.0,"choku":658.7,"w":25.0},"新潟_ダ":{"shu1":1472.5,"choku":353.9,"w":20.0},"東京_芝":{"shu1":2083.1,"choku":525.9,"w":31.0},"東京_ダ":{"shu1":1899.0,"choku":501.6,"w":25.0},"中山_芝_内":{"shu1":1667.1,"choku":310.0,"w":20.0},"中山_芝_外":{"shu1":1839.7,"choku":310.0,"w":20.0},"中山_ダ":{"shu1":1493.0,"choku":308.0,"w":20.0},"中京_芝":{"shu1":1705.9,"choku":412.5,"w":28.0},"中京_ダ":{"shu1":1530.0,"choku":410.7,"w":25.0},"京都_芝_内":{"shu1":1782.8,"choku":328.4,"w":27.0},"京都_芝_外":{"shu1":1894.3,"choku":403.7,"w":27.0},"京都_ダ":{"shu1":1607.6,"choku":329.1,"w":25.0},"阪神_芝_内":{"shu1":1689.0,"choku":356.5,"w":24.0},"阪神_芝_外":{"shu1":2089.0,"choku":473.6,"w":24.0},"阪神_芝":{"shu1":1689.0,"choku":356.5,"w":24.0,"fb":1},"阪神_ダ":{"shu1":1517.6,"choku":352.7,"w":22.0},"小倉_芝":{"shu1":1615.1,"choku":293.0,"w":30.0},"小倉_ダ":{"shu1":1445.4,"choku":291.3,"w":24.0},"中山_芝":{"shu1":1667.1,"choku":310.0,"w":20.0,"fb":1},"京都_芝":{"shu1":1782.8,"choku":328.4,"w":27.0,"fb":1},"新潟_芝":{"shu1":1623.0,"choku":358.7,"w":25.0,"fb":1}};
+var LEFT_TURN={"東京":1,"中京":1,"新潟":1};
+// 距離→芝内外(2026-10-23): master「芝(内・外)」ラベル全数集計(新潟/京都/阪神)+中山=JRA公式表。
+// 混在距離(両コースで施行・出馬表に区分なし)はIO_MIXED=fb+注記で誠実に。
+var IO_MAP={"新潟":{1200:"内",1400:"内",1600:"外",1800:"外",2200:"内",2400:"内"},
+  "京都":{1200:"内",1800:"外",2000:"内",2200:"外",2400:"外",3000:"外",3200:"外"},
+  "阪神":{1200:"内",1400:"内",1600:"外",1800:"外",2000:"内",2200:"内",2400:"外",2600:"外",3000:"内",3200:"内"},
+  "中山":{1200:"外",1600:"外",1800:"内",2000:"内",2200:"外",2500:"内",3600:"内"}};
+var IO_MIXED={"新潟":[2000],"京都":[1400,1600]};
+var CAP={1:{f:"#ffffff",t:"#1a1a18",s:"#999"},2:{f:"#1a1a18",t:"#ffffff",s:"#1a1a18"},
+3:{f:"#d8333a",t:"#fff",s:"#a32128"},4:{f:"#2f6fb5",t:"#fff",s:"#1f5288"},
+5:{f:"#f1c40f",t:"#1a1a18",s:"#c79f08"},6:{f:"#4f9d4f",t:"#fff",s:"#357335"},
+7:{f:"#e8862e",t:"#fff",s:"#bb6817"},8:{f:"#e87fa8",t:"#1a1a18",s:"#c75f88"}};
+function wakuOf(no,field){ var per=Math.ceil(field/8); return Math.min(8,Math.ceil(no/per)); }
+
+var horses=[], FIELD=16, currentData=null, currentRace=null, course=null;
+var MARKS=['','◎','○','▲','△','✕'];               // cocaの印(タップ循環)
+var marks={};                                        // {馬番: MARKSのindex}
+var sortMode='goal';                                 // 'r'=R勝率 / 'k3'=③順位 / 'goal'=従来
+
+// --- コース解決: board実寸 > TRACK_DIMS[場所_芝ダ] > null(俯瞰は案内のみ) ---
+function resolveCourse(data){
+  if(data.boardCourse) return data.boardCourse;                 // board JSON由来(内外込み実寸)
+  if(!data.venue||!data.shida) return null;                     // 旧day data(芝ダ無し)
+  // 新潟芝1000=JRA唯一の直線競馬(2026-10-23修正: コーナー幾何を適用しない)
+  // ※「4角」欄の実測は直線途中の計測点の隊列(充足99.7%)→位置データはそのまま有効
+  if(data.venue==="新潟"&&data.shida==="芝"&&(data.kyori||0)===1000){
+    return {courseKey:"新潟_芝_1000直", basho:"新潟", shida:"芝", kyori:1000, widthM:25.0,
+      mawari:"左", sobanM:null, turfStart:false, shu1M:null, chokuM:1000, rCircleM:0,
+      corners:0, straight:true, geoFallback:false};
+  }
+  var kyori=data.kyori||0;
+  // 距離→内外の解決(2026-10-23: master実測ラベル集計+中山はJRA公式表)。
+  // 混在距離(新潟芝2000/京都芝1400/1600)は原理的に距離から決まらない→主コースfb+注記
+  var io=null, ioMixed=false;
+  if(data.shida==="芝"&&IO_MAP[data.venue]){
+    io=IO_MAP[data.venue][kyori]||null;
+    ioMixed=(IO_MIXED[data.venue]||[]).indexOf(kyori)>=0;
+  }
+  if(data.ioHint){ io=data.ioHint; ioMixed=false; }   // 生成時のクラス解決(混在距離・2026-10-25)が最優先
+  var dims=(io&&TRACK_DIMS[data.venue+"_"+data.shida+"_"+io])||TRACK_DIMS[data.venue+"_"+data.shida];
+  if(!dims) return null;
+  return {courseKey:data.venue+"_"+data.shida+"_"+(kyori||"?"),
+    basho:data.venue, shida:data.shida, kyori:kyori, widthM:(dims.w||null),
+    mawari:(LEFT_TURN[data.venue]?"左":"右"),
+    sobanM:null, turfStart:false, io:io, ioMixed:ioMixed,
+    shu1M:dims.shu1, chokuM:dims.choku,
+    rCircleM:(dims.shu1-2*dims.choku)/(2*Math.PI),
+    corners:(kyori&&kyori<=1600)?2:4, geoFallback:!!dims.fb};
+}
+// --- 初期(s,d): s=前後frontPct=taikei_v1学習版(2026-07採用, v0テン順フォールバック薄色明示/旧dayはpos4秒)。d=【枠なり】 ---
+//     d決定則(2026-07 教師実測: 併走内外順の正答 枠なり76% > 帯モデル59% → 帯モデル初期値を廃止):
+//     同じ前後圈(座席行=前から3頭ずつ)内で枠番小の順に内から d=1.0,2.0,3.0…
+function mapHorses(data){
+  var field=data.field||data.horses.length;
+  // Phase2改(2026-11-13・案B採用): 位置どり=旧来の等間隔ラダー(自然な雁行)のまま、
+  //   隊列の全長だけ予測地点差の物理量でスケール(団子=短く・縦長=長く)。
+  //   切れ目(秒差)の情報は駒位置には入れない(碁盤目化の反省)— P順のk3margin側で保持。
+  var spanM=null;
+  if(data.v4Use){
+    var _gs=data.horses.map(function(h){return h.gapSec;}).filter(function(v){return v!=null;});
+    if(_gs.length>=4){
+      // ÷0.55=広がり補正(2026-11-15): gap予測は平均回帰で実測スパンの55%(頭数帯別0.51-0.57で一貫)。相対位置は不変・物差しのみ実寸化
+      spanM=Math.max(10, Math.min(44, (Math.max.apply(null,_gs)-Math.min.apply(null,_gs))*data.v4Use/0.55));
+    }
+  }
+  var hs=data.horses.map(function(h){
+    var s;
+    if(h.s!=null){ s=h.s; }
+    else if(h.frontPct!=null){ s=h.frontPct*(spanM||PACK_LEN); }   // 案B: 旧ラダー×物理全長(gapSec無し旧dayは36m)
+    else { s=(h.pos4||0)/POS_SEC_PER_M; }
+    return {no:(h.no!=null?h.no:h.umaban), name:h.name||"", leg:h.leg||"",
+      s:s, d:(h.d!=null?h.d:null), sBase:s,
+      agBest:(h.agBest!=null?h.agBest:null), agGrow:(h.agGrow!=null?h.agGrow:null),
+      gpAgari:(h.gpAgari!=null?h.gpAgari:null),
+      ag:(h.agKire!=null?h.agKire:(h.gpAgari!=null?h.gpAgari:(h.agBest!=null?h.agBest:null))),   // 既定=キレ校正上がり(2026-11-24: ρ0.37>G'0.24)>G'>実績
+      agKireSrc:(h.agKire!=null),
+      aiRank:(h.aiRank!=null?h.aiRank:null), aiSrc:(h.aiSrc||null), tbMark:(h.tbMark||null),
+      keepWf:(h.keepWf!=null?h.keepWf:null),
+      agFallback:(h.gpAgari==null&&h.agBest!=null),                    // G'無→過去実績フォールバック(薄色明示)
+      posSrc:(h.posSrc!=null?h.posSrc:null),                           // 初期配置の出所(v1/v0/fill, 2026-07採用)
+      posFallback:(h.posSrc!=null&&h.posSrc!=='v1'),                   // v1入力欠損→テン順(v0)/補完で代用(薄色明示)
+      mkClass:(h.mkClass!=null?h.mkClass:null),                        // 捲り型(常習/時々, V1実測でCI分離済み)
+      mkN5:(h.mkN5!=null?h.mkN5:null), mkActual:(h.mkActual!=null?h.mkActual:null),
+      kdClass:(h.kdClass!=null?h.kdClass:null),                        // 機動力(高/中/低, 実測55/38/24%でCI分離)
+      fp1:(h.fp1!=null?h.fp1:null), fp2:(h.fp2!=null?h.fp2:null), fp3:(h.fp3!=null?h.fp3:null),
+      k1:(h.k1!=null?h.k1:null), k2:(h.k2!=null?h.k2:null), k3:(h.k3!=null?h.k3:null),
+      waku:(h.waku||wakuOf((h.no!=null?h.no:h.umaban),field)),
+      chaku:(h.chakuActual!=null?h.chakuActual:null), k4:(h.k4!=null?h.k4:null),
+      pop:(h.pop!=null?h.pop:null), v3rank:(h.v3rank!=null?h.v3rank:null),
+      v3place:(h.v3place!=null?h.v3place:null), v3win:(h.v3win!=null?h.v3win:null), v3hit:(h.v3hit!=null?h.v3hit:null),
+      gpAgari:(h.gpAgari!=null?h.gpAgari:null), k3rank:(h.k3rank!=null?h.k3rank:null),
+      k3margin:(h.k3margin!=null?h.k3margin:null),
+      bloodDist:(h.bloodDist||null),                                   // 血統距離スコア(参考表示のみ, 2026-11-15)
+      rMark:(h.rMark!=null?h.rMark:null), rWin:(h.rWin!=null?h.rWin:null), rChip:(h.rChip!=null?h.rChip:null),
+      rRank:(h.rRank!=null?h.rRank:null), rWinN:(h.rWinN!=null?h.rWinN:null), rTier:(h.rTier!=null?h.rTier:null),
+      rStyle:(h.rStyle!=null?h.rStyle:null), rMura:!!h.rMura, rPace:(h.rPace!=null?h.rPace:null),
+      rStar:(h.rStar!=null?h.rStar:null), rClaim:(h.rClaim!=null?h.rClaim:null), rKeys:(h.rKeys||null),
+      rBand:(h.rBand||null), rStars:(h.rStars||null), rClaims:(h.rClaims||null),
+      rScore:(h.rScore!=null?h.rScore:null), rKeyScores:(h.rKeyScores||null),
+      rType:(h.rType||null)};
+  });
+  // d未指定の馬に枠なり配置: s順に3頭ずつ行化 → 行内で(枠番,馬番)昇順に内から1.0mずつ
+  var need=hs.filter(function(h){return h.d==null;});
+  if(need.length){
+    var order=hs.slice().sort(function(a,b){return a.s-b.s;});
+    order.forEach(function(h,i){ h._row=Math.floor(i/3); });
+    var rows={};
+    order.forEach(function(h){ (rows[h._row]=rows[h._row]||[]).push(h); });
+    var stOut=!!(course&&course.straight);           // 直線競馬(新潟1000直)=外ラチ基準の別計算(2026-10-23)
+    Object.keys(rows).forEach(function(r){
+      rows[r].sort(function(a,b){return stOut?((b.waku-a.waku)||(b.no-a.no)):((a.waku-b.waku)||(a.no-b.no));})
+             .forEach(function(h,i){ if(h.d==null) h.d=stOut?((trackW()-1.5)-i*BAND_W):(1.0+i*BAND_W); });
+    });
+    hs.forEach(function(h){ delete h._row; if(h.d==null) h.d=stOut?(trackW()-2.5):2.0; });
+  }
+  // 占有: 前(s小)から、重なりは+1.0mずつ外スロット。走路(d≤5m)からはみ出す場合は
+  // 外に積まず半馬身(1.2m)後ろへずらして内から置き直す(密集レースでも駒が走路内に収まる)
+  var stOut2=!!(course&&course.straight);
+  hs.slice().sort(function(a,b){return a.s-b.s;}).reduce(function(placed,h){
+    var g=0;
+    while(placed.some(function(p){return Math.abs(p.s-h.s)<LB && Math.abs(p.d-h.d)<1.0;}) && g++<40){
+      if(stOut2){ h.d-=BAND_W; if(h.d<trackW()-9.0){ h.d=trackW()-1.5; h.s+=1.2; } }  // 直線: 内へ積み/溢れは外ラチへ戻す
+      else { h.d+=BAND_W; if(h.d>9.0){ h.d=1.0; h.s+=1.2; } }   // 大外超えは半馬身後ろへ置き直し
+    }
+    placed.push(h); return placed;
+  },[]);
+  return hs;
+}
+function setPaceUI(){ var pc=document.getElementById('pace');
+  if(pc){ pc.value=Math.round(paceAdj*10); document.getElementById('paceout').textContent=paceLabel(paceAdj); } }
+function applyDefault(){ horses=mapHorses(currentData); bandTB=[0,0,0,0,0]; paceAdj=0; setPaceUI(); compute(); }
+
+// --- 保存/復元 (localStorage, レース別)。v6形式={h:[{no,s,d,ag}],tb,pace}。旧pos4/lane形式も変換 ---
+function lsKey(){ return 'kessei:'+(currentRace||'none'); }
+function loadSaved(){ try{ var s=localStorage.getItem(lsKey()); return s?JSON.parse(s):null; }catch(e){ return null; } }
+function snapshot(){
+  // v7: 集計可能なフラット構造(レースID/日付/馬番/印/保存時刻) + 手直し隊列(s,d)+TB
+  var d8=(currentRace&&currentRace.slice(2,10))||null;
+  return { v:7, raceId:currentRace, date:d8, savedAt:(new Date()).toISOString(),
+    marks:horses.map(function(x){return {umaban:x.no, mark:MARKS[marks[x.no]||0],
+                                          chaku:(x.chaku!=null?x.chaku:null)};})   // 実着も出力(検証用)
+                .filter(function(m){return m.mark;}),
+    h:horses.map(function(x){return {no:x.no,s:x.s,d:x.d,ag:x.ag};}),
+    tb:bandTB.slice(), pace:paceAdj }; }
+function applyState(st){
+  st.h.forEach(function(sv){ var h=horses.find(function(x){return x.no===sv.no;});
+    if(!h) return;
+    if(sv.s!=null){ h.s=sv.s; h.d=sv.d; }
+    else{ h.s=(sv.pos4||0)/POS_SEC_PER_M; h.d=(sv.lane!=null?sv.lane:2)+0.5; }   // 旧形式変換
+    if(sv.ag!=null) h.ag=sv.ag; });
+  marks={};
+  (st.marks||[]).forEach(function(m){ var i=MARKS.indexOf(m.mark); if(i>0) marks[m.umaban]=i; });
+  bandTB=st.tb?st.tb.slice():[0,0,0,0,0]; paceAdj=st.pace||0; setPaceUI(); compute();
+}
+function flash(msg){ var m=document.getElementById('savemsg'); if(!m)return;
+  m.textContent=msg; setTimeout(function(){ m.textContent=''; },1600); }
+function updateBtns(){ var b=document.getElementById('btnMine'); if(b) b.disabled=!loadSaved(); }
+function saveScenario(){ try{ localStorage.setItem(lsKey(), JSON.stringify(snapshot())); updateBtns(); flash('✓ 保存しました'); }
+  catch(e){ flash('保存できません'); } }
+
+function renderRRHead(data){
+  var rr=data.rr, el=document.getElementById('rrhead'); if(!el) return;
+  if(!rr){ el.style.display='none'; return; }
+  var gc={A:'#357335',B:'#8a8a84',C:'#a32128'}[rr.grade]||'#8a8a84';
+  var cs='display:inline-block;white-space:nowrap;color:#fff;font-size:11px;padding:1px 8px;border-radius:9px;margin:2px 0 0 6px;';
+  var chips='<span style="'+cs+'background:#22306e;">'+rr.shape+'</span>';
+  if(rr.grade) chips+='<span style="'+cs+'background:'+gc+';">信頼度'+rr.grade+'</span>';
+  if(rr.weak) chips+='<span style="'+cs+'background:#a32128;">⚠弱点セグメント</span>';
+  var fav=(rr.paceFav&&rr.paceFav.length)?rr.paceFav.join('・'):'特になし';
+  var low=(rr.paceConf==='低')?'<span style="color:#999;">(参考)</span>':'';
+  el.innerHTML='<div style="font-size:16px;font-weight:600;">'+(rr.key||'').replace(/_/g,' ')+'　'
+      +(rr.surf||'')+(rr.dist||'')+' cls'+(rr.cls!=null?rr.cls:'')+' '+(rr.field||'')+'頭'+chips+'</div>'
+    +'<div style="font-size:12px;color:var(--s);margin-top:3px;">【形状】'+rr.shapeTxt
+      +'　【展開(独立見解)】'+(rr.paceClaim||'')+low+'→有利:'+fav+'</div>';
+  el.style.display='';
+}
+function boot(data){
+  document.getElementById('label').textContent=data.label||data.race||"レース";
+  // E採用(2026-07-18): BASE=学習版。フォールバック時のみ薄色明示(posSrcと同流儀)
+  (function(){var lb=document.getElementById('label');
+    var bn=document.getElementById('basenote');
+    if(!bn){bn=document.createElement('span');bn.id='basenote';
+      bn.style.cssText='font-size:10px;color:#b4b2a9;margin-left:8px;font-weight:400;';lb.appendChild(bn);}
+    else{lb.appendChild(bn);}
+    bn.textContent=(data.baseSrc==='map+fix')?'想定タイム: 条件中央値補正済(精度≈芝±1.2s/ダ±0.8s)'
+      :(data.baseSrc==='map')?'想定タイム: コース平均(近況なし・参考)'
+      :(data.baseSrc==='fix')?'想定タイム: 簡易式(参考)':'';})();
+  renderRRHead(data);
+  FIELD=data.field||data.horses.length; BASE=(data.base!=null?data.base:80.0);
+  V4USE=(data.v4Use!=null?data.v4Use:16.5);
+  currentData=data; currentRace=data.race||null; course=resolveCourse(data);
+  cornerTab=4;                                       // レース切替=紙芝居タブを4角(操作面)に戻す
+  marks={};                                          // レース切替=印リセット(保存から復元)
+  sortMode = data.rrAvailable ? 'r' : 'goal';        // 既定=R勝率順(R無ければ従来)
+  var kh=document.getElementById('k3head');
+  kh.textContent=(data.paceClass?('ペース想定: '+data.paceClass+' ｜ '):'')
+    +(data.k3Label?('③信頼度: '+data.k3Label):'');
+  applyDefault();
+  var saved=loadSaved(); if(saved){ applyState(saved); }
+  updateBtns();
+}
+
+// ================= 決着タイム計算 (状態=s,d から導出) =================
+function fmt(t){var m=Math.floor(t/60),s=(t-m*60);return m+":"+s.toFixed(1).padStart(4,'0');}
+function bc(v){return v===1?{f:"#EAF3DE",s:"#639922",t:"伸"}:v===-1?{f:"#FCEBEB",s:"#E24B4A",t:"止"}:{f:"#f1efe8",s:"#B4B2A9",t:"-"};}
+function trackW(){ if(course&&course.widthM) return course.widthM;
+  var td=course&&TRACK_DIMS[course.basho+'_'+course.shida]; return (td&&td.w)||25; }
+var BAND_W=2.0;                                   // 帯=実スケールのレーン幅(1頭分+マージン)固定
+function laneIdx(d){ return Math.max(0,Math.min(4,Math.floor(d/BAND_W))); }
+function pos4of(h){ return h.s/V4USE; }                                       // 物理換算(÷v_4角)
+function contest(h){ var f=(h.sBase-h.s)/V4USE; return f>0?f*CONTEST_K:0; }
+// 主要順位セルの表示モード: 0=順位 / 1=元スコア。タッチ端末にホバーが無いためタップで全行トグル
+var KEYMODE=0;
+function _kt(){
+  KEYMODE=1-KEYMODE;
+  var b=document.getElementById('ktbadge');
+  if(b) b.textContent=(KEYMODE===1?'▾元スコア表示中':'▸タップで元スコア');
+  // 元スコアは桁が長いので列幅を広げる(順位表示に戻したら元に戻す)
+  var th=document.getElementById('kthead');
+  if(th) th.style.width=(KEYMODE===1?'290px':'150px');
+  compute();
+}
+// 元スコアの桁を値域に応じて整形(Elo=1511 / 指数=85.0 / 血統=0.189 のように混在するため)
+function _ksfmt(v){
+  if(v==null) return '−';
+  var a=Math.abs(v);
+  if(a>=1000) return String(Math.round(v));
+  if(a>=10)   return v.toFixed(1);
+  return String(Math.round(v*1000)/1000);
+}
+// 【案① 2026-07-25】主要順位の「退化」検出(表示のみの対処・エンジン側の定数充填は触らない)
+// レース内で全馬が同値の項目は、順位が全員1位に潰れており情報が無い。
+// 例: 父タイプ名が全馬欠損→血統特徴がフォールバック定数で充填→全馬同値→全馬1位。
+// 坂路(値なし=項目が消える)と同じ扱いに揃え「血−」で出す。
+var DEGEN={};
+function calcDegen(){
+  DEGEN={};
+  var withK=horses.filter(function(h){return h.rKeys;});
+  if(withK.length<2) return;
+  var keys={};
+  withK.forEach(function(h){ Object.keys(h.rKeys).forEach(function(k){ keys[k]=1; }); });
+  Object.keys(keys).forEach(function(k){
+    if(k==='前走') return;                       // 前走=着順そのもの。同値でも退化ではない
+    var vals=withK.map(function(h){ return (h.rKeyScores||{})[k]; })
+                  .filter(function(v){ return v!=null; });
+    if(vals.length>=2 && vals.every(function(v){ return v===vals[0]; })) DEGEN[k]=vals[0];
+  });
+}
+function compute(){
+  calcDegen();
+  var hasAg=horses.length>0 && horses.every(function(h){return h.ag!=null;});
+  horses.forEach(function(h){
+    h.lane=laneIdx(h.d); h.pos4=pos4of(h);
+    h.tb=TBVAL[String(bandTB[h.lane])]; h.con=contest(h);
+    h.agEff=hasAg?(h.ag+h.con+h.tb):null;
+  });
+  // ゴール計算(2026-11-25統一): ゴールタブと同じ較正物理 goal=BASE+pace+(直線+s)/v(γ=3.4分散較正)+β4×keep
+  // (旧: BASE+pos4+agEff の巡航換算=前過剰評価+0.28。basefixも本式でアンカー)
+  if(hasAg){
+    var chokuC=(course&&course.chokuM)||400;
+    var GAMc=(course&&course.shida==='芝')?3.0:2.7;   // 面別γ(2026-11-26: V2上がり基準の分散比再実測)
+    var agMc=0,kwMc=0,kwNc=0;
+    horses.forEach(function(h){ agMc+=h.agEff; if(h.keepWf!=null){kwMc+=h.keepWf;kwNc++;} });
+    agMc/=horses.length; kwMc=kwNc?kwMc/kwNc:0;
+    horses.forEach(function(h){
+      var ag2=Math.max(28,agMc+(h.agEff-agMc)*GAMc);
+      h.gv=600/ag2;
+      h.goal=BASE+paceAdj+(chokuC+h.s)/h.gv+2.0*((h.keepWf!=null?h.keepWf:kwMc)-kwMc);   // β2(2026-11-26: ρ最大点・coca選択)
+    });
+  } else { horses.forEach(function(h){ h.goal=null; h.gv=null; }); }
+  var sorted=horses.slice().sort(function(a,b){
+    if(sortMode==='r'){ var arr_=(a.rRank!=null?a.rRank:99), brr=(b.rRank!=null?b.rRank:99);
+      if(arr_!==brr) return arr_-brr;
+      var aw=(a.rWin!=null?a.rWin:-1), bw=(b.rWin!=null?b.rWin:-1);
+      if(bw!==aw) return bw-aw; }
+    else if(sortMode==='k3'){ var ak=(a.k3rank!=null?a.k3rank:99), bk=(b.k3rank!=null?b.k3rank:99);
+      if(ak!==bk) return ak-bk; }
+    return hasAg ? a.goal-b.goal : a.s-b.s;});
+  ['sortR','sortK3','sortGoal'].forEach(function(id,i){
+    var on=(sortMode===['r','k3','goal'][i]);
+    var el=document.getElementById(id);
+    el.style.background=on?'var(--p)':'#fff'; el.style.color=on?'#fff':'var(--p)';});
+  var goalSorted=horses.slice().sort(function(a,b){return hasAg?a.goal-b.goal:a.s-b.s;});
+  if(hasAg && goalSorted.length>1){
+    document.getElementById('wintime').textContent=fmt(goalSorted[0].goal);
+    document.getElementById('winhorse').textContent=goalSorted[0].no+"番";
+    document.getElementById('margin').textContent=((goalSorted[1].goal-goalSorted[0].goal)/0.2).toFixed(1)+"馬身";
+  }else{
+    document.getElementById('wintime').textContent='—';
+    document.getElementById('winhorse').textContent='—';
+    document.getElementById('margin').textContent='—';
+  }
+  rows.innerHTML=sorted.map(function(h,i){
+    var c=CAP[h.waku]||CAP[1];
+    var chip='<span class="wk" style="background:'+c.f+';border-color:'+c.s+'"></span>';
+    var eff=[]; if(h.con>0.001)eff.push('<span style="color:#A32D2D">競+'+h.con.toFixed(1)+'</span>');
+    if(h.tb<0)eff.push('<span style="color:#3B6D11">伸-0.2</span>'); if(h.tb>0)eff.push('<span style="color:#A32D2D">止+0.3</span>');
+    // ゴールの脚(上がり)= G'予測上がり基準。スライダーはG'値を中心に手動微調整。
+    var grown=(h.ag!=null&&h.agBest!=null)&&h.ag<h.agBest-0.01;
+    var agLo=(h.ag!=null?(h.ag-0.8):(h.agGrow!=null?h.agGrow:33))*10;
+    var agHi=(h.ag!=null?(h.ag+1.5):(h.agBest!=null?h.agBest+0.4:38))*10;
+    var agCell=(h.ag==null)?'<span style="color:var(--t)">—</span>'
+      :'<div style="display:flex;align-items:center;gap:6px;">'
+       +'<input type="range" min="'+agLo.toFixed(0)+'" max="'+agHi.toFixed(0)+'" value="'+(h.ag*10).toFixed(0)+'" step="1" oninput="_ag('+h.no+',this.value)">'
+       +'<span style="font-size:12px;min-width:36px;text-align:right;color:'+(h.agFallback?'#b4b2a9':(grown?'#854F0B':'#5f5e5a'))+'">'+h.ag.toFixed(1)+'</span>'
+       +(h.agFallback?'<span title="G&#39;予測なし→過去実績で代用" style="font-size:9px;color:#b4b2a9;">実績</span>':'')
+       +(h.agKireSrc?'<span title="キレ校正上がり(過去の上がり順位平均を秒換算・実上がり予測ρ0.37>G&#39;0.24の実測で採用 2026-11-24)" style="font-size:9px;color:#854F0B;">キレ</span>':'')+'</div>';
+    // A: cocaの印(タップ循環) / B: RaceReader馬表 / C: PaceMaker / 検証: 実着 / シミュ
+    var mi=marks[h.no]||0;
+    var mkCell='<td class="stkA" style="cursor:pointer;font-weight:700;font-size:15px;text-align:center;color:#a32128;" onclick="_mk('+h.no+')">'+(MARKS[mi]||'<span style="color:#d5d2c6">·</span>')+'</td>';
+    var rOrd=(h.rMark!=null)?h.rMark:(h.rRank!=null?h.rRank:'—');
+    var winN=(h.rWinN!=null)?Math.round(h.rWinN*100)+'%':'—';
+    var winA=(h.rWin!=null)?Math.round(h.rWin*100)+'%':'—';
+    var tierCol={A:'#357335',B:'#b07a12',C:'#b4b2a9'}[h.rTier]||'#b4b2a9';
+    var tierTxt=(h.rTier!=null)?'<span style="color:'+tierCol+';font-weight:600;">'+h.rTier+'</span>':'—';
+    var styleTxt=(h.rStyle||h.leg||'—')+(h.rMura?'<span title="ムラ" style="color:#b07a12;">⚡</span>':'');
+    var keysTxt='—';
+    if(h.rKeys){
+      // 工程2: 順位の元スコア。PCはホバー(title)、タッチはセルタップで全行トグル(KEYMODE)
+      var ks=h.rKeyScores||{};
+      var ksT=Object.keys(ks).filter(function(k){return ks[k]!=null;})
+        .map(function(k){return k+' '+ks[k];}).join(' / ');
+      // 【案①】退化項目(レース内で全馬同値)は順位が情報を持たないので「血−」で出す(坂路=値なしと同じ扱い)
+      var body=Object.keys(h.rKeys).filter(function(k){return h.rKeys[k]!=null;})
+        .map(function(k){
+          var v=h.rKeys[k];
+          if(DEGEN.hasOwnProperty(k)){
+            return '<span style="color:#c3c1b8;" title="'+k+': このレースは全馬同値('+_ksfmt(DEGEN[k])+')のため順位に情報がありません">'
+                   +k.slice(0,1)+'−</span>';
+          }
+          var sv=(KEYMODE===1)?((k==='前走')?v:(ks[k]!=null?_ksfmt(ks[k]):'−')):v;
+          return '<span style="color:'+(v<=3?'#357335':'#8a8878')+';">'+k.slice(0,1)+sv+'</span>';
+        }).join(' ');
+      keysTxt='<span title="元スコア: '+(ksT||'−')+'">'+body+'</span>'; }
+    // 着順レンジ棒グラフ(ムラ馬は分布を均し方向に30%ブレンド=読みにくさを表現)
+    var barTxt='<span style="color:var(--t)">—</span>';
+    if(h.rBand&&h.rBand.length===4){
+      var bd=h.rBand.slice(); if(h.rMura){bd=bd.map(function(x){return 0.7*x+0.3*0.25;});}
+      var seg=['#2e7d32','#66bb6a','#ffb74d','#e0e0e0'];
+      barTxt='<div style="display:flex;height:13px;width:92px;border-radius:3px;overflow:hidden;background:#eee" '
+        +'title="1着'+Math.round(bd[0]*100)+'% / 2-3着'+Math.round(bd[1]*100)+'% / 4-6着'+Math.round(bd[2]*100)+'% / 7着〜'+Math.round(bd[3]*100)+'%'
+        +' ※R順ごとの実測着順分布(検証期間)。馬固有の確信度ではありません">'
+        +bd.map(function(x,j){return '<div style="width:'+(x*100).toFixed(0)+'%;background:'+seg[j]+'"></div>';}).join('')+'</div>';
+    }
+    // ⭐ 好走パターン(全件)
+    var starTxt=(h.rStars&&h.rStars.length)
+      ? h.rStars.map(function(s){return '<span style="color:#9a7b00">⭐'+s+'</span>';}).join('<br>')
+      : (h.rStar!=null?'<span style="color:#9a7b00">⭐'+h.rStar+'</span>':'—');
+    // 根拠(＋強み上位2 / −弱み1・全文改行)
+    var claimTxt='—';
+    if(h.rClaims&&h.rClaims.length){
+      claimTxt=h.rClaims.map(function(x){
+        return '<span style="color:'+(x.t==='＋'?'#357335':'#a32128')+';">'+x.t+'['+x.f+'] '+x.c+'</span>';
+      }).join('<br>');
+    }else if(h.rClaim!=null){
+      claimTxt='<span style="color:'+(h.rClaim.charAt(0)==='＋'?'#357335':'#a32128')+';">'+h.rClaim+'</span>';
+    }
+    // 【Phase4】型セル: 「後傾×前」＋薄色で持続率。未確定は「—」(定数で埋めない)
+    var T=h.rType;
+    var typeTxt = T ? ('<span title="'+(T.desc||'')+'&#10;統制後乖離 '+(T.dev_pt>=0?'+':'')+T.dev_pt
+                        +'pt / 持続率 '+T.persist_pct+'% / 型確定 '+T.n_type+'走">'
+                      +'<b style="font-size:11px;">'+T.type+'</b>'
+                      +'<div style="font-size:9px;color:#a8a69c;line-height:1;">'+T.persist_pct+'%</div></span>')
+                    : '<span style="color:#c3c1b8;" title="型が作れない(5走未満等)。定数で埋めず未確定として表示">—</span>';
+    var posTxt=mkBadge(h)+kdBadge(h)+(h.s<12?'前':h.s>24?'後':'中')+'・'+LANES[h.lane].slice(-1)
+      +(h.posFallback?'<span title="v1予測なし(位置履歴不足)&#10;テン順(v0)/前走実測(1走のみ)/補完で代用" style="font-size:9px;color:#b4b2a9;margin-left:2px;">'+(h.posSrc==='v0'?'テン順':h.posSrc==='p1'?'前走実測':'補完')+'</span>':'');
+    var k3=(h.k3rank!=null)?(h.k3rank+((h.k3margin!=null&&h.k3margin<=0.05)?'<span style="color:#b07a12;font-size:9px;">接</span>':'')):'—';
+    var chakuTxt=((h.chaku!=null)?'<span class="'+(h.chaku<=3?'hit':'miss')+'">'+h.chaku+'</span>':'—')
+      +(h.mkActual?'<span class="mkact" title="実測: この走で捲りイベント発生(3角→4角pct+0.15以上)" style="color:#b45309;font-weight:700;">⤴</span>':'');
+    return '<tr id="row'+h.no+'">'
+      +mkCell
+      +'<td style="text-align:center;" title="R順のソートキー(3モデル統合勝率 p0)='+(h.rScore!=null?h.rScore:'—')+'">'+rOrd
+        +(h.rScore!=null?'<div style="font-size:9px;color:#a8a69c;font-weight:400;line-height:1;">'+h.rScore.toFixed(3).replace(/^0/,'')+'</div>':'')+'</td>'
+      +'<td class="stkB" onclick="_karte('+h.no+')" style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,.06);" title="タップでカルテを開く">'
+        +chip+h.no+' <span style="font-size:11px;font-weight:400;">'+(h.name||'')+'</span>'
+        +'<span id="kcar'+h.no+'" style="font-size:9px;color:#a8a69c;margin-left:3px;">▸</span></td>'
+      +'<td style="text-align:right;font-size:11px;">'+winN+'<span style="color:var(--t)">/'+winA+'</span></td>'
+      +'<td>'+barTxt+'</td>'
+      +'<td style="text-align:center;font-size:11px;">'+tierTxt+'</td>'
+      +'<td style="font-size:11px;color:#5f5e5a;white-space:nowrap;">'+styleTxt+'</td>'
+      +'<td style="text-align:center;font-size:11px;">'+(h.rPace||'—')+'</td>'
+      +'<td style="text-align:center;line-height:1.15;">'+typeTxt+'</td>'
+      +'<td onclick="_kt()" style="font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,.06);">'+keysTxt+'</td>'
+      +'<td style="text-align:right;">'+chakuTxt+'</td>'
+      +'<td style="font-size:11px;">'+k3+'</td>'
+      +'<td style="text-align:right;font-size:11px;" title="P順の元=ゴール指標(秒) '+(h.gpAgari!=null?h.gpAgari:'—')+'">'+(h.gpAgari!=null?h.gpAgari.toFixed(1):'—')+'</td>'
+      +'<td style="font-size:11px;color:#5f5e5a;" title="'+kdTitle(h)+'">'+posTxt+'</td>'
+      +'<td style="text-align:right;font-size:11px;">'+(BASE+h.pos4).toFixed(1)+'</td>'
+      +'<td>'+agCell+'</td>'
+      +'<td style="text-align:right;font-size:11px;">'+(eff.join(' ')||'—')+'</td>'
+      +'<td style="text-align:right;font-weight:500;">'+(h.goal!=null?fmt(h.goal):'—')+'</td></tr>';
+  }).join('');
+  var hs=document.getElementById('hitsum');
+  if(sorted.length&&sorted.some(function(h){return h.chaku!=null;})){
+    var parts=[];
+    var myMain=horses.find(function(h){return marks[h.no]===1;});           // cocaの◎
+    if(myMain) parts.push('あなたの◎'+myMain.no+' → <b>'+(myMain.chaku!=null?myMain.chaku+'着':'—')+'</b>');
+    var rTop=horses.find(function(h){return h.rMark==='◎';});
+    if(rTop) parts.push('R◎'+rTop.no+' → <b>'+(rTop.chaku!=null?rTop.chaku+'着':'—')+'</b>');
+    var k3Top=horses.find(function(h){return h.k3rank===1;});
+    if(k3Top) parts.push('P順1位'+k3Top.no+' → <b>'+(k3Top.chaku!=null?k3Top.chaku+'着':'—')+'</b>');
+    if(hasAg){
+      var top3hit=goalSorted.slice(0,3).filter(function(h){return h.chaku<=3;}).length;
+      parts.push('シミュ上位3頭の複勝的中 <b>'+top3hit+'/3</b>');
+    }
+    hs.innerHTML='答え合わせ: '+(parts.join(' ｜ ')||'—');
+  } else { hs.textContent='実着データなし(当日/未確定レース)'; }
+  ovDraw();
+}
+var rows=document.getElementById('rows');
+function _ag(no,v){var h=horses.find(function(x){return x.no===no;});if(h){h.ag=v/10;compute();}}
+function _tb(i){if(cornerTab!==4){flash('TBは4角タブで操作');return;} bandTB[i]=bandTB[i]===0?1:bandTB[i]===1?-1:0;compute();}
+function _mk(no){ marks[no]=((marks[no]||0)+1)%MARKS.length; compute(); }
+document.getElementById('sortR').onclick=function(){sortMode='r';compute();};
+document.getElementById('sortK3').onclick=function(){sortMode='k3';compute();};
+document.getElementById('sortGoal').onclick=function(){sortMode='goal';compute();};
+
+// ================= 俯瞰盤面 (物理座標系 s,d) =================
+// s=4角基準の進行方向実距離[m](後方+) / d=内ラチからの実距離[m](連続値)
+// 幾何量: 距離ロス=v05b式の帯オフセットを連続dに一般化 loss=d·π·corners/2(係数変更なし)。
+//         壁リスク=前方(s小)のうち|Δd|≤1mの駒密度。
+var ovsvg=document.getElementById('ov'), ovfull=document.getElementById('ovfull');
+function ovDistLoss(d,corners){ return d*Math.PI*(corners/2); }
+function ovWall(h,arr){
+  var ahead=arr.filter(function(x){return x!==h && x.s<h.s;});
+  if(!ahead.length) return 0;
+  var near=ahead.filter(function(x){return Math.abs(x.d-h.d)<=BAND_W;});   // ±隣帯(帯幅2mに追随)
+  return near.length/ahead.length;
+}
+function ovTrk(){ return {L:course.chokuM, r:course.rCircleM, left:-course.chokuM/2, right:course.chokuM/2, mawari:course.mawari}; }
+function ovXY(s,d){
+  var t=ovTrk(), r=t.r;
+  if(course&&course.straight){ return {x:t.left-s, y:d, a:0}; }   // 直線競馬: 全区間リニア
+  if(t.mawari==="左"){
+    if(s<=0) return {x:t.left-s, y:r+d, a:0};
+    var th=Math.PI/2+s/r;
+    return {x:t.left+(r+d)*Math.cos(th), y:(r+d)*Math.sin(th),
+            a:Math.atan2(-Math.cos(th),Math.sin(th))*180/Math.PI};
+  }else{
+    if(s<=0) return {x:t.right+s, y:r+d, a:180};
+    var th=Math.PI/2-s/r;
+    return {x:t.right+(r+d)*Math.cos(th), y:(r+d)*Math.sin(th),
+            a:Math.atan2(Math.cos(th),-Math.sin(th))*180/Math.PI};
+  }
+}
+function ovSD(x,y){
+  var t=ovTrk(), r=t.r, s, d;
+  if(t.mawari==="左"){
+    if(x>=t.left){ s=-(x-t.left); d=y-r; }
+    else{ var th=Math.atan2(y,x-t.left); if(th<0)th+=2*Math.PI;
+          s=(th-Math.PI/2)*r; d=Math.hypot(x-t.left,y)-r; }
+  }else{
+    if(x<=t.right){ s=x-t.right; d=y-r; }
+    else{ var th2=Math.atan2(y,x-t.right);
+          s=(Math.PI/2-th2)*r; d=Math.hypot(x-t.right,y)-r; }
+  }
+  return {s:Math.max(-20,Math.min(80,s)), d:Math.max(0,Math.min(trackW()-0.5,d))};
+}
+function ovCollide(h){                        // 重なり禁止=外方向へ単調押し出し(収束保証)
+  var g=0;
+  while(g++<20){
+    var hit=horses.find(function(x){return x!==h && Math.abs(x.s-h.s)<LB && Math.abs(x.d-h.d)<HW;});
+    if(!hit) break;
+    h.d = hit.d + HW + 0.02;
+  }
+}
+function ovPoly(s0,s1,d0v,d1v){
+  var pts=[], step=2, s;
+  for(s=s0;s<=s1+0.01;s+=step){var p=ovXY(Math.min(s,s1),d0v);pts.push(p.x.toFixed(2)+','+p.y.toFixed(2));}
+  for(s=s1;s>=s0-0.01;s-=step){var q=ovXY(Math.max(s,s0),d1v);pts.push(q.x.toFixed(2)+','+q.y.toFixed(2));}
+  return pts.join(' ');
+}
+function ovPolyLine(s0,s1,dv){
+  var pts=[],step=2,s;
+  for(s=s0;s<=s1+0.01;s+=step){var p=ovXY(Math.min(s,s1),dv);pts.push(p.x.toFixed(2)+','+p.y.toFixed(2));}
+  return pts.join(' ');
+}
+// ===== 紙芝居(2026-07-28): 角タブ。各角配置=taikei_v1各角版(閲覧専用)、4角=現行の操作盤面 =====
+var cornerTab=4, CORNER_RHO={1:'+0.51',2:'+0.51',3:'+0.50',4:'+0.49'};
+function cornersAvail(){ if(course&&course.straight) return [4]; var n=(course&&course.corners)||4; return n>=4?[1,2,3,4]:[3,4]; }
+function ovDisplayArr(){
+  if(cornerTab===4) return horses;
+  // 全長=4角と同じ物理スケール(案B・2026-11-13): タブ切替で隊列全長が変わらないよう統一
+  var spanC=null;
+  if(currentData&&currentData.v4Use){
+    var _g=currentData.horses.map(function(h){return h.gapSec;}).filter(function(v){return v!=null;});
+    if(_g.length>=4){ spanC=Math.max(10, Math.min(44, (Math.max.apply(null,_g)-Math.min.apply(null,_g))*currentData.v4Use/0.55)); }  // ÷0.55=広がり補正(4角と同一)
+  }
+  var arr=horses.map(function(h){ var fp=h['fp'+cornerTab];
+    var c={}; for(var k in h) c[k]=h[k];
+    c.s=(fp!=null?fp*(spanC||PACK_LEN):h.sBase); c.d=null; return c; });
+  var order=arr.slice().sort(function(a,b){return a.s-b.s;});     // 枠なりd(初期化と同一規則)
+  order.forEach(function(h,i){h._row=Math.floor(i/3);});
+  var rows={};
+  order.forEach(function(h){(rows[h._row]=rows[h._row]||[]).push(h);});
+  Object.keys(rows).forEach(function(r){rows[r].sort(function(a,b){return (a.waku-b.waku)||(a.no-b.no);})
+    .forEach(function(h,i){h.d=1.0+i*BAND_W;});});
+  if(cornerTab===3){ // 工程0実測: 2→3角で前方0.1以上動く駒は外を回す(66.8%>52.9% CI分離○)→1レーン外
+    arr.forEach(function(h){ if(h.fp2!=null&&h.fp3!=null&&(h.fp2-h.fp3)>=0.1) h.d+=2.0; });
+  }
+  // 重なり回避(2026-11-14): 4角レイアウト(mapHorses)と同一規則。物理全長スケール化で
+  // 角タブも密集するようになったため必須(旧36m等間隔時代は実質不要だった)
+  arr.slice().sort(function(a,b){return a.s-b.s;}).reduce(function(placed,h){
+    var g=0;
+    while(placed.some(function(p){return Math.abs(p.s-h.s)<LB && Math.abs(p.d-h.d)<1.0;}) && g++<40){
+      h.d+=BAND_W; if(h.d>9.0){ h.d=1.0; h.s+=1.2; }
+    }
+    placed.push(h); return placed;
+  },[]);
+  return arr;
+}
+function ovTabsRender(){
+  var el=document.getElementById('ovtabs'); if(!el) return;
+  var av=cornersAvail();
+  if(cornerTab!==4&&cornerTab!==5&&av.indexOf(cornerTab)<0) cornerTab=4;
+  var html=av.map(function(c){
+    var on=(c===cornerTab);
+    return '<button onclick="cornerTab='+c+';ovDraw();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(on?'#1a1a18':'#cfccc2')+';background:'+(on?'#1a1a18':'#fff')+';color:'+(on?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;">'+c+'角</button>';
+  }).join('');
+  // ゴールタブ(2026-11-24): 予測着差(ゴール計算0.2s/馬身)の直線盤面。3列ルールなし。ドラッグ=上がり可変で計算連動(2026-11-27、旧: 逆流しない絵の配置)
+  var gOn=(cornerTab===5);
+  html+='<button onclick="cornerTab=5;ovDraw();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(gOn?'#1a1a18':'#cfccc2')+';background:'+(gOn?'#1a1a18':'#fff')+';color:'+(gOn?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;">ゴール</button>';
+  // 前日TBは芝限定・赤(消し)セルのみ表示(2026-11-24 バックテスト採用: 芝=赤×R7+0.84が唯一堅い/ダ=持ち越し逆行のため非表示)。4角とゴールタブで有効
+  var tbMarksAny=horses.some(function(h){return !!h.tbMark;});
+  if((cornerTab===4||cornerTab===5)&&currentData&&currentData.shida==='芝'&&(currentData.tbPrev||tbMarksAny)){
+    var tp=currentData.tbPrev;
+    var tbOn=tbPrevMode>=1;
+    html+='<button onclick="tbPrevToggle();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(tbOn?'#1a1a18':'#cfccc2')+';background:'+(tbOn?'#1a1a18':'#fff')+';color:'+(tbOn?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;">前日TB</button>';
+    if(tbOn&&tp){
+      html+='<span style="font-size:10px;color:#5f5e5a;margin-right:6px;">前日TB('+tp.src.slice(4,6)+'/'+tp.src.slice(6,8)+(tp.course?'・'+tp.course+'コース':'')+'・'+tp.nR+'R): <span style="color:#b03535">赤=前日O/E≤0.5∧コース平時比−0.15の二重確認(2026-11-26改定)</span>・<span style="color:#2e7d32">緑=平時比+0.10=今日だけ効いてる場所</span> ※用途=10人気以下専用(赤穴0.52=消し/緑穴1.95=紐に残す・41日実測)。9人気以内には無情報。濃い赤=内レーン(脱出不能)。前向き検証中=snapshotでV0/二重/緑を並記ログ</span>';
+    }else if(tbOn){
+      html+='<span style="font-size:10px;color:#5f5e5a;margin-right:6px;">前日TB(馬マーク・41日実測): <span style="color:#2e7d32"><b>▲×10人気以下=複勝候補(ROI115〜123%・1発依存なし)</b>・単=緑×1〜3人気(単勝110%の観察札)</span>・<span style="color:#b03535">▼×10人気以下=紐から消す(O/E0.52/ROI32%)</span> ※4〜9人気は無情報(薄表示)・該当判定は従来盤面の席基準・金額ルール化は前向き検証後</span>';
+    }
+  }
+  if(cornerTab===5){
+    html+='<button onclick="goalAvoidToggle();" style="margin-right:4px;padding:2px 10px;border-radius:12px;border:1px solid '+(goalAvoid?'#1a1a18':'#cfccc2')+';background:'+(goalAvoid?'#1a1a18':'#fff')+';color:'+(goalAvoid?'#fff':'#5f5e5a')+';font-size:12px;cursor:pointer;" title="4角タブで帯を止にした場合、その帯の馬は直線で最寄りの非・止帯へ外出し(1列⇗+0.1s、止+0.3sは免除)">止回避'+(goalAvoid?'✓':'')+'</button>';
+  }
+  html+=(cornerTab===5)
+    ?'<span style="font-size:10px;color:#8a8878;margin-left:6px;">縦=残距離(直線'+((course&&course.chokuM)||'?')+'m+4角遅れ)÷想定上がり速度の到達差(実寸)・横=4角レーン+壁ルール(道中で前に追いつき横が重なると1列外へ・⇗=持ち出し回数、1回+0.1s≒0.5馬身(coca指示で復活。11-25実測では⇗馬O/E1.00-1.02=市場織り込み済→参考注記)・ドラッグ=上がり可変(横に動かすと想定上がりを逆算してゴール順に反映・2026-11-27採用。表の上がりスライダーと同じ手動・目安) ※較正済(γ面別3.0/2.7=V2上がり分散比・β2×垂れ差し形質): 序列ρ芝0.288/ダ0.362(41日・2026-11-27ローテ特徴+keep全馬化)。<b>注意: 前1/3は絵より甘い構造バイアス(芝約2.5番手/ダ約2番手分)=前の馬は割り引いて読む</b>。序列はR順(0.49)が上・ここは決着の形のスケッチ用</span>'
+    :'<span style="font-size:10px;color:#8a8878;margin-left:6px;">予測信頼度ρ'+CORNER_RHO[cornerTab]
+    +(cornerTab!==4?'・閲覧専用(手直し/TB/ゴール計算は4角タブのみ・②③は4角基準)':'')+'</span>';
+  // 整合性検証(2026-08-01)実測: 予測の動く率=実測の約0.47倍・個別の動きの予測力ρ+0.09=較正せず性格を明記(coca判断)
+  html+='<div style="font-size:10px;color:#a8a598;margin-top:1px;">※コマ間の動きは型の平均像です(実際のレースはこの約2倍動きます・個別の動きは⤴/動マークを参考に)</div>';
+  el.innerHTML=html;
+}
+// ---- ゴールタブ(2026-11-24): 予測着差の直線盤面 ----
+function ovGoalLaneLab(k,colg,sg){
+  var lx=(sg===1)?-5.2:5.2, anc=(sg===1)?'end':'start';
+  return '<text x="'+lx+'" y="__Y__" text-anchor="'+anc+'" font-size="0.85" fill="'+colg.s+'" pointer-events="none">'+LANES[k]+(colg.t!=='-'?colg.t:'')+'</text>';
+}
+function ensureGoalPos(){
+  // 物理版(2026-11-24): 残距離L=直線長+4角遅れs、速度v=600m/想定上がり(agEff=ag+競られ+TB)。
+  // 到達t=L/v、gs=勝ち馬ゴール時の残距離(実寸着差)。壁ルール: 道中で前の馬に追いつき横が重なる場合は1列(2m)外へ逃げる。
+  // 2026-11-25統一: 縦の土台=表のゴール計算(h.goal, γ3.4+β4keep較正済み)と同一ソース。
+  // ゴールタブ側はその上に 止回避(止+0.3免除→脱出コスト) と 壁ペナ(⇗+0.1s・2026-11-27復活) を足す。
+  var sim=horses.filter(function(h){return !h.gMoved&&h.goal!=null&&h.gv!=null;});
+  sim.forEach(function(h){
+    h.gd=(h.d!=null?h.d:2.0); h.gShift=0;
+    h._v=h.gv; h._t=h.goal;
+    if(goalAvoid){                        // 止回避: 4角で止帯→最寄りの非・止帯へ外出し
+      var li=laneIdx(h.d);
+      if(bandTB[li]===-1){
+        var tgt=null;
+        for(var k2=li+1;k2<=4;k2++){ if(bandTB[k2]!==-1){tgt=k2;break;} }
+        if(tgt!=null){ h.gd=tgt*BAND_W+1.0; h.gShift+=(tgt-li); h._t-=(h.tb||0); }  // 止+0.3免除→⇗コストへ置換
+      }
+    }
+  });
+  if(sim.length){
+    // 追い抜きイベント(τ順): j(後ろ・速い)がkに追いつく時、横が重なっていればjが外へ
+    var ev=[];
+    for(var a=0;a<sim.length;a++)for(var b=0;b<sim.length;b++){
+      var j=sim[a],k=sim[b];
+      if(j===k||j.s<=k.s||j._v<=k._v) continue;        // jは4角で後ろ&速い
+      var tau=(j.s-k.s)/(j._v-k._v);
+      if(tau<j._t) ev.push([tau,j,k]);
+    }
+    ev.sort(function(x,y){return x[0]-y[0];});
+    ev.forEach(function(e){
+      var j=e[1],k=e[2];
+      if(Math.abs(j.gd-k.gd)<1.8){ j.gd=Math.max(j.gd,k.gd)+2.0; j.gShift++;
+        if(j.gd>trackW()-0.8) j.gd=trackW()-0.8; }
+    });
+    // 壁ペナ(⇗+0.1s≒0.5馬身)=2026-11-27 coca指示で復活。経緯: 11-24仮置き→11-25撤去
+    // (実測: ⇗馬O/E1.00-1.02=人気比で沈まず市場織り込み)→11-27復活。時計の的中精度でなく
+    // 「外持ち出しシナリオの表現」としての採用(凡例に実測注記を併記)。
+    sim.forEach(function(h){ h._t+=0.1*h.gShift; });
+    var tmin=Math.min.apply(null,sim.map(function(h){return h._t;}));
+    sim.forEach(function(h){ h.gs=h._v*(h._t-tmin); });
+  }
+  // フォールバック(上がり未設定馬・従来式)
+  var mn=null;
+  horses.forEach(function(h){ if(h.goal!=null&&(mn==null||h.goal<mn)) mn=h.goal; });
+  horses.forEach(function(h){
+    if(h.gMoved||sim.indexOf(h)>=0) return;
+    h.gs=(h.goal!=null&&mn!=null)?(h.goal-mn)/0.2*LB : h.s;
+    h.gd=(h.d!=null?h.d:2.0); h.gShift=0;
+  });
+  var placed=[];
+  horses.slice().sort(function(a,b){return a.gs-b.gs;}).forEach(function(h){
+    if(h.gMoved){placed.push(h);return;}
+    var g=0;
+    while(placed.some(function(p){return Math.abs(p.gs-h.gs)<LB && Math.abs(p.gd-h.gd)<1.0;})&&g++<40){
+      h.gd+=1.0; if(h.gd>trackW()-1.0) h.gd=0.8;   // 3列ルールなし: 外ラチまで自由に積む
+    }
+    placed.push(h);
+  });
+}
+function ovDrawGoal(){
+  ensureGoalPos();
+  var W=trackW();
+  var mxS=Math.max.apply(null,horses.map(function(h){return h.gs;}));
+  var mxD=Math.max.apply(null,horses.map(function(h){return h.gd;}));
+  var dView=Math.min(W,Math.max(9.5,mxD+2.5));
+  var parts=[];
+  // 右回り=進行が右→左でなく左→右(4角タブと同じ向き): ゴール左・馬群右に鏡像化
+  var sg=(course&&course.mawari==="右")?1:-1;    // x = sg*gs
+  var x0b=Math.min(0,sg*mxS)-6, x1b=Math.max(0,sg*mxS)+6;
+  // 走行帯(4角タブと同一: 最内/内/中/外/大外・タップで伸/普/止TB→ゴール計算に反映)
+  var BBg=[0,2,4,6,8,W];
+  for(var k=0;k<5;k++){
+    if(BBg[k]>=dView) break;
+    var colg=bc(bandTB[k]), y1g=Math.min(BBg[k+1],dView);
+    parts.push('<rect x="'+x0b+'" y="'+BBg[k]+'" width="'+(x1b-x0b)+'" height="'+(y1g-BBg[k])+'" fill="'+colg.f+'" stroke="'+colg.s+'" stroke-width="0.06" opacity="0.85" style="cursor:pointer" onclick="_tb('+k+')"/>');
+    var lg=ovGoalLaneLab(k,colg,sg);
+    if(lg) parts.push(lg.replace('__Y__',String((BBg[k]+y1g)/2+0.35)));
+  }
+  // 前日TB赤(ゴールタブ・2026-11-25改): レーン帯・全長のみ。前後成分は4角の位置タイプ統計であって
+  // ゴール前の地面ではない(coca指摘)→直線まで物理的に持ち越る横成分だけを描く
+  if(tbPrevMode>=1&&currentData&&currentData.tbPrev&&currentData.shida==='芝'&&currentData.tbPrev.lanes){
+    var LNB=[[0,2,'内'],[2,4,'中'],[4,dView,'外']];
+    LNB.forEach(function(db){
+      var v=currentData.tbPrev.lanes[db[2]];
+      if(!v||v[0]==null||v[0]>0.5||v[1]<12) return;
+      parts.push('<rect x="'+x0b+'" y="'+db[0]+'" width="'+(x1b-x0b)+'" height="'+(db[1]-db[0])+'" fill="rgba(214,69,69,0.30)" stroke="rgba(214,69,69,.55)" stroke-width="0.12" pointer-events="none"/>');
+      parts.push('<text x="'+(sg*-4)+'" y="'+((db[0]+db[1])/2+0.4)+'" text-anchor="middle" font-size="1.0" font-weight="700" fill="rgba(180,45,45,.9)" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">'+db[2]+' '+v[0].toFixed(2)+'('+v[1]+')</text>');
+    });
+  }
+  parts.push('<line x1="'+x0b+'" y1="0" x2="'+x1b+'" y2="0" stroke="#8a8778" stroke-width="0.35"/>');
+  parts.push('<line x1="'+x0b+'" y1="'+dView+'" x2="'+x1b+'" y2="'+dView+'" stroke="#d5d2c6" stroke-width="0.12"/>');
+  parts.push('<line x1="0" y1="-1.2" x2="0" y2="'+(dView+1.2)+'" stroke="#d8333a" stroke-width="0.3"/>');
+  parts.push('<text x="0" y="'+(dView+2.6)+'" text-anchor="middle" font-size="1.4" fill="#d8333a">ゴール</text>');
+  for(var k=1;k*LB<=mxS+4;k++){
+    var gx=sg*k*LB;
+    parts.push('<line x1="'+gx+'" y1="0" x2="'+gx+'" y2="'+dView+'" stroke="#c9c6bd" stroke-width="0.06" stroke-dasharray="0.5 0.5"/>');
+    if(k%2===0) parts.push('<text x="'+gx+'" y="'+(dView+1.8)+'" text-anchor="middle" font-size="1.0" fill="#a8a598">'+k+'馬身</text>');
+  }
+  horses.forEach(function(h){
+    var x=sg*h.gs, y=h.gd, cap=CAP[h.waku]||{f:"#eee",t:"#333",s:"#999"};
+    parts.push('<g class="ovh" data-no="'+h.no+'" style="cursor:grab">'
+      +'<ellipse cx="'+x+'" cy="'+y+'" rx="'+(LB/2)+'" ry="'+(HW/2)+'" fill="'+cap.f+'" stroke="'+cap.s+'" stroke-width="0.12"/>'
+      +'<circle cx="'+x+'" cy="'+y+'" r="'+(LB/2+0.45)+'" fill="transparent" stroke="none"/>'
+      +'<text x="'+x+'" y="'+(y-0.75)+'" text-anchor="middle" font-size="1.25" font-weight="600" fill="'+cap.s+'" stroke="#fff" stroke-width="0.06" paint-order="stroke" pointer-events="none">'+h.no+'</text>'
+      +(h.gShift?'<text x="'+(x+1.1)+'" y="'+(y+1.3)+'" text-anchor="middle" font-size="0.85" font-weight="700" fill="#b07a12" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">⇗'+(h.gShift>1?h.gShift:'')+'</text>':'')
+      +'</g>');
+  });
+  ovsvg.innerHTML=parts.join('');
+  var x0=(sg===1)?-11:(-mxS-7), x1=(sg===1)?(mxS+7):11;
+  ovsvg.setAttribute('viewBox',x0+' '+(-2.5)+' '+(x1-x0)+' '+(dView+6.5));
+  ovfull.innerHTML='';
+  ovBindDrag();
+}
+function ovDraw(){
+  if(!course){ ovsvg.innerHTML=''; ovfull.innerHTML='';
+    document.getElementById('ovmeta').innerHTML=currentData
+      ?'<span style="color:#b07a12">このレースデータには芝ダ情報が無く実寸を特定できません(旧データ)。predict_day.py を再実行すると shida 付きで出力されます。</span>':'';
+    return; }
+  ovTabsRender();
+  if(cornerTab===5){ ovDrawGoal(); return; }
+  var arr=ovDisplayArr(), c=course, t=ovTrk();
+  if(!arr.length){ ovsvg.innerHTML=''; ovfull.innerHTML=''; return; }
+  var sMin=Math.min.apply(null,arr.map(function(h){return h.s;}))-6;
+  var sMax=Math.max.apply(null,arr.map(function(h){return h.s;}))+6;
+  var ghosts=[];
+  if(document.getElementById('ans').checked){
+    var kk='k'+cornerTab;                                        // 各角タブ=その角の実測ゴースト
+    var ks=arr.filter(function(h){return h[kk]!=null;});
+    var mx=Math.max.apply(null,ks.map(function(x){return x[kk];}))||1;
+    ghosts=ks.map(function(x){return {no:x.no, s:(x[kk]-1)/(mx-1||1)*PACK_LEN, d:0.5};});
+  }
+  var parts=[];
+  var W=trackW();                              // 走路=実幅員(JRA公式採録)
+  var BB=[0,2,4,6,8,W];                        // 帯境界: 最内/内/中/外=2m刻み, 大外=8m〜外ラチ
+  var dMax=Math.max.apply(null,arr.map(function(h){return h.d;}));
+  var dView=Math.min(W, Math.max(9.5, dMax+2.5)); // 表示=馬群+余白(大外の頭は常に見せる)
+  for(var k=0;k<5;k++){
+    var col=bc(bandTB[k]);
+    parts.push('<polygon points="'+ovPoly(sMin,sMax,BB[k],BB[k+1])+'" fill="'+col.f+'" stroke="'+col.s+'" stroke-width="0.06" opacity="0.85" style="cursor:pointer" onclick="_tb('+k+')"/>');
+  }
+  parts.push('<polyline points="'+ovPolyLine(sMin,sMax,0)+'" fill="none" stroke="#8a8778" stroke-width="0.35" pointer-events="none"/>');
+  parts.push('<polyline points="'+ovPolyLine(sMin,sMax,W)+'" fill="none" stroke="#d5d2c6" stroke-width="0.12" pointer-events="none"/>');
+  // 前日TB 9セル(2026-11-23/24改): 芝限定・赤(前日O/E≤0.5)のみ塗り。4角タブ・トグルon時のみ、生存ゾーンと排他
+  var tbp=(cornerTab===4&&tbPrevMode>=1&&currentData&&currentData.shida==='芝')?currentData.tbPrev:null;
+  if(tbp&&tbp.cells){
+    var ts=arr.map(function(h){return h.s;}).sort(function(a,b){return a-b;});
+    var tn=ts.length, ti1=Math.ceil(tn/3), ti2=Math.ceil(2*tn/3);
+    var tb1=(ti1<tn)?(ts[ti1-1]+ts[ti1])/2:ts[tn-1]+LB/2;
+    var tb2=(ti2<tn)?(ts[ti2-1]+ts[ti2])/2:ts[tn-1]+LB/2;
+    var TZ=[ts[0]-LB,tb1,tb2,ts[tn-1]+LB], TFB=['前','中団','後'];
+    var TDB=[[0,2,'内'],[2,4,'中'],[4,dView,'外']];
+    TDB.forEach(function(db){ TFB.forEach(function(fb,zi){
+      var v=tbp.cells[db[2]+'|'+fb];
+      if(!v||v[0]==null) return;
+      var oe=v[0];
+      // 2026-11-26: 赤=V0∧V3二重確認・緑=平時比+0.10(flag=v[3])。旧データはV0単独にフォールバック
+      var fl=(v.length>3)?v[3]:((oe<=0.5&&v[1]>=6)?'r':null);
+      if(!fl) return;
+      var cc=ovXY((TZ[zi]+TZ[zi+1])/2,(db[0]+db[1])/2);
+      if(fl==='r'){
+        var dark=(db[2]==='内');   // 内レーンの赤=脱出不能(内→外6%)なので濃く
+        parts.push('<polygon points="'+ovPoly(TZ[zi],TZ[zi+1],db[0],db[1])+'" fill="rgba(214,69,69,'+(dark?'0.42':'0.30')+')" stroke="rgba(214,69,69,'+(dark?'.75':'.55')+')" stroke-width="'+(dark?'0.18':'0.12')+'" pointer-events="none"/>');
+        parts.push('<text x="'+cc.x+'" y="'+(cc.y+0.4)+'" text-anchor="middle" font-size="1.0" font-weight="700" fill="rgba(180,45,45,.9)" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">'+oe.toFixed(2)+'('+v[1]+')</text>');
+      }else{
+        parts.push('<polygon points="'+ovPoly(TZ[zi],TZ[zi+1],db[0],db[1])+'" fill="rgba(46,125,50,0.22)" stroke="rgba(46,125,50,.5)" stroke-width="0.12" pointer-events="none"/>');
+        parts.push('<text x="'+cc.x+'" y="'+(cc.y+0.4)+'" text-anchor="middle" font-size="1.0" font-weight="700" fill="rgba(36,98,40,.9)" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">'+oe.toFixed(2)+'('+v[1]+')</text>');
+      }
+    });});
+  }
+  // 生存ゾーン(2026-10-14): 縦1/3帯の実測複勝率ヒート(場×面・2024〜)。4角タブのみ・操作不干渉
+  // (2026-11-24: 前日TBが赤のみになったため排他を解除=緑シェードと共存)
+  var zf=(currentData&&currentData.courseProf||{}).zf;
+  if(cornerTab===4&&zf&&zf.length===3){
+    // Phase2(2026-11-13): 帯境界=頭数割り(前からn/3頭目)の物理位置。統計定義(頭数割り・分離力174>距離割り138)は不変、幅だけ伸縮
+    var ss=arr.map(function(h){return h.s;}).sort(function(a,b){return a-b;});
+    var zn=ss.length, zi1=Math.ceil(zn/3), zi2=Math.ceil(2*zn/3);
+    var zb1=(zi1<zn)?(ss[zi1-1]+ss[zi1])/2:ss[zn-1]+LB/2;
+    var zb2=(zi2<zn)?(ss[zi2-1]+ss[zi2])/2:ss[zn-1]+LB/2;
+    var ZB=[ss[0]-LB,zb1,zb2,ss[zn-1]+LB], ZL=['前1/3','中1/3','後1/3'];
+    for(var zi=0;zi<3;zi++){
+      parts.push('<polygon points="'+ovPoly(ZB[zi],ZB[zi+1],0,dView)+'" fill="#2e7d32" opacity="'+Math.min(0.40,zf[zi]*0.85).toFixed(3)+'" pointer-events="none"/>');
+      var zw=ZB[zi+1]-ZB[zi];   // 帯が狭い(密集)ときはラベルを2段互い違いで重なり回避
+      var zp=ovXY((ZB[zi]+ZB[zi+1])/2,dView+3.0+((zw<8&&zi%2===1)?1.7:0));
+      parts.push('<text x="'+zp.x+'" y="'+zp.y+'" text-anchor="middle" font-size="1.15" fill="#2e7d32" pointer-events="none">'+ZL[zi]+' 複'+Math.round(zf[zi]*100)+'%</text>');
+    }
+  }
+  var g0=Math.ceil(sMin/5)*5;
+  for(var sg=g0;sg<=sMax;sg+=5){
+    var pa=ovXY(sg,0),pb=ovXY(sg,dView+0.4);
+    var em=(sg===0);
+    parts.push('<line x1="'+pa.x+'" y1="'+pa.y+'" x2="'+pb.x+'" y2="'+pb.y+'" stroke="'+(em?'#b07a12':'#c9c6bd')+'" stroke-width="'+(em?0.18:0.07)+'" stroke-dasharray="'+(em?'none':'0.5 0.5')+'" pointer-events="none"/>');
+    var pl=ovXY(sg,dView+1.6);
+    parts.push('<text x="'+pl.x+'" y="'+pl.y+'" text-anchor="middle" font-size="1.3" fill="'+(em?'#b07a12':'#a8a598')+'">'+(em?(course.straight?'基準点':'4角'):sg+'m')+'</text>');
+  }
+  // TB凡例(帯名+状態) 後方側の外
+  for(var k2=0;k2<5;k2++){
+    var pk=ovXY(sMax+4.5,(k2<4?BB[k2]+1.0:Math.min(BB[4]+1.5,(BB[4]+dView)/2))), ck=bc(bandTB[k2]);
+    parts.push('<text x="'+pk.x+'" y="'+(pk.y+0.35)+'" text-anchor="middle" font-size="0.85" fill="'+ck.s+'" pointer-events="none">'+LANES[k2]+(ck.t!=='-'?ck.t:'')+'</text>');
+  }
+  // (☆マークは2026-11-25削除: レビューでO=7的中/CI[0.86,4.42]の探索結果と判明しcoca判断で撤去)
+  ghosts.forEach(function(gh){
+    var p=ovXY(gh.s,gh.d);
+    parts.push('<g pointer-events="none" opacity="0.55">'
+      +'<ellipse transform="translate('+p.x+' '+p.y+') rotate('+p.a+')" rx="'+(LB/2)+'" ry="'+(HW/2)+'" fill="none" stroke="#5f5e5a" stroke-width="0.1" stroke-dasharray="0.4 0.3"/>'
+      +'<text x="'+p.x+'" y="'+(p.y+0.3)+'" text-anchor="middle" font-size="0.9" fill="#5f5e5a">'+gh.no+'</text></g>');
+  });
+  arr.forEach(function(h){
+    var p=ovXY(h.s,h.d), cap=CAP[h.waku]||{f:"#eee",t:"#333",s:"#999"};
+    parts.push('<g class="ovh" data-no="'+h.no+'" style="cursor:grab">'
+      +'<g transform="translate('+p.x+' '+p.y+') rotate('+p.a+')">'
+      +'<ellipse rx="'+(LB/2)+'" ry="'+(HW/2)+'" fill="'+cap.f+'" stroke="'+cap.s+'" stroke-width="0.12"/>'
+      +'<circle r="'+(LB/2+0.45)+'" fill="transparent" stroke="none"/></g>'
+      +'<text x="'+p.x+'" y="'+(p.y-0.75)+'" text-anchor="middle" font-size="1.25" font-weight="600" fill="'+cap.s+'" stroke="#fff" stroke-width="0.06" paint-order="stroke" pointer-events="none">'+h.no+'</text>'
+      +(h.mkClass?'<text x="'+(p.x+1.05)+'" y="'+(p.y-1.05)+'" text-anchor="middle" font-size="0.95" font-weight="700" fill="'+(h.mkClass==='常習'?'#b45309':'#d9a75f')+'" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">⤴</text>':'')
+      +(h.kdClass==='高'?'<text x="'+(p.x-1.05)+'" y="'+(p.y-1.05)+'" text-anchor="middle" font-size="0.8" font-weight="700" fill="#1f5288" stroke="#fff" stroke-width="0.05" paint-order="stroke" pointer-events="none">動</text>':'')
+      +((cornerTab===4&&tbPrevMode>=1&&h.tbMark)?(function(){
+          // 人気帯で使い分け(2026-11-26実測): 実効域=10人気以下(緑複勝115-123%/赤0.52)、
+          // 緑×1-3人気=単勝観察札(110%)、4-9人気=無情報→薄表示
+          var hot=(h.pop!=null&&h.pop>=10);
+          var tan=(h.tbMark==='g'&&h.pop!=null&&h.pop<=3);
+          var col=(h.tbMark==='r'?'#b03535':'#2e7d32');
+          var op=hot?'1':(tan?'0.95':'0.35');
+          var fs=hot?'1.15':'0.85';
+          var glyph=(h.tbMark==='r'?'▼':(tan?'単':'▲'));
+          return '<text x="'+p.x+'" y="'+(p.y+1.8)+'" text-anchor="middle" font-size="'+fs+'" font-weight="700" fill="'+col+'" opacity="'+op+'" stroke="#fff" stroke-width="0.06" paint-order="stroke" pointer-events="none">'+glyph+'</text>';
+        })():'')
+      +'</g>');
+  });
+  var pb1=ovXY(sMin+1,dView+3.4), pb2=ovXY(sMin+6,dView+3.4);
+  parts.push('<line x1="'+pb1.x+'" y1="'+pb1.y+'" x2="'+pb2.x+'" y2="'+pb2.y+'" stroke="#1a1a18" stroke-width="0.18"/>'
+    +'<text x="'+((pb1.x+pb2.x)/2)+'" y="'+(pb1.y+1.6)+'" text-anchor="middle" font-size="1.3" fill="#1a1a18">5m</text>');
+  ovsvg.innerHTML=parts.join('');
+  var xs=[],ys=[];
+  for(var sv=sMin;sv<=sMax+0.01;sv+=2){
+    [0,dView+5].forEach(function(dd){var p=ovXY(Math.min(sv,sMax),dd);xs.push(p.x);ys.push(p.y);});
+  }
+  var bb={x:Math.min.apply(null,xs)-1, y:Math.min.apply(null,ys)-1};
+  bb.width=Math.max.apply(null,xs)-bb.x+2; bb.height=Math.max.apply(null,ys)-bb.y+2;
+  ovsvg.setAttribute('viewBox',bb.x+' '+bb.y+' '+bb.width+' '+bb.height);
+  ovBindDrag();
+  // (a) 全景
+  var fp=[], r=t.r, m=30;
+  if(course.straight){
+    // 直線競馬: 全景=1000mの直線バンド+ゴール(右端)+スタート(左端)
+    var fsS=t.L/32;
+    fp.push('<line x1="'+t.left+'" y1="0" x2="'+t.right+'" y2="0" stroke="#c9c6bd" stroke-width="3"/>');
+    fp.push('<line x1="'+t.left+'" y1="'+trackW()+'" x2="'+t.right+'" y2="'+trackW()+'" stroke="#e2ded2" stroke-width="2"/>');
+    fp.push('<line x1="'+t.right+'" y1="-6" x2="'+t.right+'" y2="'+(trackW()+6)+'" stroke="#d8333a" stroke-width="3"/>');
+    fp.push('<text x="'+t.right+'" y="'+(trackW()+fsS+12)+'" text-anchor="middle" font-size="'+fsS+'" fill="#d8333a">ゴール</text>');
+    fp.push('<circle cx="'+t.left+'" cy="0" r="5" fill="#357335"/>');
+    fp.push('<text x="'+t.left+'" y="'+(-fsS*0.6)+'" text-anchor="middle" font-size="'+fsS+'" fill="#357335">START(直線1000m)</text>');
+    fp.push('<rect x="'+bb.x+'" y="'+bb.y+'" width="'+bb.width+'" height="'+bb.height+'" fill="none" stroke="#1a1a18" stroke-width="2" stroke-dasharray="7 5"/>');
+    var cgS={x:0,y:0}; arr.forEach(function(h){var p=ovXY(h.s,h.d);cgS.x+=p.x/arr.length;cgS.y+=p.y/arr.length;});
+    fp.push('<circle cx="'+cgS.x+'" cy="'+cgS.y+'" r="6" fill="#1a1a18"/><text x="'+cgS.x+'" y="'+(cgS.y-10)+'" text-anchor="middle" font-size="'+fsS+'" fill="#1a1a18">馬群 '+arr.length+'頭</text>');
+    ovfull.innerHTML=fp.join('');
+    ovfull.setAttribute('viewBox',(t.left-m)+' '+(-m-25)+' '+(t.L+2*m)+' '+(trackW()+2*m+40));
+    ovMeta();
+    return;
+  }
+  function stad(off){ return 'M'+t.left+' '+(-(r+off))+' L'+t.right+' '+(-(r+off))
+    +' A'+(r+off)+' '+(r+off)+' 0 0 1 '+t.right+' '+(r+off)+' L'+t.left+' '+(r+off)
+    +' A'+(r+off)+' '+(r+off)+' 0 0 1 '+t.left+' '+(-(r+off))+' Z'; }
+  fp.push('<path d="'+stad(0)+'" fill="none" stroke="#c9c6bd" stroke-width="3"/>');
+  fp.push('<path d="'+stad(trackW())+'" fill="none" stroke="#e2ded2" stroke-width="2"/>');
+  var goalX=(t.mawari==="左")?t.right*0.55:t.left*0.55;
+  var kaku=ovXY(0,0);
+  fp.push('<line x1="'+goalX+'" y1="'+(r-4)+'" x2="'+goalX+'" y2="'+(r+9)+'" stroke="#d8333a" stroke-width="3"/>');
+  var fs=(t.L+2*r)/32;
+  fp.push('<text x="'+goalX+'" y="'+(r+fs+12)+'" text-anchor="middle" font-size="'+fs+'" fill="#d8333a">ゴール</text>');
+  fp.push('<text x="'+kaku.x+'" y="'+(r+fs+12)+'" text-anchor="middle" font-size="'+fs+'" fill="#888780">4角</text>');
+  if(c.sobanM){
+    var bx0=t.left+((t.mawari==="左")?0.15:0.55)*(t.right-t.left);
+    var bx1=Math.min(t.right,bx0+c.sobanM);
+    fp.push('<circle cx="'+bx0+'" cy="'+(-r)+'" r="5" fill="#357335"/>');
+    fp.push('<line x1="'+bx0+'" y1="'+(-r)+'" x2="'+bx1+'" y2="'+(-r)+'" stroke="#357335" stroke-width="2" stroke-dasharray="6 4"/>');
+    fp.push('<text x="'+((bx0+bx1)/2)+'" y="'+(-r-8)+'" text-anchor="middle" font-size="'+fs+'" fill="#357335">START 序盤'+c.sobanM+'m'+(c.turfStart?'(芝ｽﾀ)':'')+'</text>');
+  }
+  fp.push('<rect x="'+bb.x+'" y="'+bb.y+'" width="'+bb.width+'" height="'+bb.height+'" fill="none" stroke="#1a1a18" stroke-width="2" stroke-dasharray="7 5"/>');
+  var cg={x:0,y:0}; arr.forEach(function(h){var p=ovXY(h.s,h.d);cg.x+=p.x/arr.length;cg.y+=p.y/arr.length;});
+  fp.push('<circle cx="'+cg.x+'" cy="'+cg.y+'" r="6" fill="#1a1a18"/><text x="'+cg.x+'" y="'+(cg.y-10)+'" text-anchor="middle" font-size="'+fs+'" fill="#1a1a18">馬群 '+arr.length+'頭</text>');
+  ovfull.innerHTML=fp.join('');
+  ovfull.setAttribute('viewBox',(t.left-m-r)+' '+(-(r)-m-25)+' '+(t.L+2*r+2*m)+' '+(2*r+2*m+40));
+  ovMeta();
+}
+function ovMeta(){
+  var c=course;
+  document.getElementById('ovmeta').innerHTML=
+    '<b>'+(c.courseKey||'').replace(/_/g,' ')+'</b> '+horses.length+'頭 ・ '
+    +(c.straight?'<b>直線競馬</b> ・ 実寸: 直線1000m・コーナー無し(JRA唯一)'
+      +'<br><span style="color:#1f5288">横初期値=外ラチ基準(外枠ほどラチ沿い) ※実測: 外1/3枠 複勝28.8% / 中15.8% / 内1/3枠 9.0%(2016〜・10頭以上4,267走)</span>'
+      :(c.mawari+'回り'+(c.io?'・<b>'+c.io+'回り</b>コース':'')
+        +' ・ 実寸: 1周'+c.shu1M+'m / 直線'+c.chokuM+'m / 近似円半径'+Math.round(c.rCircleM)+'m / '+c.corners+'角'))
+    +(c.sobanM?' / 序盤'+c.sobanM+'m':'')
+    +(c.geoFallback?' <span style="color:#b07a12">'+(c.ioMixed?'(内外混在距離=出馬表に区分なし→主コースの実寸)':'(芝内外不明→主コースの実寸)')+'</span>':'')
+    +paceFlagLine()
+    +courseUseLine()
+    +mkBaseLine()
+    +ovCourseProfLine();
+}
+// 芝コース使用日数(2026-11-17採用: JRA馬場情報の使用コース×開催内の使用日数カウント・表示のみ)
+// 実測: ラチ替わり直後(1-2日目)=内+2.4pt / 3日目〜=内外イーブン(ダは効果なし=非表示)
+function courseUseLine(){
+  var u=currentData&&currentData.courseUse; if(!u) return '';
+  var fresh=u.d<=2;
+  return '<br><span style="font-size:10px;color:#8a8878">芝コース使用: <b>'+u.k+'コース '
+    +(fresh?'<span style="color:#2e7d46">'+u.d+'日目</span>':u.d+'日目〜')+'</b> '
+    +(fresh?'(替わり直後=内+2.4pt・内枠/イン前残り警戒)':'(使い込み=内外イーブン・最内の割引通常どおり)')
+    +' ※週次master基準の概算</span>';
+}
+// コース別まくり基準線(2026-11-17採用: 実測率の表記のみ・予測不使用。警戒札モデルは見送り)
+function mkBaseLine(){
+  var v=currentData&&currentData.mkBase; if(v==null) return '';
+  var hi=v>=50, lo=v<=25;
+  return '<br><span style="font-size:10px;color:#8a8878">まくり基準線: このコース '
+    +'<b style="color:'+(hi?'#b3403f':(lo?'#2f6fa8':'#5f5e5a'))+'">'+v+'%</b>'
+    +(hi?'(多発コース・盤面の後方勢は上振れ注意)':(lo?'(直線勝負型・隊列持続しやすい)':''))
+    +' ※2角→4角5位置以上の発生レース率(2021〜実測)</span>';
+}
+// ペース高確度札(2026-11-13採用): pace_v1の|予測残差|上位のみ(検証窓の自信上位20%・正答5割強)
+function paceFlagLine(){
+  var f=currentData&&currentData.paceFlag; if(!f) return '';
+  var hi=(f.cls==='ハイ寄り');
+  return '<br><span style="display:inline-block;margin-top:2px;padding:1px 8px;border-radius:9px;'
+    +'font-weight:700;font-size:11px;color:#fff;background:'+(hi?'#b3403f':'#2f6fa8')+'">⚡ ペース高確度: '+f.cls+'</span>'
+    +'<span style="font-size:10px;color:#8a8878"> 自信レースのみ表示(実測正答5割強・偶然33%)'
+    +(f.zfCond?'・<b>生存ゾーン=ペース条件付き実測に切替中</b>':'')+'</span>';
+}
+// コース形態のざっくり説明(2026-07-20採用: course_profile実測係数・表示のみ・エンジン不変)
+function ovCourseProfLine(){
+  var p=currentData&&currentData.courseProf; if(!p) return '';
+  var t='<br><span style="color:#8a8878">形態: '
+    +(p.chokuCls?'直線'+p.chokuCls:'')+(p.rCls?'・'+p.rCls:'')
+    +(p.fbCls?'・前残り度 '+p.fbCls+(p.fb!=null?'(実測'+(p.fb>=0?'+':'')+p.fb.toFixed(2)+')':''):'')
+    +(p.v1Rho!=null?' ・ 展開図実績 ρ'+(p.v1Rho>=0?'+':'')+p.v1Rho.toFixed(2):'')
+    +(p.k3Fuku!=null?'/◎複勝'+Math.round(p.k3Fuku*100)+'%':'')
+    +(p.nR?'(OOS n='+p.nR+'R)':'')
+    +((p.rCls==='コーナーきつい'&&p.mkPrem!=null&&p.mkPrem>0)?' ・ <span style="color:#1f5288">⤴/動の価値高め</span>'+REF_BADGE:'')
+    +(p.ref?' <span style="font-size:9px;color:#b4b2a9">(n少・参考)</span>':'')+'</span>';
+  if(p.zf&&p.zf.length===3){
+    t+='<br><span style="color:#2e7d32">生存ゾーン'+(p.zfCond?'<b>('+p.zfCond+'条件付き)</b>':(currentData&&currentData.zfClsTag?'<b>('+currentData.zfClsTag+')</b>':''))+': 前1/3 複'+Math.round(p.zf[0]*100)+'% / 中 '+Math.round(p.zf[1]*100)+'% / 後 '+Math.round(p.zf[2]*100)+'%</span>'
+      +'<span style="font-size:10px;color:#b4b2a9"> ※この場×面の実測4角位置の過去実績(2024〜'+(p.zfCond?'・実現ペース'+p.zfCond+'のレースのみ':'')+')。駒の予測位置とは別物</span>';
+  }
+  // 【Phase4】ラップ指紋 / Δ4角の仕掛け文法 / コース×型(参考)
+  var t2='';
+  if(p.lap!=null||p.d4!=null){
+    t2='<br><span style="color:#8a8878">ラップ: '
+      +(p.lap!=null?'<b>'+p.lap+'</b>'+(p.nakadarumi!=null?'(中弛み率'+Math.round(p.nakadarumi*100)+'%)':''):'')
+      +(p.d4!=null?(p.lap!=null?' ・ ':'')+'Δ4角'+(p.d4>=0?'+':'')+p.d4.toFixed(2)+'＝<b>'+p.d4lab+'</b>'
+                   +(p.d4mix?'<span style="font-size:9px;color:#b4b2a9">(内外混合)</span>':''):'')
+      +'</span>';
+  }
+  if(p.typeFit){
+    var tf=p.typeFit;
+    t2+='<br><span style="color:#8a8878">このコースで: '
+      +'<b style="color:#357335">'+tf.top.t+'</b> が平均より '+(tf.top.v>=0?'+':'')+tf.top.v.toFixed(1)+'pt'
+      +'／<b style="color:#a32128">'+tf.bot.t+'</b> が '+(tf.bot.v>=0?'+':'')+tf.bot.v.toFixed(1)+'pt'
+      +REF_BADGE+'<span style="font-size:9px;color:#b4b2a9;"> 較正2/3・型差が支配的</span></span>';
+  }
+  t+=t2;
+  return t;
+}
+function ovShowTip(h){
+  var arr=horses, c=course;
+  var loss=ovDistLoss(h.d,c.corners), wall=ovWall(h,arr), tb=bandTB[laneIdx(h.d)];
+  var scores=arr.map(function(x){return ovDistLoss(x.d,c.corners)+ovWall(x,arr)*8;});
+  var my=loss+wall*8-(tb<0?4:tb>0?-4:0);
+  var adv=my<(Math.min.apply(null,scores)+2)?'◎有利':my>(Math.max.apply(null,scores)-2)?'▽不利':'○標準';
+  var tbtxt=tb<0?'伸(-0.2)':tb>0?'止(+0.3)':'普';
+  document.getElementById('ovtip').innerHTML=
+    '<b>'+h.no+' '+(h.name||'')+'</b>'
+    +' ｜ s='+h.s.toFixed(1)+'m(4角基準'+(h.s<12?'・前':h.s>24?'・後':'・中')+')'
+    +' ｜ d='+h.d.toFixed(1)+'m('+LANES[laneIdx(h.d)]+')'
+    +(h.gpAgari!=null?' ｜ 想定上がり <b>'+h.gpAgari.toFixed(1)+'s</b>':'')
+    +(h.agMan&&h.ag!=null?' ｜ 上がり手動 <b>'+h.ag.toFixed(1)+'s</b>'+MAN_BADGE:'')
+    +(h.k3rank!=null?' ｜ P順'+h.k3rank:'')
+    +' ｜ 距離ロス <b>+'+loss.toFixed(1)+'m</b>'+REF_BADGE
+    +' ｜ 壁リスク <b>'+(wall>0.66?'高':wall>0.33?'中':'低')+'</b>('+wall.toFixed(2)+')'+REF_BADGE
+    +' ｜ TB:'+tbtxt+MAN_BADGE+' ｜ 総合 <b>'+adv+'</b>'
+    +' <span style="color:var(--t)">※距離ロス/壁は市場織り込み済</span>';
+}
+var MK_RATE={'常習':'8.7','時々':'6.1'};   // V1実測(2026-07-18, OOS): 階級別の次走捲り率。表示専用の固定値
+function mkBadge(h){ if(!h.mkClass) return '';
+  var dark=(h.mkClass==='常習'), c=dark?'#b45309':'#d9a75f';
+  return '<span title="捲り型('+h.mkClass+'): 過去5走中'+(h.mkN5!=null?h.mkN5:'?')+'走で3角→4角に大きく前進&#10;'
+    +'次走捲り率実績 '+MK_RATE[h.mkClass]+'%(OOS実測)&#10;初期位置は平均像・後方から動く可能性" '
+    +'style="color:'+c+';font-weight:'+(dark?'700':'400')+';margin-right:1px;cursor:help;">⤴</span>'; }
+var KD_RATE={'高':'55','中':'38','低':'24'};   // 実測(2026-07-25, OOS): 機動力階級別の次走で動く率
+function kdBadge(h){ if(h.kdClass!=='高') return '';
+  return '<span title="機動力: 高&#10;位置を動かせる型・次走で動く率55%(OOS実測)" style="color:#1f5288;font-weight:700;margin-right:1px;cursor:help;">動</span>'; }
+function kdTitle(h){ return h.kdClass?('機動力: '+h.kdClass+' (次走で動く率'+KD_RATE[h.kdClass]+'%・OOS実測)'):''; }
+var REF_BADGE='<span style="font-size:9px;color:#8a8878;border:.5px solid #cfccc2;border-radius:3px;padding:0 2px;margin-left:2px;">参考</span>';
+// 【Phase4】9型の統制後乖離(pt)と持続率(%) — 出典 docs/aptitude_mechanism_phase4_profile_results.md
+// 実測側集計・表示/解釈用途(予測入力には使わない)。乖離は人気帯×クラス統制後の複勝乖離。
+var TYPE9=[
+ {t:'後傾×前',d:1.94,p:13.1,x:'前で運びつつ、流れに対しては脚を残せている'},
+ {t:'後傾×中',d:1.18,p:21.6,x:'中団で流れに乗り、脚を残している'},
+ {t:'中庸×前',d:0.74,p:26.6,x:'前で運び、配分は流れなり'},
+ {t:'中庸×中',d:0.27,p:14.0,x:'中団・配分も流れなり'},
+ {t:'前傾×前',d:-0.66,p:35.6,x:'前で運び、流れに対して早めに脚を使う'},
+ {t:'後傾×後',d:-0.85,p:45.0,x:'後方で脚を溜める'},
+ {t:'中庸×後',d:-1.67,p:18.2,x:'後方から、配分は流れなり'},
+ {t:'前傾×中',d:-1.69,p:14.8,x:'中団だが流れに対して早めに脚を使う'},
+ {t:'前傾×後',d:-4.05,p:27.5,x:'後方なのに流れに対して早めに脚を使う'}];
+
+// 【Phase4】馬名タップでカルテをアコーディオン展開(行直下)。
+// 横スクロール中でも読めるよう、中身は position:sticky;left:0 でビューポート幅に収める。
+function _karte(no){
+  var ex=document.getElementById('karteRow'+no), car=document.getElementById('kcar'+no);
+  if(ex){ ex.remove(); if(car) car.textContent='▸'; return; }
+  var tr=document.getElementById('row'+no); if(!tr) return;
+  var h=horses.filter(function(x){return x.no===no;})[0]; if(!h) return;
+  var d=document.createElement('tr'); d.id='karteRow'+no;
+  d.innerHTML='<td colspan="'+tr.cells.length+'" style="background:#faf9f5;border-top:1px solid #e6e3da;padding:0;">'
+    +'<div style="position:sticky;left:0;width:min(1120px,calc(100vw - 26px));box-sizing:border-box;padding:10px 12px;font-size:11.5px;line-height:1.65;">'
+    +karteHTML(h)+'</div></td>';
+  tr.parentNode.insertBefore(d,tr.nextSibling);
+  if(car) car.textContent='▾';
+}
+function _kh(t){ return '<div style="font-weight:700;color:#5f5e5a;margin:6px 0 2px;border-bottom:1px solid #e6e3da;">'+t+'</div>'; }
+function karteHTML(h){
+  var s='<div style="font-weight:700;font-size:13px;">'+h.no+' '+(h.name||'')+'</div>';
+  // ■RaceReader(能力の意見)
+  s+=_kh('■ RaceReader（能力の意見）');
+  var st=(h.rStars&&h.rStars.length)?h.rStars.map(function(x){return '<div style="color:#9a7b00">⭐'+x+'</div>';}).join('')
+        :(h.rStar!=null?'<div style="color:#9a7b00">⭐'+h.rStar+'</div>':'<div style="color:#a8a69c">⭐好走パターン: 該当なし</div>');
+  s+=st;
+  if(h.rClaims&&h.rClaims.length){
+    s+=h.rClaims.map(function(x){return '<div style="color:'+(x.t==='＋'?'#357335':'#a32128')+';">'+x.t+'['+x.f+'] '+x.c+'</div>';}).join('');
+  }else if(h.rClaim!=null){ s+='<div>'+h.rClaim+'</div>'; }
+  // ■PaceMaker(展開の意見)
+  s+=_kh('■ PaceMaker（展開の意見）');
+  var T=h.rType;
+  if(T){
+    s+='<div><b>型：'+T.type+'</b> — '+(T.desc||'')+'</div>'
+      +'<div style="color:#5f5e5a;">直近5走・持続率 '+T.persist_pct+'%（'+(T.persist_pct<25?'変わりやすい':'比較的固定的')+'）'
+      +'・統制後乖離 '+(T.dev_pt>=0?'+':'')+T.dev_pt+'pt'
+      +'<span style="color:#a8a69c;">（型確定'+T.n_type+'走/全'+T.n_runs+'走・as-of '+T.as_of+'）</span></div>';
+    if(T.chrono) s+='<div style="color:#5f5e5a;">年表：'+T.chrono+'</div>';
+    if(T.wobble) s+='<div style="color:#a8a69c;font-size:10.5px;">ゆらぎ（1〜2走で戻った型変化）'+T.wobble+'回</div>';
+  }else{
+    s+='<div style="color:#a8a69c;">型：未確定（5走未満等・定数では埋めません）</div>';
+  }
+  // マーカーは「該当するバッジ」のみ。⤴は常習/時々、動は機動力=高のみ(表の凡例と一致させる)
+  var mk=[];
+  if(h.mkClass) mk.push('<b>⤴'+h.mkClass+'</b>（次走で捲る率 '+MK_RATE[h.mkClass]+'%）');
+  if(h.kdClass==='高') mk.push('<b>動</b>（機動力 高・次走で動く率 '+KD_RATE['高']+'%）');
+  s+='<div>マーカー：'+(mk.length?mk.join(' ／ '):'<span style="color:#a8a69c;">該当なし</span>')
+    +(h.kdClass&&h.kdClass!=='高'?'<span style="color:#a8a69c;font-size:10.5px;">（機動力は'+h.kdClass+'＝次走で動く率 '+KD_RATE[h.kdClass]+'%）</span>':'')
+    +'</div>';
+  s+='<div>想定上がり <b>'+(h.gpAgari!=null?h.gpAgari.toFixed(1)+'s':'—')+'</b>'
+    +' ／ 4角位置 '+(h.s<12?'前':h.s>24?'後':'中')+'・'+LANES[h.lane].slice(-1)
+    +' ／ P順 '+(h.k3rank!=null?h.k3rank:'—')+'</div>';
+  // ■血統(距離適性の参考・2026-11-15採用: 予測/ゴール計算には不使用)
+  s+=_kh('■ 血統（距離適性の参考）');
+  if(h.bloodDist&&h.bloodDist.sc!=null){
+    var B=h.bloodDist;
+    s+='<div>血統距離スコア <b>'+B.sc+'</b>'
+      +'<span style="color:#a8a69c;">（100=全馬平均 ／ 父'+(B.f!=null?B.f:'—')+'・母父'+(B.mf!=null?B.mf:'—')+'）</span>'
+      +(B.first===true?'<span style="color:#b07a12;font-weight:700;margin-left:4px;" title="本馬はこの距離帯(400m幅)が初めて。血統距離が効く主局面(実測: スコア3分位で複勝率16.3%→19.7%)">★初距離帯</span>':'')
+      +'</div>'
+      +'<div style="color:#a8a69c;font-size:10.5px;">父・母父産駒の「今回距離±200mでの好走率÷全体平均」の加重平均。'
+      +'効くのは主に初距離帯への挑戦時で、市場は概ね織込済み＝印の参考まで（予測値には不使用）。</div>';
+  }else{
+    s+='<div style="color:#a8a69c;">血統距離: データなし（父・母父の産駒好走実績が不足）</div>';
+  }
+  // ■凡例(折りたたみ)
+  s+='<details style="margin-top:6px;"><summary style="cursor:pointer;color:#5f5e5a;font-size:11px;">凡例（型の読み方・9型一覧）</summary>'
+    +'<div style="margin:4px 0 2px;color:#5f5e5a;">'
+    +'<b>配分</b>＝<u>そのレースの流れに対して</u>脚を早めに使ったか後ろに残したか（前傾／中庸／後傾）。'
+    +'<span style="color:#a32128;">「後傾＝上がりが速い」ではなく周りとの相対</span>です。<br>'
+    +'<b>位置</b>＝4角でどこにいたか（前／中／後）。</div>'
+    +'<table style="border-collapse:collapse;font-size:10.5px;margin-top:3px;min-width:0;">'
+    +'<tr style="color:#8a8878;"><th style="text-align:left;padding:1px 6px 1px 0;">型</th>'
+    +'<th style="text-align:right;padding:1px 6px;">乖離</th><th style="text-align:right;padding:1px 6px;">持続率</th>'
+    +'<th style="text-align:left;padding:1px 0;">説明</th></tr>'
+    +TYPE9.map(function(z){
+      var hi=(T&&T.type===z.t);
+      return '<tr style="'+(hi?'background:#f0eee6;font-weight:700;':'')+'">'
+        +'<td style="padding:1px 6px 1px 0;white-space:nowrap;">'+z.t+'</td>'
+        +'<td style="text-align:right;padding:1px 6px;color:'+(z.d>=0?'#357335':'#a32128')+';">'+(z.d>=0?'+':'')+z.d+'</td>'
+        +'<td style="text-align:right;padding:1px 6px;color:#5f5e5a;">'+z.p+'%</td>'
+        +'<td style="padding:1px 0;color:#5f5e5a;">'+z.x+'</td></tr>';}).join('')
+    +'</table>'
+    +'<div style="color:#a8a69c;font-size:10px;margin-top:3px;">乖離＝人気帯×クラス統制後の複勝乖離(pt)。持続率＝前半キャリアの型が後半も同じ割合。'
+    +'型は<u>現在の型</u>であって生涯のラベルではありません。実測側集計・表示/解釈用途（予測入力には使いません）。</div>'
+    +'</details>';
+  return s;
+}
+var MAN_BADGE='<span style="font-size:9px;color:#b07a12;border:.5px solid #e0cfa0;border-radius:3px;padding:0 2px;margin-left:2px;">手動・目安</span>';
+var ovdrag=null;
+function ovBindDrag(){
+  ovsvg.querySelectorAll('g.ovh').forEach(function(el){
+    var no=+el.getAttribute('data-no');
+    el.addEventListener('pointerdown',function(e){if(cornerTab!==4&&cornerTab!==5)return; ovdrag={no:no};el.setPointerCapture(e.pointerId);e.preventDefault();
+      ovShowTip(horses.find(function(x){return x.no===no;}));});
+    el.addEventListener('pointerenter',function(){ if(!ovdrag) ovShowTip(horses.find(function(x){return x.no===no;})); });
+  });
+}
+function ovSvgPt(e){ // getScreenCTM=preserveAspectRatioの余白込み正規変換(旧: 単純線形→max-height到達時に横ズレ)
+  var m=ovsvg.getScreenCTM();
+  if(!m){var rc=ovsvg.getBoundingClientRect(),vb=ovsvg.viewBox.baseVal;
+    return {x:vb.x+(e.clientX-rc.left)/rc.width*vb.width, y:vb.y+(e.clientY-rc.top)/rc.height*vb.height};}
+  var pt=ovsvg.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY;
+  var q=pt.matrixTransform(m.inverse()); return {x:q.x,y:q.y};}
+ovsvg.addEventListener('pointermove',function(e){
+  if(!ovdrag)return; var p=ovSvgPt(e), h=horses.find(function(x){return x.no===ovdrag.no;});
+  if(cornerTab===5){   // ゴールタブ: 横ドラッグ=上がり可変→ゴール順連動(2026-11-27 coca指示。旧: 絵の手動配置・計算に逆流しない)
+    if(h.ag==null||h.gv==null||h.goal==null) return;
+    var sgd=(course&&course.mawari==="右")?1:-1;
+    var tgtGs=Math.max(0,Math.min(120,sgd*p.x));            // カーソル=狙いの着差位置(実寸m)
+    var dT=(tgtGs-(h.gs!=null?h.gs:0))/h.gv;                // 必要なゴール時刻差(s)
+    var ck5=(course&&course.chokuM)||400, ga5=(course&&course.shida==='芝')?3.0:2.7;
+    if(h.agOrig==null) h.agOrig=h.ag;
+    // goal=…+(直線+s)×γ·ag/600 の逆算。クリップ=元値-2.0〜+2.5s(スライダーと同じ手動・目安の扱い)
+    h.ag=Math.round(Math.max(h.agOrig-2.0,Math.min(h.agOrig+2.5,h.ag+dT*600/((ck5+h.s)*ga5)))*100)/100;
+    h.agMan=true; h.gMoved=false;
+    compute(); ovShowTip(h); return;
+  }
+  var sd=ovSD(p.x,p.y); h.s=sd.s; h.d=sd.d;
+  ovCollide(h);
+  compute(); ovShowTip(h);
+});
+ovsvg.addEventListener('pointerup',function(){ovdrag=null;});
+ovsvg.addEventListener('pointercancel',function(){ovdrag=null;});
+
+// 全体ペース/馬場
+function paceLabel(v){
+  var w=v<=-0.3?'速い':v<0.3?'標準':v<0.8?'やや重':v<1.5?'重い':'超重';
+  return w+' '+(v>=0?'+':'')+v.toFixed(1)+'s';
+}
+document.getElementById('pace').addEventListener('input',function(e){
+  paceAdj=parseInt(e.target.value,10)/10;
+  document.getElementById('paceout').textContent=paceLabel(paceAdj);
+  compute();
+});
+document.getElementById('btnSave').onclick=saveScenario;
+document.getElementById('btnMine').onclick=function(){ var s=loadSaved(); if(s){ applyState(s); flash('マイ予想を表示'); } };
+document.getElementById('btnDef').onclick=function(){ applyDefault(); flash('デフォルト(段1予測)に戻しました'); };
+// 件7: 保存済み全レースの印をフラットJSON(レースID/日付/馬番/印/保存時刻/実着)で書き出し
+document.getElementById('btnExport').onclick=function(){
+  var rows=[];
+  for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i);
+    if(k.indexOf('kessei:')!==0) continue;
+    try{ var st=JSON.parse(localStorage.getItem(k));
+      (st.marks||[]).forEach(function(m){ rows.push({raceId:st.raceId,date:st.date,
+        umaban:m.umaban, mark:m.mark, chaku:(m.chaku!=null?m.chaku:null), savedAt:st.savedAt}); });
+    }catch(e){}
+  }
+  if(!rows.length){ flash('保存済みの印がありません'); return; }
+  var blob=new Blob([JSON.stringify(rows,null,1)],{type:'application/json'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='kessei_marks_'+(new Date()).toISOString().slice(0,10).replace(/-/g,'')+'.json';
+  a.click(); URL.revokeObjectURL(a.href);
+  flash('✓ '+rows.length+'件をエクスポート');
+};
+document.getElementById('ans').addEventListener('change',function(e){
+  document.body.classList.toggle('showans',e.target.checked);
+  document.getElementById('hitsum').style.display=e.target.checked?'block':'none';
+  compute();
+});
+
+// ================= データ読込(一元) =================
+// 優先: ?day=(タブ) > ?race=(単発day形式) > window.RACE_DATA > PaceMakerデモ(board JSON)
+// ダミーレースは全廃: 何も無ければ案内表示のみ。
+var DAY=null, cache={};
+function loadRace(id,cb){
+  if(cache[id]){ cb(cache[id]); return; }
+  if(window.EMBED&&EMBED.races[id]){ cache[id]=EMBED.races[id]; cb(cache[id]); return; }  // 共有バンドル(サーバ不要)
+  var s=document.createElement('script'); s.src='../data/sim/'+id+'.js?v='+Date.now();
+  s.onload=function(){ cache[id]=window.RACE_DATA; cb(window.RACE_DATA); };
+  s.onerror=function(){ noData('レースデータ('+id+')を読めません'); };
+  document.head.appendChild(s);
+}
+function renderTabs(activeId){
+  var groups={}, order=[];                       // 場所別に段組み
+  DAY.races.forEach(function(r){ if(!groups[r.venue]){groups[r.venue]=[];order.push(r.venue);} groups[r.venue].push(r); });
+  document.getElementById('tabs').innerHTML=order.map(function(v){
+    return '<div class="tabrow"><span class="tabvenue">'+v+'</span>'
+      +groups[v].map(function(r){
+        return '<button class="tab'+(r.id===activeId?' on':'')+'" onclick="openRace(\''+r.id+'\')">'+r.r+'R</button>';
+      }).join('')+'</div>';
+  }).join('');
+}
+function openRace(id){ renderTabs(id); loadRace(id,boot);
+  history.replaceState(null,'',location.pathname+'?day='+DAY.date+'&race='+id); }
+function noData(msg){
+  document.getElementById('label').textContent='レース未選択';
+  document.getElementById('ovmeta').innerHTML='<span style="color:#b07a12">'+msg+'</span>';
+}
+// PaceMakerデモ(board JSON)→ boot形式に変換して同一経路へ
+function bootBoard(d){
+  var data={race:d.raceId,
+    label:d.course.courseKey.replace(/_/g,' ')+' / '+d.fieldSize+'頭 (PaceMakerデモ)',
+    venue:d.course.basho, shida:d.course.shida, kyori:d.course.kyori,
+    field:d.fieldSize, base:80.0, boardCourse:d.course,
+    nAbsNige:(d.nAbsNige!=null?d.nAbsNige:null), k3Label:(d.k3Label||null), rrAvailable:!!d.rrAvailable,
+    horses:d.horses.map(function(h){
+      var res=(d.result||{})[h.umaban]||{};
+      return {no:h.umaban, name:h.name, waku:h.waku, frontPct:h.frontPct, band:h.band,
+              d:(h.d!=null?h.d:null),
+              gpAgari:(h.gpAgari!=null?h.gpAgari:null), k3rank:(h.k3rank!=null?h.k3rank:null),
+              k3margin:(h.k3margin!=null?h.k3margin:null),
+              rMark:(h.rMark!=null?h.rMark:null), rWin:(h.rWin!=null?h.rWin:null), rChip:(h.rChip!=null?h.rChip:null),
+              posSrc:(h.posSrc!=null?h.posSrc:null),
+              mkClass:(h.mkClass!=null?h.mkClass:null), mkN5:(h.mkN5!=null?h.mkN5:null),
+              kdClass:(h.kdClass!=null?h.kdClass:null),
+              fp1:(h.fp1!=null?h.fp1:null), fp2:(h.fp2!=null?h.fp2:null), fp3:(h.fp3!=null?h.fp3:null),
+              chakuActual:(res.chaku!=null?res.chaku:null), k4:(res.k4!=null?res.k4:null),
+              k1:(res.k1!=null?res.k1:null), k2:(res.k2!=null?res.k2:null), k3:(res.k3!=null?res.k3:null),
+              mkActual:(res.mk!=null?res.mk:null)};
+    })};
+  boot(data);
+}
+function initDemos(){
+  fetch('../data/sim/demo_index.json').then(function(r){return r.json();}).then(function(list){
+    var sel=document.getElementById('ovsel');
+    sel.style.display='';
+    sel.innerHTML=list.map(function(x){return '<option value="'+x.raceId+'">'+x.bucket+'｜'+x.courseKey.replace(/_/g,' ')+' '+x.field+'頭</option>';}).join('');
+    function loadBoard(rid){
+      fetch('../data/sim/board_'+rid+'.json').then(function(r){return r.json();}).then(bootBoard)
+        .catch(function(){ noData('board_'+rid+'.json を読めません'); });
+    }
+    sel.onchange=function(){ loadBoard(sel.value); };
+    if(list.length) loadBoard(list[0].raceId);
+    else noData('デモが空です');
+  }).catch(function(){ noData('レース未指定・デモ索引も無し。python -m http.server 8777 で起動し ?day=YYYYMMDD を付けるか、scripts/pacemaker_board.py --demo でデモ生成。'); });
+}
+(function(){
+  var p=new URLSearchParams(location.search), day=p.get('day'), race=p.get('race');
+  if(p.get('compact')!=null) document.body.classList.add('compact');   // 埋め込み: 展開図+シミュレーター詳細のみ
+  // 公開バンドル(http配信)では日付一覧への戻りリンクを表示(compact埋め込み/ローカルfileでは非表示)
+  if(window.EMBED && /^https?:$/.test(location.protocol) && p.get('compact')==null){
+    var bk=document.getElementById('backidx'); if(bk) bk.style.display='block';
+  }
+  if(window.EMBED){ DAY=EMBED.dayIndex; openRace(race||(DAY.races[0]&&DAY.races[0].id)); return; }  // 共有バンドル
+  if(day){
+    var s=document.createElement('script'); s.src='../data/sim/day_'+day+'.js?v='+Date.now();
+    s.onload=function(){ DAY=window.DAY_INDEX;
+      var first=race||(DAY.races[0]&&DAY.races[0].id);
+      openRace(first); };
+    s.onerror=function(){ noData('day_'+day+'.js を読めません'); };
+    document.head.appendChild(s); return;
+  }
+  if(window.RACE_DATA){ boot(window.RACE_DATA); return; }
+  if(race){ loadRace(race,boot); return; }
+  initDemos();                                   // ダミー全廃: デモ(実データ)か案内のみ
+})();
+</script>
+</body>
+</html>
